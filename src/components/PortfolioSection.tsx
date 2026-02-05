@@ -6,7 +6,6 @@ import {
   ChevronRight,
   ExternalLink,
   Github,
-  Laptop,
   Star,
   Target,
   TrendingUp,
@@ -22,6 +21,7 @@ export const PortfolioSection = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
+  const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
   const sortedProjects = [...projects].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   const filteredProjects = sortedProjects.filter(
@@ -33,17 +33,21 @@ export const PortfolioSection = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
+        delayChildren: 0.2,
+        staggerChildren: 0.22,
       },
     },
   };
 
   const cardVariants = {
-    hidden: { opacity: 0, y: 50 },
+    hidden: { opacity: 0, y: 52, scale: 0.96, rotateX: 8, filter: 'blur(7px)' },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] as const },
+      scale: 1,
+      rotateX: 0,
+      filter: 'blur(0px)',
+      transition: { duration: 1.2, ease: EASE_OUT },
     },
   };
 
@@ -77,7 +81,7 @@ export const PortfolioSection = () => {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.9, ease: EASE_OUT }}
           className="text-center mb-12"
         >
           <h2 className="section-title">
@@ -94,7 +98,7 @@ export const PortfolioSection = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: 0.85, delay: 0.18, ease: EASE_OUT }}
           className="flex flex-wrap justify-center gap-3 mb-12"
         >
           {projectCategories.map((category) => (
@@ -124,35 +128,46 @@ export const PortfolioSection = () => {
             <motion.div
               key={project.id}
               variants={cardVariants}
-              className="glass-card rounded-2xl overflow-hidden shadow-card group flex flex-col h-full"
-              whileHover={{ y: -10, scale: 1.01 }}
+              className="glass-card rounded-2xl overflow-hidden shadow-card group flex flex-col h-full preserve-3d"
+              whileHover={{ y: -10, scale: 1.015, rotate: isRTL ? 0.6 : -0.6 }}
+              transition={{ type: 'spring', stiffness: 180, damping: 18 }}
+              style={{ transformPerspective: 1200 }}
             >
-              <div className="relative h-40 bg-gradient-to-br from-primary/18 via-cyan-400/12 to-purple-500/18 flex flex-col items-center justify-center gap-3">
-                <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shadow-inner">
-                  <Laptop className="w-9 h-9 text-muted-foreground" />
-                </div>
-                <button
-                  onClick={() => {
-                    setSelectedProject(project);
-                    setCurrentImageIndex(0);
-                  }}
-                  className="text-xs font-semibold text-muted-foreground/80 hover:text-primary transition-colors underline underline-offset-4"
-                >
-                  {t('عرض التفاصيل', 'View details')}
-                </button>
+              <div className="relative aspect-[16/9] bg-black/40 overflow-hidden">
+                <img
+                  src={project.images?.[0] ?? '/project-placeholder.jpg'}
+                  alt={t(project.title, project.titleEn)}
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
+                <div className="absolute inset-0 bg-black/35 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 {project.featured && (
                   <span className="absolute top-3 left-3 flex items-center gap-1 px-3 py-1 rounded-full bg-primary/90 text-background text-xs font-semibold">
                     <Star className="w-3.5 h-3.5" /> {t('مميز', 'Featured')}
                   </span>
                 )}
                 {project.status && (
-                  <span className="absolute top-3 right-3 px-3 py-1 rounded-full bg-white/80 text-xs font-semibold text-slate-900">
+                  <span className="absolute top-3 right-3 px-3 py-1 rounded-full bg-white/85 text-xs font-semibold text-slate-900">
                     {project.status === 'completed' ? t('منجز', 'Completed') : t('قيد التنفيذ', 'In Progress')}
                   </span>
                 )}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <button
+                    onClick={() => {
+                      setSelectedProject(project);
+                      setCurrentImageIndex(0);
+                    }}
+                    className="text-xs font-semibold px-4 py-2 rounded-full bg-white/10 backdrop-blur border border-white/30 text-white opacity-0 translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0 hover:bg-white/20"
+                    aria-label={t('عرض التفاصيل', 'View details')}
+                  >
+                    {t('عرض التفاصيل', 'View details')}
+                  </button>
+                </div>
               </div>
 
-              <div className="flex-1 p-6 space-y-4 flex flex-col justify-between bg-black/20 backdrop-blur">
+              <div className="flex-1 p-6 space-y-4 flex flex-col bg-black/20 backdrop-blur">
                 <div className="space-y-2 text-center">
                   <h3 className="text-lg font-semibold leading-tight">
                     {t(project.title, project.titleEn)}
@@ -170,27 +185,29 @@ export const PortfolioSection = () => {
                   ))}
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                  <button
-                    onClick={() => {
-                      setSelectedProject(project);
-                      setCurrentImageIndex(0);
-                    }}
-                    className="btn-secondary inline-flex items-center justify-center gap-2 px-5"
-                    aria-label={t('عرض التفاصيل', 'View details')}
-                  >
-                    <Target className="w-4 h-4" />
-                    {t('التفاصيل', 'Details')}
-                  </button>
-                  <a
-                    href={project.liveUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="btn-primary btn-shine inline-flex items-center justify-center gap-2 px-6"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                    {t('معاينة', 'Live')}
-                  </a>
+                <div className="mt-auto pt-4 border-t border-white/10">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <button
+                      onClick={() => {
+                        setSelectedProject(project);
+                        setCurrentImageIndex(0);
+                      }}
+                      className="btn-secondary inline-flex items-center justify-center gap-2 px-5"
+                      aria-label={t('عرض التفاصيل', 'View details')}
+                    >
+                      <Target className="w-4 h-4" />
+                      {t('التفاصيل', 'Details')}
+                    </button>
+                    <a
+                      href={project.liveUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="btn-primary btn-shine inline-flex items-center justify-center gap-2 px-6"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      {t('معاينة', 'Live')}
+                    </a>
+                  </div>
                 </div>
               </div>
             </motion.div>

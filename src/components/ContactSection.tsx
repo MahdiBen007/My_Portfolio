@@ -17,6 +17,7 @@ export const ContactSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
   const socialLinks = [
     { icon: Github, href: personalData.github, label: 'GitHub' },
@@ -72,7 +73,7 @@ export const ContactSection = () => {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.9, ease: EASE_OUT }}
           className="text-center mb-16"
         >
           <h2 className="section-title">{t('تواصل معي', 'Get In Touch')}</h2>
@@ -85,10 +86,10 @@ export const ContactSection = () => {
           <motion.aside
             initial={{ opacity: 0, x: -30 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            transition={{ duration: 0.95, delay: 0.15, ease: EASE_OUT }}
             className="space-y-4 sm:col-span-5 lg:col-span-4"
           >
-            <div className="glass-card rounded-3xl p-6 md:p-7 relative overflow-hidden">
+            <div className="glass-card rounded-3xl p-6 md:p-7 relative overflow-hidden text-center">
               <div className="absolute -top-20 -right-16 h-40 w-40 rounded-full bg-primary/20 blur-3xl pointer-events-none" />
               <span className="pill-badge text-xs mb-4 mx-auto">
                 {t('متاح للعمل الحر', 'Available for freelance')}
@@ -129,7 +130,7 @@ export const ContactSection = () => {
                     key={card.titleEn}
                     initial={{ opacity: 0, y: 14 }}
                     animate={isInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.35, delay: 0.16 + index * 0.08 }}
+                    transition={{ duration: 0.6, delay: 0.24 + index * 0.12, ease: EASE_OUT }}
                   >
                     {card.href ? (
                       <a
@@ -155,11 +156,11 @@ export const ContactSection = () => {
             <motion.form
               initial={{ opacity: 0, x: 30 }}
               animate={isInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              transition={{ duration: 0.95, delay: 0.2, ease: EASE_OUT }}
               onSubmit={handleSubmit}
               className="glass-card rounded-3xl p-6 md:p-8 lg:p-10 space-y-6"
             >
-              <div>
+              <div className="flex flex-col items-center text-center">
                 <span className="pill-badge text-xs">{t('نموذج التواصل', 'Contact Form')}</span>
                 <h3 className="mt-4 text-2xl font-bold">
                   {t('احكِ لي عن مشروعك', 'Tell me about your project')}
@@ -215,7 +216,7 @@ export const ContactSection = () => {
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.45, delay: 0.3 }}
+          transition={{ duration: 0.7, delay: 0.3, ease: EASE_OUT }}
           className="mx-auto mt-8 grid w-full max-w-2xl grid-cols-4 gap-3"
         >
           {socialLinks.map((social) => {

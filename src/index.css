@@ -220,7 +220,7 @@
   /* Navbar Capsule */
   .navbar-capsule {
     @apply rounded-full mx-auto w-full;
-    max-width: clamp(940px, 88vw, 1140px);
+    max-width: clamp(620px, 72vw, 820px);
     background: hsl(var(--background) / 0.6);
     backdrop-filter: blur(20px);
     border: 1px solid hsl(var(--glass-border) / 0.4);

@@ -59,14 +59,14 @@ export const Navbar = () => {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
-      className="navbar-root fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-2 backdrop-blur-xl bg-[#0b0f1c]/80"
+      className="navbar-root fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-3 backdrop-blur-xl bg-[#0b0f1c]/80"
       onMouseEnter={() => setIsNavAwake(true)}
       onMouseLeave={() => setIsNavAwake(false)}
     >
       <div className="container mx-auto px-6">
         {/* Capsule Navbar Container */}
         <motion.div
-          className={`navbar-capsule flex items-center justify-between px-6 py-2 transition-all duration-300 origin-center transform-gpu ${
+          className={`navbar-capsule flex items-center justify-between px-6 py-1 transition-all duration-300 origin-center transform-gpu ${
           isScrolled ? 'navbar-capsule-scrolled' : ''
         } ${navAwake ? 'opacity-100 shadow-glow' : 'opacity-80 nav-breathe'}`}
           style={{
@@ -132,7 +132,7 @@ export const Navbar = () => {
               whileTap={{ scale: 0.95 }}
             >
               <Globe className="w-4 h-4" />
-              <span className="text-xs font-medium">{language === 'ar' ? 'EN' : '?'}</span>
+              <span className="text-xs font-medium">{language === 'ar' ? 'EN' : 'AR'}</span>
             </motion.button>
 
             {/* Mobile Menu Button */}

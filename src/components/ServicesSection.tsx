@@ -15,23 +15,26 @@ export const ServicesSection = () => {
   const { t } = useLanguage();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
+  const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15,
+        delayChildren: 0.12,
+        staggerChildren: 0.2,
       },
     },
   };
 
   const cardVariants = {
-    hidden: { opacity: 0, y: 40 },
+    hidden: { opacity: 0, y: 48, scale: 0.98 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] as const },
+      scale: 1,
+      transition: { duration: 0.95, ease: EASE_OUT },
     },
   };
 
@@ -42,7 +45,7 @@ export const ServicesSection = () => {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.9, ease: EASE_OUT }}
           className="text-center mb-16"
         >
           <h2 className="section-title">
@@ -70,11 +73,11 @@ export const ServicesSection = () => {
                 key={index}
                 variants={cardVariants}
                 whileHover={{ y: -8, transition: { duration: 0.3 } }}
-                className="group glass-card glow-border p-8 rounded-2xl"
+                className="group glass-card glow-border p-8 rounded-2xl text-center sm:text-start"
               >
                 {/* Icon */}
                 <motion.div
-                  className="w-14 h-14 rounded-xl flex items-center justify-center mb-6 relative overflow-hidden"
+                  className="w-14 h-14 rounded-xl flex items-center justify-center mb-6 relative overflow-hidden mx-auto sm:mx-0"
                   style={{
                     background: 'linear-gradient(135deg, hsl(var(--glass)), hsl(var(--glass-border) / 0.5))',
                     boxShadow: service.hoverEffect === 'glow' ? '0 0 35px hsl(var(--glow-cyan) / 0.35)' : undefined,
@@ -103,7 +106,7 @@ export const ServicesSection = () => {
 
                 {/* Hover Line */}
                 <motion.div
-                  className="h-0.5 mt-6 rounded-full"
+                  className="h-0.5 mt-6 rounded-full mx-auto sm:mx-0"
                   initial={{ width: 0 }}
                   whileHover={{ width: '100%' }}
                   style={{

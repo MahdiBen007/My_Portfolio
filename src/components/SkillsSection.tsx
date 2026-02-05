@@ -49,6 +49,7 @@ export const SkillsSection = () => {
   const [activeFilter, setActiveFilter] = useState('all');
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
+  const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
   const filteredSkills = skills.filter((skill) => {
     const categoryVisible = skillCategories.find((c) => c.id === skill.category)?.visible !== false;
@@ -61,17 +62,19 @@ export const SkillsSection = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.05,
+        delayChildren: 0.1,
+        staggerChildren: 0.12,
       },
     },
   };
 
   const skillVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
+    hidden: { opacity: 0, y: 32, scale: 0.95 },
     visible: {
       opacity: 1,
+      y: 0,
       scale: 1,
-      transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] as const },
+      transition: { duration: 0.85, ease: EASE_OUT },
     },
   };
 
@@ -86,7 +89,7 @@ export const SkillsSection = () => {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.9, ease: EASE_OUT }}
           className="text-center mb-12"
         >
           <h2 className="section-title">
@@ -104,7 +107,7 @@ export const SkillsSection = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: 0.85, delay: 0.18, ease: EASE_OUT }}
           className="flex flex-wrap justify-center gap-3 mb-12"
         >
           {skillCategories
