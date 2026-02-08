@@ -1,7 +1,7 @@
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { useRef, useEffect, useState, useMemo } from 'react';
 import { ArrowDown, Download, Eye, Sparkles, Briefcase } from 'lucide-react';
-import { personalData } from '@/data/portfolio-data';
+import { usePortfolioData } from '@/features/portfolio/PortfolioDataContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const Counter = ({ value, suffix = '' }: { value: number; suffix?: string }) => {
@@ -34,6 +34,8 @@ const Counter = ({ value, suffix = '' }: { value: number; suffix?: string }) => 
 
 export const HeroSection = () => {
   const { t, isRTL } = useLanguage();
+  const { data } = usePortfolioData();
+  const { personalData } = data;
   const containerRef = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({

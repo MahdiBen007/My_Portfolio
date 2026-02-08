@@ -1,9 +1,11 @@
 ﻿import { motion } from 'framer-motion';
-import { navLinks } from '@/data/portfolio-data';
+import { usePortfolioData } from '@/features/portfolio/PortfolioDataContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export const Footer = () => {
   const { t } = useLanguage();
+  const { data } = usePortfolioData();
+  const { navLinks } = data;
 
   return (
     <footer className="relative py-8 border-t border-glass-border/30">

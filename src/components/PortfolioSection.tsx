@@ -11,11 +11,13 @@ import {
   TrendingUp,
   X,
 } from 'lucide-react';
-import { projects, projectCategories } from '@/data/portfolio-data';
+import { usePortfolioData } from '@/features/portfolio/PortfolioDataContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export const PortfolioSection = () => {
   const { t, isRTL } = useLanguage();
+  const { data } = usePortfolioData();
+  const { projects, projectCategories } = data;
   const [activeFilter, setActiveFilter] = useState('all');
   const [selectedProject, setSelectedProject] = useState<typeof projects[0] | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);

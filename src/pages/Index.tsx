@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { AnimatedBackground } from '@/components/AnimatedBackground';
+import { SettingsSync } from '@/components/SettingsSync';
 import { Navbar } from '@/components/Navbar';
 import { HeroSection } from '@/components/HeroSection';
 import { ServicesSection } from '@/components/ServicesSection';
@@ -8,22 +10,48 @@ import { PortfolioSection } from '@/components/PortfolioSection';
 import { AboutSection } from '@/components/AboutSection';
 import { ContactSection } from '@/components/ContactSection';
 import { Footer } from '@/components/Footer';
+import { PortfolioLoader } from '@/components/PortfolioLoader';
+import { usePortfolioData } from '@/features/portfolio/PortfolioDataContext';
 
 const Index = () => {
+  const { data, loading } = usePortfolioData();
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
+  const [minDelayPassed, setMinDelayPassed] = useState(false);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setMinDelayPassed(true), 1400);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  useEffect(() => {
+    if (!loading && minDelayPassed) {
+      setIsFirstLoad(false);
+    }
+  }, [loading, minDelayPassed]);
+
+  const showLoader = isFirstLoad && (!minDelayPassed || loading);
+
   return (
-    <LanguageProvider>
+    <LanguageProvider defaultLanguage={data.settings.locale}>
       <div className="relative min-h-screen">
+        <SettingsSync />
         <AnimatedBackground />
-        <Navbar />
-        <main className="relative z-10">
-          <HeroSection />
-          <ServicesSection />
-          <SkillsSection />
-          <PortfolioSection />
-          <AboutSection />
-          <ContactSection />
-        </main>
-        <Footer />
+        {showLoader ? (
+          <PortfolioLoader />
+        ) : (
+          <>
+            <Navbar />
+            <main className="relative z-10">
+              <HeroSection />
+              <ServicesSection />
+              <SkillsSection />
+              <PortfolioSection />
+              <AboutSection />
+              <ContactSection />
+            </main>
+            <Footer />
+          </>
+        )}
       </div>
     </LanguageProvider>
   );

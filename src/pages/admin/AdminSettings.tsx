@@ -1,0 +1,599 @@
+import { useState, useEffect } from 'react';
+import { Loader2, Save, Palette, Globe, Link2, FileText, ChevronDown } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
+import { Slider } from '@/components/ui/slider';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
+import AdminHeader from '@/components/admin/AdminHeader';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+
+interface Settings {
+  id: string;
+  primary_color: string | null;
+  secondary_color: string | null;
+  background_gradient: string | null;
+  border_radius: number | null;
+  spacing_density: string | null;
+  ui_font: string | null;
+  site_font: string | null;
+  animations_enabled: boolean | null;
+  shadow_intensity: number | null;
+  meta_title: string | null;
+  meta_description: string | null;
+  og_image_url: string | null;
+  keywords: string | null;
+  canonical_url: string | null;
+  github_url: string | null;
+  linkedin_url: string | null;
+  behance_url: string | null;
+  email: string | null;
+  whatsapp: string | null;
+  custom_links: unknown;
+  copyright_text: string | null;
+  footer_links: unknown;
+  footer_contact_info: string | null;
+  locale: 'ar' | 'en' | null;
+}
+
+const gradientPresets = [
+  { value: 'night', label: 'Night', colors: 'from-slate-950 via-slate-900 to-indigo-950' },
+  { value: 'midnight', label: 'Midnight Purple', colors: 'from-slate-950 via-purple-950 to-slate-900' },
+  { value: 'ocean', label: 'Deep Ocean', colors: 'from-slate-950 via-blue-950 to-slate-900' },
+  { value: 'forest', label: 'Dark Forest', colors: 'from-slate-950 via-emerald-950 to-slate-900' },
+];
+
+const fontOptions = [
+  'Plus Jakarta Sans',
+  'Inter',
+  'Poppins',
+  'Roboto',
+  'Open Sans',
+  'Montserrat',
+  'Lato',
+];
+
+const AdminSettings = () => {
+  const [settings, setSettings] = useState<Settings | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
+  const { isAdmin } = useAuth();
+
+  const fetchSettings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('settings')
+        .select('*')
+        .limit(1)
+        .single();
+
+      if (error) throw error;
+      setSettings({ ...data, locale: data.locale ?? 'ar' });
+    } catch (error) {
+      console.error('Error fetching settings:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to fetch settings',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const handleSave = async () => {
+    if (!settings) return;
+
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from('settings')
+        .update({
+          primary_color: settings.primary_color,
+          secondary_color: settings.secondary_color,
+          background_gradient: settings.background_gradient,
+          border_radius: settings.border_radius,
+          spacing_density: settings.spacing_density,
+          ui_font: settings.ui_font,
+          site_font: settings.site_font,
+          animations_enabled: settings.animations_enabled,
+          shadow_intensity: settings.shadow_intensity,
+          meta_title: settings.meta_title,
+          meta_description: settings.meta_description,
+          og_image_url: settings.og_image_url,
+          keywords: settings.keywords,
+          canonical_url: settings.canonical_url,
+          github_url: settings.github_url,
+          linkedin_url: settings.linkedin_url,
+          behance_url: settings.behance_url,
+          email: settings.email,
+          whatsapp: settings.whatsapp,
+          copyright_text: settings.copyright_text,
+          footer_contact_info: settings.footer_contact_info,
+          locale: settings.locale ?? 'ar',
+        })
+        .eq('id', settings.id);
+
+      if (error) throw error;
+      toast({ title: 'Success', description: 'Settings saved successfully' });
+    } catch (error) {
+      console.error('Error saving settings:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to save settings',
+        variant: 'destructive',
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div>
+        <AdminHeader title="Settings" subtitle="Configure global settings" />
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!settings) {
+    return (
+      <div>
+        <AdminHeader title="Settings" subtitle="Configure global settings" />
+        <div className="p-6">
+          <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
+            <CardContent className="py-12 text-center">
+              <p className="text-slate-400">No settings found</p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div>
+        <AdminHeader title="Settings" subtitle="Configure global settings" />
+        <div className="p-6">
+          <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
+            <CardContent className="py-12 text-center">
+              <p className="text-slate-400">Only admins can modify settings.</p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <AdminHeader title="Settings" subtitle="Configure global settings" />
+
+      <div className="p-6">
+        <div className="flex justify-end mb-6">
+          <Button
+            onClick={handleSave}
+            disabled={saving}
+            className="bg-gradient-to-r from-blue-600 to-purple-600"
+          >
+            {saving ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              <>
+                <Save className="w-4 h-4 mr-2" />
+                Save All Settings
+              </>
+            )}
+          </Button>
+        </div>
+
+        <Tabs defaultValue="theme" className="space-y-6">
+          <TabsList className="bg-slate-800/50 grid grid-cols-4 w-full max-w-xl">
+            <TabsTrigger value="theme" className="data-[state=active]:bg-blue-600">
+              <Palette className="w-4 h-4 mr-2" />
+              Theme
+            </TabsTrigger>
+            <TabsTrigger value="seo" className="data-[state=active]:bg-blue-600">
+              <Globe className="w-4 h-4 mr-2" />
+              SEO
+            </TabsTrigger>
+            <TabsTrigger value="social" className="data-[state=active]:bg-blue-600">
+              <Link2 className="w-4 h-4 mr-2" />
+              Social
+            </TabsTrigger>
+            <TabsTrigger value="footer" className="data-[state=active]:bg-blue-600">
+              <FileText className="w-4 h-4 mr-2" />
+              Footer
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Theme Settings */}
+          <TabsContent value="theme" className="space-y-4">
+            <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
+              <CardHeader>
+                <CardTitle className="text-white">Theme & UI Controls</CardTitle>
+                <CardDescription className="text-slate-400">
+                  Customize the look and feel of your portfolio
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Colors */}
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label>Primary Color</Label>
+                    <div className="flex gap-2">
+                      <input
+                        type="color"
+                        value={settings.primary_color}
+                        onChange={(e) => setSettings({ ...settings, primary_color: e.target.value })}
+                        className="w-12 h-10 rounded cursor-pointer"
+                      />
+                      <Input
+                        value={settings.primary_color}
+                        onChange={(e) => setSettings({ ...settings, primary_color: e.target.value })}
+                        className="bg-slate-800 border-slate-600 flex-1"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Secondary Color</Label>
+                    <div className="flex gap-2">
+                      <input
+                        type="color"
+                        value={settings.secondary_color}
+                        onChange={(e) => setSettings({ ...settings, secondary_color: e.target.value })}
+                        className="w-12 h-10 rounded cursor-pointer"
+                      />
+                      <Input
+                        value={settings.secondary_color}
+                        onChange={(e) => setSettings({ ...settings, secondary_color: e.target.value })}
+                        className="bg-slate-800 border-slate-600 flex-1"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Gradient Presets */}
+                <div className="space-y-2">
+                  <Label>Background Gradient</Label>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {gradientPresets.map((preset) => (
+                      <button
+                        key={preset.value}
+                        onClick={() => setSettings({ ...settings, background_gradient: preset.value })}
+                        className={`p-4 rounded-xl border transition-all ${
+                          settings.background_gradient === preset.value
+                            ? 'border-blue-500 ring-2 ring-blue-500/20'
+                            : 'border-slate-700 hover:border-slate-600'
+                        }`}
+                      >
+                        <div className={`w-full h-12 rounded-lg bg-gradient-to-br ${preset.colors} mb-2`} />
+                        <p className="text-sm text-white">{preset.label}</p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Sliders */}
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label>Border Radius: {settings.border_radius}px</Label>
+                    <Slider
+                      value={[settings.border_radius]}
+                      onValueChange={([value]) => setSettings({ ...settings, border_radius: value })}
+                      max={32}
+                      step={2}
+                      className="py-2"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Shadow Intensity: {settings.shadow_intensity}%</Label>
+                    <Slider
+                      value={[settings.shadow_intensity]}
+                      onValueChange={([value]) => setSettings({ ...settings, shadow_intensity: value })}
+                      max={100}
+                      step={5}
+                      className="py-2"
+                    />
+                  </div>
+                </div>
+
+                {/* Fonts */}
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label>UI Font</Label>
+                    <Select
+                      value={settings.ui_font}
+                      onValueChange={(value) => setSettings({ ...settings, ui_font: value })}
+                    >
+                      <SelectTrigger className="bg-slate-800 border-slate-600">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-slate-800 border-slate-700">
+                        {fontOptions.map((font) => (
+                          <SelectItem key={font} value={font}>{font}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Site Font</Label>
+                    <Select
+                      value={settings.site_font}
+                      onValueChange={(value) => setSettings({ ...settings, site_font: value })}
+                    >
+                      <SelectTrigger className="bg-slate-800 border-slate-600">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-slate-800 border-slate-700">
+                        {fontOptions.map((font) => (
+                          <SelectItem key={font} value={font}>{font}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label>Default Language</Label>
+                    <Select
+                      value={settings.locale ?? 'ar'}
+                      onValueChange={(value) =>
+                        setSettings({ ...settings, locale: value as 'ar' | 'en' })
+                      }
+                    >
+                      <SelectTrigger className="bg-slate-800 border-slate-600">
+                        <SelectValue placeholder="Select language" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-slate-800 border-slate-700">
+                        <SelectItem value="ar">Arabic (AR)</SelectItem>
+                        <SelectItem value="en">English (EN)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {/* Spacing & Animations */}
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label>Spacing Density</Label>
+                    <Select
+                      value={settings.spacing_density}
+                      onValueChange={(value) => setSettings({ ...settings, spacing_density: value })}
+                    >
+                      <SelectTrigger className="bg-slate-800 border-slate-600">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-slate-800 border-slate-700">
+                        <SelectItem value="compact">Compact</SelectItem>
+                        <SelectItem value="comfortable">Comfortable</SelectItem>
+                        <SelectItem value="spacious">Spacious</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl">
+                    <Label htmlFor="animations">Animations Enabled</Label>
+                    <Switch
+                      id="animations"
+                      checked={settings.animations_enabled}
+                      onCheckedChange={(checked) => setSettings({ ...settings, animations_enabled: checked })}
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* SEO Settings */}
+          <TabsContent value="seo">
+            <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
+              <CardHeader>
+                <CardTitle className="text-white">SEO Settings</CardTitle>
+                <CardDescription className="text-slate-400">
+                  Optimize your portfolio for search engines
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="meta_title">Meta Title</Label>
+                  <Input
+                    id="meta_title"
+                    value={settings.meta_title}
+                    onChange={(e) => setSettings({ ...settings, meta_title: e.target.value })}
+                    className="bg-slate-800 border-slate-600"
+                    placeholder="Your Portfolio Title"
+                  />
+                  <p className="text-xs text-slate-500">{settings.meta_title.length}/60 characters</p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="meta_description">Meta Description</Label>
+                  <Textarea
+                    id="meta_description"
+                    value={settings.meta_description || ''}
+                    onChange={(e) => setSettings({ ...settings, meta_description: e.target.value })}
+                    className="bg-slate-800 border-slate-600"
+                    placeholder="Brief description of your portfolio..."
+                  />
+                  <p className="text-xs text-slate-500">
+                    {(settings.meta_description || '').length}/160 characters
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="og_image">OG Image URL</Label>
+                  <Input
+                    id="og_image"
+                    value={settings.og_image_url || ''}
+                    onChange={(e) => setSettings({ ...settings, og_image_url: e.target.value })}
+                    className="bg-slate-800 border-slate-600"
+                    placeholder="https://example.com/og-image.jpg"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="keywords">Keywords</Label>
+                  <Input
+                    id="keywords"
+                    value={settings.keywords || ''}
+                    onChange={(e) => setSettings({ ...settings, keywords: e.target.value })}
+                    className="bg-slate-800 border-slate-600"
+                    placeholder="web developer, react, portfolio"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="canonical">Canonical URL</Label>
+                  <Input
+                    id="canonical"
+                    value={settings.canonical_url || ''}
+                    onChange={(e) => setSettings({ ...settings, canonical_url: e.target.value })}
+                    className="bg-slate-800 border-slate-600"
+                    placeholder="https://yoursite.com"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Social Links */}
+          <TabsContent value="social">
+            <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
+              <CardHeader>
+                <CardTitle className="text-white">Social Links</CardTitle>
+                <CardDescription className="text-slate-400">
+                  Add your social media and contact links
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="github">GitHub</Label>
+                    <Input
+                      id="github"
+                      value={settings.github_url || ''}
+                      onChange={(e) => setSettings({ ...settings, github_url: e.target.value })}
+                      className="bg-slate-800 border-slate-600"
+                      placeholder="https://github.com/username"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="linkedin">LinkedIn</Label>
+                    <Input
+                      id="linkedin"
+                      value={settings.linkedin_url || ''}
+                      onChange={(e) => setSettings({ ...settings, linkedin_url: e.target.value })}
+                      className="bg-slate-800 border-slate-600"
+                      placeholder="https://linkedin.com/in/username"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="behance">Behance</Label>
+                    <Input
+                      id="behance"
+                      value={settings.behance_url || ''}
+                      onChange={(e) => setSettings({ ...settings, behance_url: e.target.value })}
+                      className="bg-slate-800 border-slate-600"
+                      placeholder="https://behance.net/username"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      value={settings.email || ''}
+                      onChange={(e) => setSettings({ ...settings, email: e.target.value })}
+                      className="bg-slate-800 border-slate-600"
+                      placeholder="your@email.com"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="whatsapp">WhatsApp</Label>
+                  <Input
+                    id="whatsapp"
+                    value={settings.whatsapp || ''}
+                    onChange={(e) => setSettings({ ...settings, whatsapp: e.target.value })}
+                    className="bg-slate-800 border-slate-600"
+                    placeholder="+1234567890"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Footer Settings */}
+          <TabsContent value="footer">
+            <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
+              <CardHeader>
+                <CardTitle className="text-white">Footer Settings</CardTitle>
+                <CardDescription className="text-slate-400">
+                  Customize your footer content
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="copyright">Copyright Text</Label>
+                  <Input
+                    id="copyright"
+                    value={settings.copyright_text}
+                    onChange={(e) => setSettings({ ...settings, copyright_text: e.target.value })}
+                    className="bg-slate-800 border-slate-600"
+                    placeholder="© 2024 Your Name. All rights reserved."
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="footer_contact">Contact Info</Label>
+                  <Textarea
+                    id="footer_contact"
+                    value={settings.footer_contact_info || ''}
+                    onChange={(e) => setSettings({ ...settings, footer_contact_info: e.target.value })}
+                    className="bg-slate-800 border-slate-600"
+                    placeholder="Your address, phone number, etc."
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
+  );
+};
+
+export default AdminSettings;

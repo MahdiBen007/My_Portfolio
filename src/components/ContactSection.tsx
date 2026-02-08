@@ -9,11 +9,13 @@ import {
   Phone,
   MapPin,
 } from 'lucide-react';
-import { personalData } from '@/data/portfolio-data';
+import { usePortfolioData } from '@/features/portfolio/PortfolioDataContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export const ContactSection = () => {
   const { t } = useLanguage();
+  const { data } = usePortfolioData();
+  const { personalData } = data;
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });

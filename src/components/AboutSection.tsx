@@ -1,11 +1,13 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
 import { useRef } from 'react';
-import { personalData, experience } from '@/data/portfolio-data';
+import { usePortfolioData } from '@/features/portfolio/PortfolioDataContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export const AboutSection = () => {
   const { t } = useLanguage();
+  const { data } = usePortfolioData();
+  const { personalData, experience } = data;
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
   const EASE_OUT = [0.22, 1, 0.36, 1] as const;
