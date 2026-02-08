@@ -84,6 +84,7 @@ const AdminProjects = () => {
     description: '',
     description_ar: '',
     thumbnail_url: '',
+    gallery_images: [''],
     tech_stack: '',
     github_link: '',
     live_demo_link: '',
@@ -132,6 +133,7 @@ const AdminProjects = () => {
       description: '',
       description_ar: '',
       thumbnail_url: '',
+      gallery_images: [''],
       tech_stack: '',
       github_link: '',
       live_demo_link: '',
@@ -151,6 +153,7 @@ const AdminProjects = () => {
       description: project.description,
       description_ar: project.description_ar || '',
       thumbnail_url: project.thumbnail_url || '',
+      gallery_images: project.gallery_images?.length ? project.gallery_images : [''],
       tech_stack: project.tech_stack?.join(', ') || '',
       github_link: project.github_link || '',
       live_demo_link: project.live_demo_link || '',
@@ -178,6 +181,9 @@ const AdminProjects = () => {
         .split(',')
         .map((t) => t.trim())
         .filter((t) => t);
+      const galleryImages = formData.gallery_images
+        .map((url) => url.trim())
+        .filter((url) => url);
 
       const projectData = {
         title: formData.title,
@@ -185,6 +191,7 @@ const AdminProjects = () => {
         description: formData.description,
         description_ar: formData.description_ar || null,
         thumbnail_url: formData.thumbnail_url || null,
+        gallery_images: galleryImages,
         tech_stack: techArray,
         github_link: formData.github_link || null,
         live_demo_link: formData.live_demo_link || null,
@@ -224,6 +231,28 @@ const AdminProjects = () => {
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleGalleryChange = (index: number, value: string) => {
+    setFormData((prev) => {
+      const next = [...prev.gallery_images];
+      next[index] = value;
+      return { ...prev, gallery_images: next };
+    });
+  };
+
+  const addGalleryField = () => {
+    setFormData((prev) => ({
+      ...prev,
+      gallery_images: [...prev.gallery_images, ''],
+    }));
+  };
+
+  const removeGalleryField = (index: number) => {
+    setFormData((prev) => {
+      const next = prev.gallery_images.filter((_, i) => i !== index);
+      return { ...prev, gallery_images: next.length ? next : [''] };
+    });
   };
 
   const handleDelete = async () => {
@@ -544,6 +573,42 @@ const AdminProjects = () => {
                 className="bg-slate-800 border-slate-600"
                 placeholder="https://example.com/image.jpg"
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Gallery Images</Label>
+              <div className="space-y-2">
+                {formData.gallery_images.map((url, index) => (
+                  <div key={`gallery-${index}`} className="flex items-center gap-2">
+                    <Input
+                      value={url}
+                      onChange={(e) => handleGalleryChange(index, e.target.value)}
+                      className="bg-slate-800 border-slate-600"
+                      placeholder="https://example.com/image.jpg"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      onClick={addGalleryField}
+                      className="border-slate-600 bg-slate-800 text-slate-200 hover:bg-slate-700"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                    {formData.gallery_images.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeGalleryField(index)}
+                        className="text-slate-400 hover:text-red-300"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="space-y-2">

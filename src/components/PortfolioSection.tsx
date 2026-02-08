@@ -77,6 +77,15 @@ export const PortfolioSection = () => {
     return () => root.classList.remove('hide-navbar');
   }, [selectedProject]);
 
+  useEffect(() => {
+    if (!selectedProject) return;
+    const total = selectedProject.images?.length ?? 0;
+    if (total === 0) return;
+    if (currentImageIndex >= total) {
+      setCurrentImageIndex(0);
+    }
+  }, [selectedProject, currentImageIndex]);
+
   return (
     <section id="portfolio" className="relative py-[clamp(64px,8vw,112px)]" ref={ref}>
       <div className="container mx-auto px-6">
@@ -135,14 +144,14 @@ export const PortfolioSection = () => {
               transition={{ type: 'spring', stiffness: 180, damping: 18 }}
               style={{ transformPerspective: 1200 }}
             >
-              <div className="relative aspect-[16/9] bg-black/40 overflow-hidden">
-                <img
-                  src={project.images?.[0] ?? '/project-placeholder.jpg'}
-                  alt={t(project.title, project.titleEn)}
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  loading="lazy"
-                  decoding="async"
-                />
+                <div className="relative aspect-[16/9] bg-black/40 overflow-hidden">
+                  <img
+                    src={project.images?.[0] ?? '/project-placeholder.jpg'}
+                    alt={t(project.title, project.titleEn)}
+                    className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                    loading="lazy"
+                    decoding="async"
+                  />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
                 <div className="absolute inset-0 bg-black/35 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 {project.featured && (
@@ -242,26 +251,36 @@ export const PortfolioSection = () => {
 
               <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-0 lg:gap-6">
                 {/* Gallery */}
-                <div className="relative bg-black/40">
+                <div className="relative bg-black/40 overflow-hidden group">
                   <img
                     src={selectedProject.images?.[currentImageIndex] ?? '/project-placeholder.jpg'}
                     alt={t(selectedProject.title, selectedProject.titleEn)}
-                    className="w-full h-[320px] lg:h-full object-cover"
+                    className={`w-full h-[220px] sm:h-[280px] lg:h-[420px] object-cover object-center ${
+                      (selectedProject.images?.length ?? 0) > 1 ? 'cursor-pointer' : ''
+                    }`}
+                    onClick={() => {
+                      if ((selectedProject.images?.length ?? 0) > 1) nextImage();
+                    }}
                   />
                   {selectedProject.images && selectedProject.images.length > 1 && (
-                    <div className="absolute inset-0 flex items-center justify-between px-4">
+                    <div className="absolute inset-0 flex items-center justify-between px-4 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                       <button
                         onClick={isRTL ? nextImage : prevImage}
-                        className="p-2 rounded-full bg-black/50 hover:bg-black/70"
+                        className="p-2 rounded-full bg-black/60 hover:bg-black/80"
                       >
                         <ChevronLeft className="w-5 h-5" />
                       </button>
                       <button
                         onClick={isRTL ? prevImage : nextImage}
-                        className="p-2 rounded-full bg-black/50 hover:bg-black/70"
+                        className="p-2 rounded-full bg-black/60 hover:bg-black/80"
                       >
                         <ChevronRight className="w-5 h-5" />
                       </button>
+                    </div>
+                  )}
+                  {selectedProject.images && selectedProject.images.length > 1 && (
+                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-black/60 px-3 py-1 text-xs text-white/80">
+                      {currentImageIndex + 1} / {selectedProject.images.length}
                     </div>
                   )}
                 </div>
@@ -316,12 +335,12 @@ export const PortfolioSection = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3 pt-2">
+                  <div className="grid grid-cols-2 gap-3 mt-4">
                     <a
                       href={selectedProject.liveUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="btn-primary btn-shine inline-flex items-center justify-center gap-2"
+                      className="btn-primary btn-shine inline-flex items-center justify-center gap-2 px-4 py-2 text-sm h-10"
                     >
                       <ExternalLink className="w-4 h-4" /> {t('الموقع المباشر', 'Live Preview')}
                     </a>
@@ -329,7 +348,7 @@ export const PortfolioSection = () => {
                       href={selectedProject.githubUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="btn-secondary inline-flex items-center justify-center gap-2"
+                      className="btn-secondary inline-flex items-center justify-center gap-2 px-4 py-2 text-sm h-10"
                     >
                       <Github className="w-4 h-4" /> GitHub
                     </a>

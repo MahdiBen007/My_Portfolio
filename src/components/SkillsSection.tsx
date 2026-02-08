@@ -142,7 +142,7 @@ export const SkillsSection = () => {
           animate={isInView ? 'visible' : 'hidden'}
           className="flex flex-wrap justify-center gap-4 md:gap-6 max-w-6xl mx-auto"
         >
-          {filteredSkills.map((skill) => {
+          {filteredSkills.map((skill, index) => {
             const iconKey = (skill.icon ?? '').toLowerCase();
             const brand = skill.customColor
               ? { color: skill.customColor, glow: `${skill.customColor}40` }
@@ -152,7 +152,7 @@ export const SkillsSection = () => {
 
             return (
               <motion.div
-                key={skill.id}
+                key={`${skill.name}-${skill.category}-${index}`}
                 variants={skillVariants}
                 className="group glass-card rounded-2xl p-6 aspect-[5/2] w-[220px] md:w-[240px] flex flex-col items-center justify-center text-center shadow-card overflow-hidden relative"
                 whileHover={{ y: -8, scale: 1.03 }}

@@ -1,4 +1,4 @@
-﻿import { motion, useInView } from 'framer-motion';
+﻿import { AnimatePresence, motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
 import {
   Send,
@@ -8,9 +8,13 @@ import {
   MessageCircle,
   Phone,
   MapPin,
+  Loader2,
+  CheckCircle2,
+  AlertTriangle,
 } from 'lucide-react';
 import { usePortfolioData } from '@/features/portfolio/PortfolioDataContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { supabase } from '@/integrations/supabase/client';
 
 export const ContactSection = () => {
   const { t } = useLanguage();
@@ -19,6 +23,11 @@ export const ContactSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitState, setSubmitState] = useState<{
+    status: 'idle' | 'sending' | 'success' | 'error';
+    message?: string;
+  }>({ status: 'idle' });
   const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
   const socialLinks = [
@@ -64,9 +73,38 @@ export const ContactSection = () => {
     },
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    setSubmitState({ status: 'sending' });
+    try {
+      const { error } = await supabase.from('messages').insert({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        subject: null,
+        message: formData.message.trim(),
+      });
+
+      if (error) throw error;
+
+      setFormData({ name: '', email: '', message: '' });
+      setSubmitState({
+        status: 'success',
+        message: t('تم إرسال رسالتك بنجاح.', 'Your message has been sent successfully.'),
+      });
+      setTimeout(() => {
+        setSubmitState({ status: 'idle' });
+      }, 1600);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      setSubmitState({
+        status: 'error',
+        message: t('لم يتم إرسال الرسالة، حاول مرة أخرى.', 'Message was not sent. Please try again.'),
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -204,7 +242,8 @@ export const ContactSection = () => {
 
               <motion.button
                 type="submit"
-                className="btn-primary btn-shine h-12 w-full inline-flex items-center justify-center gap-2 text-base"
+                className="btn-primary btn-shine h-12 w-full inline-flex items-center justify-center gap-2 text-base disabled:opacity-70"
+                disabled={isSubmitting}
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -239,7 +278,73 @@ export const ContactSection = () => {
             );
           })}
         </motion.div>
+        <AnimatePresence>
+          {submitState.status !== 'idle' && (
+            <motion.div
+              className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm px-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <motion.div
+                initial={{ y: 20, scale: 0.96, opacity: 0 }}
+                animate={{ y: 0, scale: 1, opacity: 1 }}
+                exit={{ y: 10, scale: 0.98, opacity: 0 }}
+                transition={{ duration: 0.25, ease: 'easeOut' }}
+                className="w-full max-w-md rounded-3xl border border-white/10 bg-gradient-to-br from-night-start/95 via-night-mid/95 to-night-end/95 p-8 text-center shadow-2xl shadow-black/40"
+              >
+                {submitState.status === 'sending' && (
+                  <>
+                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/5">
+                      <Loader2 className="h-7 w-7 animate-spin text-primary" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-white">
+                      {t('جارٍ إرسال الرسالة', 'Sending your message')}
+                    </h3>
+                    <p className="mt-2 text-sm text-slate-300">
+                      {t('يرجى الانتظار قليلًا...', 'Please wait a moment...')}
+                    </p>
+                  </>
+                )}
+
+                {submitState.status === 'success' && (
+                  <>
+                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-emerald-400/40 bg-emerald-400/15">
+                      <CheckCircle2 className="h-7 w-7 text-emerald-300" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-white">
+                      {t('تم الإرسال!', 'Message sent!')}
+                    </h3>
+                    <p className="mt-2 text-sm text-slate-300">{submitState.message}</p>
+                  </>
+                )}
+
+                {submitState.status === 'error' && (
+                  <>
+                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-red-400/40 bg-red-400/10">
+                      <AlertTriangle className="h-7 w-7 text-red-300" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-white">
+                      {t('تعذر الإرسال', 'Failed to send')}
+                    </h3>
+                    <p className="mt-2 text-sm text-slate-300">{submitState.message}</p>
+                    <button
+                      type="button"
+                      onClick={() => setSubmitState({ status: 'idle' })}
+                      className="mt-5 inline-flex h-10 items-center justify-center rounded-full border border-white/10 bg-white/5 px-6 text-sm text-white hover:bg-white/10 transition-colors"
+                    >
+                      {t('حسنًا', 'Okay')}
+                    </button>
+                  </>
+                )}
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   );
 };
+
+
+

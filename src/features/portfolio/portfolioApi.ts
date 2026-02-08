@@ -181,12 +181,12 @@ export const fetchPortfolioData = async (): Promise<Partial<PortfolioData> | nul
 
   if (projectsRows !== undefined) {
     const mappedProjects = (projectsRows ?? []).map((project) => {
-      const images =
-        project.gallery_images && project.gallery_images.length > 0
-          ? project.gallery_images
-          : project.thumbnail_url
-            ? [project.thumbnail_url]
-            : [];
+      const galleryImages = (project.gallery_images ?? []).filter(Boolean);
+      const cleanedGallery = galleryImages.filter((image) => image !== "/project-placeholder.jpg");
+      const images = [
+        ...(project.thumbnail_url ? [project.thumbnail_url] : []),
+        ...cleanedGallery,
+      ];
 
       const descriptionAr = project.description_ar ?? project.description ?? "";
       const descriptionEn = project.description ?? project.description_ar ?? "";
