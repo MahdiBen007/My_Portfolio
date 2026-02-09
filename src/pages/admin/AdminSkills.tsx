@@ -238,19 +238,19 @@ const AdminSkills = () => {
       <AdminHeader title="Skills" subtitle="Manage your skills" />
 
       <div className="p-6">
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center gap-4">
-            <p className="text-slate-400">
+        <div className="flex flex-col gap-4 mb-6 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-col gap-3">
+            <p className="text-slate-400 text-sm sm:text-base">
               {filteredSkills.length} skill{filteredSkills.length !== 1 ? 's' : ''}
             </p>
-            <div className="flex gap-2">
+            <div className="flex w-full max-w-full overflow-x-auto gap-2 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {(['all', 'frontend', 'backend', 'database', 'tools', 'other'] as const).map((cat) => (
                 <Button
                   key={cat}
                   variant="ghost"
                   size="sm"
                   onClick={() => setFilterCategory(cat)}
-                  className={`capitalize ${filterCategory === cat
+                  className={`capitalize shrink-0 ${filterCategory === cat
                       ? 'bg-blue-600 text-white'
                       : 'text-slate-400 hover:text-white'
                     }`}
@@ -262,7 +262,7 @@ const AdminSkills = () => {
           </div>
           <Button
             onClick={openCreateDialog}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+            className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
           >
             <Plus className="w-4 h-4 mr-2" />
             Add Skill
@@ -399,7 +399,7 @@ const AdminSkills = () => {
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center justify-end gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                         <Button
                           variant="ghost"
                           size="icon"

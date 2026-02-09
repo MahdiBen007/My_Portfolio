@@ -13,6 +13,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronDown,
+  X,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
@@ -30,6 +31,8 @@ import {
 interface AdminSidebarProps {
   collapsed: boolean;
   onToggle: () => void;
+  mobileOpen: boolean;
+  onMobileClose: () => void;
 }
 
 const navItems = [
@@ -43,7 +46,7 @@ const navItems = [
   { path: '/admin/settings', icon: Settings, label: 'Settings' },
 ];
 
-const AdminSidebar = ({ collapsed, onToggle }: AdminSidebarProps) => {
+const AdminSidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }: AdminSidebarProps) => {
   const location = useLocation();
   const { signOut, user, role } = useAuth();
   const rawName = user?.user_metadata?.full_name;
@@ -63,8 +66,10 @@ const AdminSidebar = ({ collapsed, onToggle }: AdminSidebarProps) => {
   return (
     <aside
       className={cn(
-        'fixed left-0 top-0 h-screen bg-slate-900/95 backdrop-blur-xl border-r border-slate-700/50 z-50 transition-all duration-300 flex flex-col',
-        collapsed ? 'w-16' : 'w-64'
+        'fixed left-0 top-0 h-screen bg-slate-900/95 backdrop-blur-xl border-r border-slate-700/50 z-50 transition-all duration-300 flex flex-col transform',
+        collapsed ? 'w-64 lg:w-16' : 'w-64',
+        mobileOpen ? 'translate-x-0' : '-translate-x-full',
+        'lg:translate-x-0'
       )}
     >
       {/* Logo */}
@@ -81,9 +86,17 @@ const AdminSidebar = ({ collapsed, onToggle }: AdminSidebarProps) => {
           variant="ghost"
           size="icon"
           onClick={onToggle}
-          className="text-slate-400 hover:text-white hover:bg-slate-800"
+          className="text-slate-400 hover:text-white hover:bg-slate-800 hidden lg:inline-flex"
         >
           {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onMobileClose}
+          className="text-slate-400 hover:text-white hover:bg-slate-800 lg:hidden"
+        >
+          <X className="w-4 h-4" />
         </Button>
       </div>
 
@@ -98,6 +111,7 @@ const AdminSidebar = ({ collapsed, onToggle }: AdminSidebarProps) => {
             <NavLink
               to={item.path}
               end={item.end}
+              onClick={onMobileClose}
               className={cn(
                 'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group',
                 isActive

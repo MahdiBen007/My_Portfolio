@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Bell, Search, ExternalLink, Sparkles, LayoutGrid } from 'lucide-react';
+import { Bell, Search, ExternalLink, Sparkles, LayoutGrid, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useAdminTheme } from '@/contexts/AdminThemeContext';
+import { useAdminSidebar } from '@/contexts/AdminSidebarContext';
 
 interface AdminHeaderProps {
   title: string;
@@ -26,6 +27,7 @@ const AdminHeader = ({ title, subtitle }: AdminHeaderProps) => {
   const [latestMessages, setLatestMessages] = useState<MessagePreview[]>([]);
   const [loadingMessages, setLoadingMessages] = useState(true);
   const { theme, toggleTheme } = useAdminTheme();
+  const sidebar = useAdminSidebar();
   const isPortfolio = theme === 'portfolio';
 
   useEffect(() => {
@@ -80,13 +82,26 @@ const AdminHeader = ({ title, subtitle }: AdminHeaderProps) => {
   };
 
   return (
-    <header className="h-16 bg-slate-900/80 backdrop-blur-xl border-b border-slate-700/50 flex items-center justify-between px-6 sticky top-0 z-40">
-      <div>
-        <h1 className="text-xl font-bold text-white">{title}</h1>
-        {subtitle && <p className="text-sm text-slate-400">{subtitle}</p>}
+    <header className="h-16 bg-slate-900/80 backdrop-blur-xl border-b border-slate-700/50 flex items-center justify-between px-4 sm:px-6 sticky top-0 z-40">
+      <div className="flex items-center gap-3 min-w-0">
+        {sidebar && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-slate-400 hover:text-white hover:bg-slate-800 lg:hidden"
+            onClick={sidebar.openSidebar}
+            aria-label="Open menu"
+          >
+            <Menu className="w-5 h-5" />
+          </Button>
+        )}
+        <div className="min-w-0">
+          <h1 className="text-lg sm:text-xl font-bold text-white truncate">{title}</h1>
+          {subtitle && <p className="text-xs sm:text-sm text-slate-400 hidden sm:block truncate">{subtitle}</p>}
+        </div>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4">
         <Button
           variant="ghost"
           size="icon"
@@ -98,7 +113,7 @@ const AdminHeader = ({ title, subtitle }: AdminHeaderProps) => {
           {isPortfolio ? <LayoutGrid className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
         </Button>
         {/* Search */}
-        <div className="relative hidden md:block">
+        <div className="relative hidden lg:block">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
           <Input
             placeholder="Search..."
@@ -110,11 +125,20 @@ const AdminHeader = ({ title, subtitle }: AdminHeaderProps) => {
         <Button
           variant="ghost"
           size="sm"
-          className="text-slate-400 hover:text-white hover:bg-slate-800"
+          className="text-slate-400 hover:text-white hover:bg-slate-800 hidden sm:inline-flex"
           onClick={() => window.open('/', '_blank')}
         >
           <ExternalLink className="w-4 h-4 mr-2" />
           View Site
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-slate-400 hover:text-white hover:bg-slate-800 sm:hidden"
+          onClick={() => window.open('/', '_blank')}
+          aria-label="View site"
+        >
+          <ExternalLink className="w-4 h-4" />
         </Button>
 
         {/* Notifications */}

@@ -324,24 +324,24 @@ const AdminSettings = () => {
         </div>
 
         <Tabs defaultValue="theme" className="space-y-6">
-          <TabsList className="bg-slate-800/50 grid grid-cols-2 md:grid-cols-5 w-full max-w-3xl">
-            <TabsTrigger value="theme" className="data-[state=active]:bg-blue-600">
+          <TabsList className="bg-slate-800/50 flex w-full max-w-[360px] sm:max-w-3xl overflow-x-auto gap-2 p-1 rounded-2xl [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <TabsTrigger value="theme" className="data-[state=active]:bg-blue-600 shrink-0 whitespace-nowrap min-w-[120px] sm:min-w-[140px]">
               <Palette className="w-4 h-4 mr-2" />
               Theme
             </TabsTrigger>
-            <TabsTrigger value="seo" className="data-[state=active]:bg-blue-600">
+            <TabsTrigger value="seo" className="data-[state=active]:bg-blue-600 shrink-0 whitespace-nowrap min-w-[120px] sm:min-w-[140px]">
               <Globe className="w-4 h-4 mr-2" />
               SEO
             </TabsTrigger>
-            <TabsTrigger value="account" className="data-[state=active]:bg-blue-600">
+            <TabsTrigger value="account" className="data-[state=active]:bg-blue-600 shrink-0 whitespace-nowrap min-w-[120px] sm:min-w-[140px]">
               <User className="w-4 h-4 mr-2" />
               Account
             </TabsTrigger>
-            <TabsTrigger value="social" className="data-[state=active]:bg-blue-600">
+            <TabsTrigger value="social" className="data-[state=active]:bg-blue-600 shrink-0 whitespace-nowrap min-w-[120px] sm:min-w-[140px]">
               <Link2 className="w-4 h-4 mr-2" />
               Social
             </TabsTrigger>
-            <TabsTrigger value="footer" className="data-[state=active]:bg-blue-600">
+            <TabsTrigger value="footer" className="data-[state=active]:bg-blue-600 shrink-0 whitespace-nowrap min-w-[120px] sm:min-w-[140px]">
               <FileText className="w-4 h-4 mr-2" />
               Footer
             </TabsTrigger>

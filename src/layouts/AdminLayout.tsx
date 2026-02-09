@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AdminThemeProvider, useAdminTheme } from '@/contexts/AdminThemeContext';
+import { AdminSidebarProvider } from '@/contexts/AdminSidebarContext';
 import { supabase } from '@/integrations/supabase/client';
 
 const pageMetadata: Record<string, { title: string; subtitle?: string }> = {
@@ -21,6 +22,7 @@ const pageMetadata: Record<string, { title: string; subtitle?: string }> = {
 
 const AdminLayoutShell = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [adminMetaTitle, setAdminMetaTitle] = useState('Admin Dashboard');
   const { user, loading, isAdmin } = useAuth();
   const location = useLocation();
@@ -122,37 +124,50 @@ const AdminLayoutShell = () => {
 
   return (
     <TooltipProvider>
-      <div
-        data-admin-theme={theme}
-        className={cn(
-          'min-h-screen admin-theme',
-          isPortfolio
-            ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950'
-            : 'bg-gradient-to-br from-slate-950 via-slate-950 to-slate-900'
-        )}
-      >
-        {/* Background effects */}
-        {isPortfolio && (
-          <div className="fixed inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl" />
-          </div>
-        )}
-
-        <AdminSidebar
-          collapsed={sidebarCollapsed}
-          onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
-        />
-
-        <main
+      <AdminSidebarProvider openSidebar={() => setMobileOpen(true)}>
+        <div
+          data-admin-theme={theme}
           className={cn(
-            'transition-all duration-300 min-h-screen',
-            sidebarCollapsed ? 'ml-16' : 'ml-64'
+            'min-h-screen admin-theme',
+            isPortfolio
+              ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950'
+              : 'bg-gradient-to-br from-slate-950 via-slate-950 to-slate-900'
           )}
         >
-          <Outlet />
-        </main>
-      </div>
+          {/* Background effects */}
+          {isPortfolio && (
+            <div className="fixed inset-0 overflow-hidden pointer-events-none">
+              <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
+              <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl" />
+            </div>
+          )}
+
+          <AdminSidebar
+            collapsed={sidebarCollapsed}
+            onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+            mobileOpen={mobileOpen}
+            onMobileClose={() => setMobileOpen(false)}
+          />
+
+          {mobileOpen && (
+            <button
+              type="button"
+              aria-label="Close sidebar"
+              onClick={() => setMobileOpen(false)}
+              className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-40 lg:hidden"
+            />
+          )}
+
+          <main
+            className={cn(
+              'transition-all duration-300 min-h-screen',
+              sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'
+            )}
+          >
+            <Outlet />
+          </main>
+        </div>
+      </AdminSidebarProvider>
     </TooltipProvider>
   );
 };
