@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { LanguageProvider } from '@/contexts/LanguageContext';
-import { AnimatedBackground } from '@/components/AnimatedBackground';
 import { SettingsSync } from '@/components/SettingsSync';
+import { AnimatedBackground } from '@/components/AnimatedBackground';
 import { Navbar } from '@/components/Navbar';
 import { HeroSection } from '@/components/HeroSection';
 import { ServicesSection } from '@/components/ServicesSection';
@@ -45,21 +45,23 @@ const Index = () => {
         ) : (
           <>
             <Navbar />
-            <main className="relative z-10">
-              {hasPageBuilderBlocks ? (
-                <PageBuilderSections blocks={blocks ?? []} />
-              ) : (
-                <>
-                  <HeroSection />
-                  <ServicesSection />
-                  <SkillsSection />
-                  <PortfolioSection />
-                  <AboutSection />
-                  <ContactSection />
-                </>
-              )}
-            </main>
-            <Footer />
+            <div className="site-font">
+              <main className="relative z-10">
+                {hasPageBuilderBlocks ? (
+                  <PageBuilderSections blocks={blocks ?? []} />
+                ) : (
+                  <>
+                    <HeroSection />
+                    <ServicesSection />
+                    <SkillsSection />
+                    <PortfolioSection />
+                    <AboutSection />
+                    <ContactSection />
+                  </>
+                )}
+              </main>
+              <Footer />
+            </div>
           </>
         )}
       </div>

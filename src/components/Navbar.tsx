@@ -9,7 +9,6 @@ export const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [isMidnightPurple, setIsMidnightPurple] = useState(false);
-  const [isNavAwake, setIsNavAwake] = useState(false);
   const { language, setLanguage, t, isRTL } = useLanguage();
 
   useEffect(() => {
@@ -50,7 +49,6 @@ export const Navbar = () => {
     setIsMobileMenuOpen(false);
   };
 
-  const navAwake = isNavAwake || isMobileMenuOpen;
   const collapseScale = 1;
   const collapseOpacity = 1;
 
@@ -59,16 +57,14 @@ export const Navbar = () => {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
-      className="navbar-root fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-3 backdrop-blur-xl bg-[#0b0f1c]/80"
-      onMouseEnter={() => setIsNavAwake(true)}
-      onMouseLeave={() => setIsNavAwake(false)}
+      className="navbar-root fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-3 backdrop-blur-xl bg-[#0b0f1c]/35"
     >
       <div className="container mx-auto px-6">
         {/* Capsule Navbar Container */}
         <motion.div
-          className={`navbar-capsule flex items-center justify-between px-6 py-1 transition-all duration-300 origin-center transform-gpu ${
+          className={`navbar-capsule flex items-center justify-between px-6 py-1 transition-all duration-300 origin-center transform-gpu opacity-100 shadow-glow hover:opacity-80 hover:shadow-none ${
           isScrolled ? 'navbar-capsule-scrolled' : ''
-        } ${navAwake ? 'opacity-100 shadow-glow' : 'opacity-80 nav-breathe'}`}
+        }`}
           style={{
             scaleX: collapseScale,
             opacity: collapseOpacity,

@@ -12,6 +12,7 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 const STORAGE_KEY = 'portfolio_language';
+const STORAGE_SOURCE_KEY = 'portfolio_language_source';
 
 const resolveStoredLanguage = () => {
   if (typeof window === 'undefined') {
@@ -19,7 +20,8 @@ const resolveStoredLanguage = () => {
   }
 
   const stored = window.localStorage.getItem(STORAGE_KEY);
-  if (stored === 'ar' || stored === 'en') {
+  const source = window.localStorage.getItem(STORAGE_SOURCE_KEY);
+  if ((stored === 'ar' || stored === 'en') && source === 'manual') {
     return { language: stored as Language, hasStoredPreference: true };
   }
 
@@ -51,6 +53,7 @@ export const LanguageProvider: React.FC<{
     setLanguage(lang);
     if (typeof window !== 'undefined') {
       window.localStorage.setItem(STORAGE_KEY, lang);
+      window.localStorage.setItem(STORAGE_SOURCE_KEY, 'manual');
     }
     setHasStoredPreference(true);
   };

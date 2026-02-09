@@ -15,10 +15,12 @@
 @layer base {
   :root {
     /* Night Theme - Deep Navy/Indigo */
-    --background: 222 47% 6%;
+    --background-base: 222 47% 6%;
+    --background: var(--background-base);
     --foreground: 210 40% 98%;
 
-    --card: 222 47% 8%;
+    --card-base: 222 47% 8%;
+    --card: var(--card-base);
     --card-foreground: 210 40% 98%;
 
     --popover: 222 47% 8%;
@@ -30,7 +32,8 @@
     --secondary: 262 83% 58%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 222 40% 14%;
+    --muted-base: 222 40% 14%;
+    --muted: var(--muted-base);
     --muted-foreground: 215 20% 65%;
 
     --accent: 262 83% 58%;
@@ -39,24 +42,31 @@
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 222 30% 18%;
-    --input: 222 30% 18%;
+    --border-base: 222 30% 18%;
+    --border: var(--border-base);
+    --input-base: 222 30% 18%;
+    --input: var(--input-base);
     --ring: 187 85% 53%;
 
     --radius: 0.75rem;
 
     /* Custom Night Theme Colors */
-    --night-start: 222 47% 4%;
-    --night-mid: 232 47% 8%;
-    --night-end: 262 47% 12%;
+    --night-start-base: 222 47% 4%;
+    --night-mid-base: 232 47% 8%;
+    --night-end-base: 262 47% 12%;
+    --night-start: var(--night-start-base);
+    --night-mid: var(--night-mid-base);
+    --night-end: var(--night-end-base);
     
     --glow-cyan: 187 85% 53%;
     --glow-purple: 262 83% 58%;
     --glow-pink: 330 80% 60%;
     --glow-blue: 217 91% 60%;
     
-    --glass: 222 47% 12%;
-    --glass-border: 222 30% 25%;
+    --glass-base: 222 47% 12%;
+    --glass: var(--glass-base);
+    --glass-border-base: 222 30% 25%;
+    --glass-border: var(--glass-border-base);
     --glass-highlight: 222 30% 35%;
 
     /* Gradients */
@@ -84,16 +94,16 @@
 
   /* Midnight Purple Variant */
   .midnight-purple {
-    --background: 262 47% 6%;
-    --card: 262 47% 8%;
-    --muted: 262 40% 14%;
-    --border: 262 30% 18%;
-    --input: 262 30% 18%;
-    --glass: 262 47% 12%;
-    --glass-border: 262 30% 25%;
-    --night-start: 262 47% 4%;
-    --night-mid: 272 47% 8%;
-    --night-end: 282 47% 12%;
+    --background: var(--background-alt, var(--background-base));
+    --card: var(--card-alt, var(--card-base));
+    --muted: var(--muted-alt, var(--muted-base));
+    --border: var(--border-alt, var(--border-base));
+    --input: var(--input-alt, var(--input-base));
+    --glass: var(--glass-alt, var(--glass-base));
+    --glass-border: var(--glass-border-alt, var(--glass-border-base));
+    --night-start: var(--night-start-alt, var(--night-start-base));
+    --night-mid: var(--night-mid-alt, var(--night-mid-base));
+    --night-end: var(--night-end-alt, var(--night-end-base));
   }
 }
 
@@ -104,8 +114,8 @@
 
   .container {
     max-width: clamp(1100px, 92vw, 1320px);
-    padding-left: clamp(16px, 3vw, 32px);
-    padding-right: clamp(16px, 3vw, 32px);
+    padding-left: var(--container-padding, clamp(16px, 3vw, 32px));
+    padding-right: var(--container-padding, clamp(16px, 3vw, 32px));
   }
 
   html {
@@ -114,16 +124,25 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: "Tajawal", "Plus Jakarta Sans", sans-serif;
+    font-family: var(--ui-font, "Tajawal"), "Plus Jakarta Sans", sans-serif;
     overflow-x: hidden;
     position: relative;
+  }
+
+  .site-font {
+    font-family: var(--site-font, var(--ui-font, "Tajawal")), "Plus Jakarta Sans", sans-serif;
   }
 
   .admin-theme {
     font-family: "Cairo", "Tajawal", "IBM Plex Sans Arabic", sans-serif;
   }
 
-  [data-admin-theme="portfolio"] {
+  .animations-disabled * {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  [data-admin-theme] {
     --admin-bg: 222 47% 6%;
     --admin-surface: 222 47% 9%;
     --admin-surface-2: 222 40% 12%;
@@ -136,221 +155,254 @@
     --admin-accent-strong: 262 83% 58%;
   }
 
-  [data-admin-theme="portfolio"] .bg-slate-950 {
+  [data-admin-theme="studio"] {
+    --admin-bg: 220 18% 8%;
+    --admin-surface: 220 16% 12%;
+    --admin-surface-2: 220 15% 16%;
+    --admin-surface-3: 220 14% 20%;
+    --admin-border: 220 12% 30%;
+    --admin-muted: 215 14% 68%;
+    --admin-text: 210 30% 96%;
+    --admin-heading: 210 35% 98%;
+    --admin-accent: 217 91% 60%;
+    --admin-accent-strong: 262 83% 58%;
+  }
+
+  [data-admin-theme] .bg-slate-950 {
     background-color: hsl(var(--admin-bg)) !important;
   }
 
-  [data-admin-theme="portfolio"] .bg-slate-900 {
+  [data-admin-theme] .bg-slate-900 {
     background-color: hsl(var(--admin-surface)) !important;
   }
 
-  [data-admin-theme="portfolio"] .bg-slate-900\/95 {
+  [data-admin-theme] .bg-slate-900\/95 {
     background-color: hsl(var(--admin-surface) / 0.92) !important;
     box-shadow: 0 24px 60px rgba(5, 10, 20, 0.55) !important;
   }
 
-  [data-admin-theme="portfolio"] .bg-slate-900\/90 {
+  [data-admin-theme] .bg-slate-900\/90 {
     background-color: hsl(var(--admin-surface) / 0.92) !important;
   }
 
-  [data-admin-theme="portfolio"] .bg-slate-900\/80 {
+  [data-admin-theme] .bg-slate-900\/80 {
     background-color: hsl(var(--admin-surface) / 0.92) !important;
   }
 
-  [data-admin-theme="portfolio"] .bg-slate-900\/50 {
+  [data-admin-theme] .bg-slate-900\/50 {
     background-color: hsl(var(--admin-surface) / 0.78) !important;
     box-shadow: 0 20px 55px rgba(5, 10, 20, 0.45) !important;
   }
 
-  [data-admin-theme="portfolio"] .bg-slate-900\/40 {
+  [data-admin-theme] .bg-slate-900\/40 {
     background-color: hsl(var(--admin-surface) / 0.7) !important;
     box-shadow: 0 18px 45px rgba(5, 10, 20, 0.4) !important;
   }
 
-  [data-admin-theme="portfolio"] .bg-slate-900\/30 {
+  [data-admin-theme] .bg-slate-900\/30 {
     background-color: hsl(var(--admin-surface) / 0.62) !important;
   }
 
-  [data-admin-theme="portfolio"] .bg-slate-900\/20 {
+  [data-admin-theme] .bg-slate-900\/20 {
     background-color: hsl(var(--admin-surface) / 0.55) !important;
   }
 
-  [data-admin-theme="portfolio"] .bg-slate-800 {
+  [data-admin-theme] .bg-slate-800 {
     background-color: hsl(var(--admin-surface-2)) !important;
   }
 
-  [data-admin-theme="portfolio"] .bg-slate-800\/80 {
+  [data-admin-theme] .bg-slate-800\/80 {
     background-color: hsl(var(--admin-surface-2) / 0.85) !important;
   }
 
-  [data-admin-theme="portfolio"] .bg-slate-800\/60 {
+  [data-admin-theme] .bg-slate-800\/60 {
     background-color: hsl(var(--admin-surface-2) / 0.9) !important;
   }
 
-  [data-admin-theme="portfolio"] .bg-slate-800\/50 {
+  [data-admin-theme] .bg-slate-800\/50 {
     background-color: hsl(var(--admin-surface-2) / 0.85) !important;
   }
 
-  [data-admin-theme="portfolio"] .bg-slate-800\/40 {
+  [data-admin-theme] .bg-slate-800\/40 {
     background-color: hsl(var(--admin-surface-2) / 0.78) !important;
   }
 
-  [data-admin-theme="portfolio"] .bg-slate-700 {
+  [data-admin-theme] .bg-slate-700 {
     background-color: hsl(var(--admin-surface-3)) !important;
   }
 
-  [data-admin-theme="portfolio"] .bg-slate-700\/60 {
+  [data-admin-theme] .bg-slate-700\/60 {
     background-color: hsl(var(--admin-surface-3) / 0.85) !important;
   }
 
-  [data-admin-theme="portfolio"] .bg-slate-700\/50 {
+  [data-admin-theme] .bg-slate-700\/50 {
     background-color: hsl(var(--admin-surface-3) / 0.75) !important;
   }
 
-  [data-admin-theme="portfolio"] .bg-slate-700\/40 {
+  [data-admin-theme] .bg-slate-700\/40 {
     background-color: hsl(var(--admin-surface-3) / 0.68) !important;
   }
 
-  [data-admin-theme="portfolio"] .border-slate-700,
-  [data-admin-theme="portfolio"] .border-slate-700\/60,
-  [data-admin-theme="portfolio"] .border-slate-700\/50,
-  [data-admin-theme="portfolio"] .border-slate-800\/60,
-  [data-admin-theme="portfolio"] .border-slate-600,
-  [data-admin-theme="portfolio"] .border-slate-900 {
+  [data-admin-theme] .border-slate-700,
+  [data-admin-theme] .border-slate-700\/60,
+  [data-admin-theme] .border-slate-700\/50,
+  [data-admin-theme] .border-slate-800\/60,
+  [data-admin-theme] .border-slate-600,
+  [data-admin-theme] .border-slate-900 {
     border-color: hsl(var(--admin-border)) !important;
   }
 
-  [data-admin-theme="portfolio"] .text-white {
+  [data-admin-theme] .text-white {
     color: hsl(var(--admin-heading)) !important;
   }
 
-  [data-admin-theme="portfolio"] .text-slate-200 {
+  [data-admin-theme] .text-slate-200 {
     color: hsl(var(--admin-text)) !important;
   }
 
-  [data-admin-theme="portfolio"] .text-slate-300 {
+  [data-admin-theme] .text-slate-300 {
     color: hsl(var(--admin-text)) !important;
   }
 
-  [data-admin-theme="portfolio"] .text-slate-400,
-  [data-admin-theme="portfolio"] .text-slate-500,
-  [data-admin-theme="portfolio"] .text-slate-600 {
+  [data-admin-theme] .text-slate-400,
+  [data-admin-theme] .text-slate-500,
+  [data-admin-theme] .text-slate-600 {
     color: hsl(var(--admin-muted)) !important;
   }
 
-  [data-admin-theme="portfolio"] .placeholder\:text-slate-500::placeholder {
+  [data-admin-theme] .placeholder\:text-slate-500::placeholder {
     color: hsl(var(--admin-muted)) !important;
   }
 
-  [data-admin-theme="portfolio"] .hover\:bg-slate-800:hover {
+  [data-admin-theme] .hover\:bg-slate-800:hover {
     background-color: hsl(var(--admin-surface-3)) !important;
   }
 
-  [data-admin-theme="portfolio"] .hover\:bg-slate-800\/50:hover {
+  [data-admin-theme] .hover\:bg-slate-800\/50:hover {
     background-color: hsl(var(--admin-surface-3) / 0.7) !important;
   }
 
-  [data-admin-theme="portfolio"] .hover\:bg-slate-800\/80:hover {
+  [data-admin-theme] .hover\:bg-slate-800\/80:hover {
     background-color: hsl(var(--admin-surface-3) / 0.85) !important;
   }
 
-  [data-admin-theme="portfolio"] .hover\:bg-slate-700:hover {
+  [data-admin-theme] .hover\:bg-slate-700:hover {
     background-color: hsl(var(--admin-surface-3)) !important;
   }
 
-  [data-admin-theme="portfolio"] .hover\:bg-slate-700\/50:hover {
+  [data-admin-theme] .hover\:bg-slate-700\/50:hover {
     background-color: hsl(var(--admin-surface-3) / 0.7) !important;
   }
 
-  [data-admin-theme="portfolio"] .hover\:text-white:hover {
+  [data-admin-theme] .hover\:text-white:hover {
     color: hsl(var(--admin-heading)) !important;
   }
 
-  [data-admin-theme="portfolio"] .bg-gradient-to-r,
-  [data-admin-theme="portfolio"] .bg-gradient-to-br {
+  [data-admin-theme] .bg-gradient-to-r,
+  [data-admin-theme] .bg-gradient-to-br {
     color: #ffffff !important;
   }
 
-  [data-admin-theme="portfolio"] .bg-gradient-to-r .text-white,
-  [data-admin-theme="portfolio"] .bg-gradient-to-br .text-white {
+  [data-admin-theme] .bg-gradient-to-r .text-white,
+  [data-admin-theme] .bg-gradient-to-br .text-white {
     color: #ffffff !important;
   }
 
-  [data-admin-theme="portfolio"] .bg-blue-500,
-  [data-admin-theme="portfolio"] .bg-red-600,
-  [data-admin-theme="portfolio"] .bg-emerald-400 {
+  [data-admin-theme] .bg-blue-500,
+  [data-admin-theme] .bg-red-600,
+  [data-admin-theme] .bg-emerald-400 {
     color: #ffffff !important;
   }
 
-  [data-admin-theme="portfolio"] .text-blue-400 {
+  [data-admin-theme] .bg-blue-600,
+  [data-admin-theme] .bg-blue-500 {
+    background-color: hsl(var(--admin-accent)) !important;
+  }
+
+  [data-admin-theme] .bg-purple-600,
+  [data-admin-theme] .bg-purple-500 {
+    background-color: hsl(var(--admin-accent-strong)) !important;
+  }
+
+  [data-admin-theme] .from-blue-600,
+  [data-admin-theme] .from-blue-500 {
+    --tw-gradient-from: hsl(var(--admin-accent)) !important;
+  }
+
+  [data-admin-theme] .to-purple-600,
+  [data-admin-theme] .to-purple-500 {
+    --tw-gradient-to: hsl(var(--admin-accent-strong)) !important;
+  }
+
+  [data-admin-theme] .text-blue-400 {
     color: hsl(var(--admin-accent)) !important;
   }
 
-  [data-admin-theme="portfolio"] .text-green-400 {
+  [data-admin-theme] .text-green-400 {
     color: hsl(144 70% 52%) !important;
   }
 
-  [data-admin-theme="portfolio"] .text-purple-400 {
+  [data-admin-theme] .text-purple-400 {
     color: hsl(var(--admin-accent-strong)) !important;
   }
 
-  [data-admin-theme="portfolio"] .text-red-400 {
+  [data-admin-theme] .text-red-400 {
     color: hsl(0 84% 60%) !important;
   }
 
-  [data-admin-theme="portfolio"] .text-yellow-400 {
+  [data-admin-theme] .text-yellow-400 {
     color: hsl(45 96% 55%) !important;
   }
 
-  [data-admin-theme="portfolio"] .bg-blue-500\/20 {
+  [data-admin-theme] .bg-blue-500\/20 {
     background-color: hsl(var(--admin-accent) / 0.18) !important;
   }
 
-  [data-admin-theme="portfolio"] .bg-green-500\/20 {
+  [data-admin-theme] .bg-green-500\/20 {
     background-color: hsl(144 70% 45% / 0.18) !important;
   }
 
-  [data-admin-theme="portfolio"] .bg-purple-500\/20 {
+  [data-admin-theme] .bg-purple-500\/20 {
     background-color: hsl(var(--admin-accent-strong) / 0.18) !important;
   }
 
-  [data-admin-theme="portfolio"] .bg-blue-500\/10 {
+  [data-admin-theme] .bg-blue-500\/10 {
     background-color: hsl(var(--admin-accent) / 0.1) !important;
   }
 
-  [data-admin-theme="portfolio"] .bg-blue-500\/5 {
+  [data-admin-theme] .bg-blue-500\/5 {
     background-color: hsl(var(--admin-accent) / 0.06) !important;
   }
 
-  [data-admin-theme="portfolio"] .bg-red-500\/10 {
+  [data-admin-theme] .bg-red-500\/10 {
     background-color: hsl(0 84% 60% / 0.12) !important;
   }
 
-  [data-admin-theme="portfolio"] .border-blue-500\/30 {
+  [data-admin-theme] .border-blue-500\/30 {
     border-color: hsl(var(--admin-accent) / 0.4) !important;
   }
 
-  [data-admin-theme="portfolio"] .border-green-500\/30 {
+  [data-admin-theme] .border-green-500\/30 {
     border-color: hsl(144 70% 45% / 0.4) !important;
   }
 
-  [data-admin-theme="portfolio"] .border-purple-500\/30 {
+  [data-admin-theme] .border-purple-500\/30 {
     border-color: hsl(var(--admin-accent-strong) / 0.4) !important;
   }
 
-  [data-admin-theme="portfolio"] .from-blue-600\/20 {
+  [data-admin-theme] .from-blue-600\/20 {
     --tw-gradient-from: rgba(34, 211, 238, 0.28) !important;
   }
 
-  [data-admin-theme="portfolio"] .to-purple-600\/20 {
+  [data-admin-theme] .to-purple-600\/20 {
     --tw-gradient-to: rgba(147, 51, 234, 0.28) !important;
   }
 
-  [data-admin-theme="portfolio"] .from-blue-500\/20 {
+  [data-admin-theme] .from-blue-500\/20 {
     --tw-gradient-from: rgba(56, 189, 248, 0.24) !important;
   }
 
-  [data-admin-theme="portfolio"] .to-purple-500\/20 {
+  [data-admin-theme] .to-purple-500\/20 {
     --tw-gradient-to: rgba(168, 85, 247, 0.24) !important;
   }
 

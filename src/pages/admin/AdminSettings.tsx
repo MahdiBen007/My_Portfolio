@@ -26,12 +26,17 @@ interface Settings {
   primary_color: string | null;
   secondary_color: string | null;
   background_gradient: string | null;
+  background_gradient_alt: string | null;
   border_radius: number | null;
   spacing_density: string | null;
   ui_font: string | null;
   site_font: string | null;
   animations_enabled: boolean | null;
   shadow_intensity: number | null;
+  admin_portfolio_primary_color: string | null;
+  admin_portfolio_secondary_color: string | null;
+  admin_studio_primary_color: string | null;
+  admin_studio_secondary_color: string | null;
   meta_title: string | null;
   admin_meta_title: string | null;
   meta_description: string | null;
@@ -95,6 +100,32 @@ const AdminSettings = () => {
       const safeLocale = data.locale === 'en' ? 'en' : 'ar';
       setSettings({
         ...data,
+        primary_color: data.primary_color ?? '#3b82f6',
+        secondary_color: data.secondary_color ?? '#8b5cf6',
+        background_gradient: data.background_gradient ?? 'night',
+        background_gradient_alt: data.background_gradient_alt ?? 'midnight',
+        border_radius: data.border_radius ?? 16,
+        spacing_density: data.spacing_density ?? 'comfortable',
+        ui_font: data.ui_font ?? 'Plus Jakarta Sans',
+        site_font: data.site_font ?? 'Plus Jakarta Sans',
+        animations_enabled: data.animations_enabled ?? true,
+        shadow_intensity: data.shadow_intensity ?? 50,
+        admin_portfolio_primary_color: data.admin_portfolio_primary_color ?? '#22d3ee',
+        admin_portfolio_secondary_color: data.admin_portfolio_secondary_color ?? '#8b5cf6',
+        admin_studio_primary_color: data.admin_studio_primary_color ?? '#3b82f6',
+        admin_studio_secondary_color: data.admin_studio_secondary_color ?? '#8b5cf6',
+        meta_title: data.meta_title ?? '',
+        meta_description: data.meta_description ?? '',
+        keywords: data.keywords ?? '',
+        canonical_url: data.canonical_url ?? '',
+        og_image_url: data.og_image_url ?? '',
+        github_url: data.github_url ?? '',
+        linkedin_url: data.linkedin_url ?? '',
+        behance_url: data.behance_url ?? '',
+        email: data.email ?? '',
+        whatsapp: data.whatsapp ?? '',
+        copyright_text: data.copyright_text ?? '',
+        footer_contact_info: data.footer_contact_info ?? '',
         admin_meta_title: data.admin_meta_title ?? 'Admin Dashboard',
         locale: safeLocale,
       });
@@ -131,12 +162,17 @@ const AdminSettings = () => {
           primary_color: settings.primary_color,
           secondary_color: settings.secondary_color,
           background_gradient: settings.background_gradient,
+          background_gradient_alt: settings.background_gradient_alt,
           border_radius: settings.border_radius,
           spacing_density: settings.spacing_density,
           ui_font: settings.ui_font,
           site_font: settings.site_font,
           animations_enabled: settings.animations_enabled,
           shadow_intensity: settings.shadow_intensity,
+          admin_portfolio_primary_color: settings.admin_portfolio_primary_color,
+          admin_portfolio_secondary_color: settings.admin_portfolio_secondary_color,
+          admin_studio_primary_color: settings.admin_studio_primary_color,
+          admin_studio_secondary_color: settings.admin_studio_secondary_color,
           meta_title: settings.meta_title,
           admin_meta_title: settings.admin_meta_title,
           meta_description: settings.meta_description,
@@ -158,6 +194,20 @@ const AdminSettings = () => {
       const nextAdminTitle = settings.admin_meta_title?.trim() || 'Admin Dashboard';
       window.dispatchEvent(
         new CustomEvent('admin-meta-title-updated', { detail: nextAdminTitle })
+      );
+      window.dispatchEvent(
+        new CustomEvent('admin-theme-updated', {
+          detail: {
+            portfolio: {
+              accent: settings.admin_portfolio_primary_color,
+              accentStrong: settings.admin_portfolio_secondary_color,
+            },
+            studio: {
+              accent: settings.admin_studio_primary_color,
+              accentStrong: settings.admin_studio_secondary_color,
+            },
+          },
+        })
       );
       toast({ title: 'Success', description: 'Settings saved successfully' });
     } catch (error) {
@@ -393,6 +443,100 @@ const AdminSettings = () => {
                   </div>
                 </div>
 
+                {/* Admin Theme Colors */}
+                <div className="space-y-3">
+                  <Label>Admin Theme Colors</Label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="rounded-xl border border-slate-700/60 bg-slate-800/40 p-4 space-y-3">
+                      <p className="text-sm text-slate-300">Portfolio Theme</p>
+                      <div className="space-y-2">
+                        <Label className="text-xs text-slate-400">Primary Accent</Label>
+                        <div className="flex gap-2">
+                          <input
+                            type="color"
+                            value={settings.admin_portfolio_primary_color || '#22d3ee'}
+                            onChange={(e) =>
+                              setSettings({ ...settings, admin_portfolio_primary_color: e.target.value })
+                            }
+                            className="w-12 h-10 rounded cursor-pointer"
+                          />
+                          <Input
+                            value={settings.admin_portfolio_primary_color || ''}
+                            onChange={(e) =>
+                              setSettings({ ...settings, admin_portfolio_primary_color: e.target.value })
+                            }
+                            className="bg-slate-800 border-slate-600 flex-1"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-xs text-slate-400">Secondary Accent</Label>
+                        <div className="flex gap-2">
+                          <input
+                            type="color"
+                            value={settings.admin_portfolio_secondary_color || '#8b5cf6'}
+                            onChange={(e) =>
+                              setSettings({ ...settings, admin_portfolio_secondary_color: e.target.value })
+                            }
+                            className="w-12 h-10 rounded cursor-pointer"
+                          />
+                          <Input
+                            value={settings.admin_portfolio_secondary_color || ''}
+                            onChange={(e) =>
+                              setSettings({ ...settings, admin_portfolio_secondary_color: e.target.value })
+                            }
+                            className="bg-slate-800 border-slate-600 flex-1"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="rounded-xl border border-slate-700/60 bg-slate-800/40 p-4 space-y-3">
+                      <p className="text-sm text-slate-300">Studio Theme</p>
+                      <div className="space-y-2">
+                        <Label className="text-xs text-slate-400">Primary Accent</Label>
+                        <div className="flex gap-2">
+                          <input
+                            type="color"
+                            value={settings.admin_studio_primary_color || '#3b82f6'}
+                            onChange={(e) =>
+                              setSettings({ ...settings, admin_studio_primary_color: e.target.value })
+                            }
+                            className="w-12 h-10 rounded cursor-pointer"
+                          />
+                          <Input
+                            value={settings.admin_studio_primary_color || ''}
+                            onChange={(e) =>
+                              setSettings({ ...settings, admin_studio_primary_color: e.target.value })
+                            }
+                            className="bg-slate-800 border-slate-600 flex-1"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-xs text-slate-400">Secondary Accent</Label>
+                        <div className="flex gap-2">
+                          <input
+                            type="color"
+                            value={settings.admin_studio_secondary_color || '#8b5cf6'}
+                            onChange={(e) =>
+                              setSettings({ ...settings, admin_studio_secondary_color: e.target.value })
+                            }
+                            className="w-12 h-10 rounded cursor-pointer"
+                          />
+                          <Input
+                            value={settings.admin_studio_secondary_color || ''}
+                            onChange={(e) =>
+                              setSettings({ ...settings, admin_studio_secondary_color: e.target.value })
+                            }
+                            className="bg-slate-800 border-slate-600 flex-1"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Gradient Presets */}
                 <div className="space-y-2">
                   <Label>Background Gradient</Label>
@@ -412,6 +556,29 @@ const AdminSettings = () => {
                       </button>
                     ))}
                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Theme Toggle (Alternate)</Label>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {gradientPresets.map((preset) => (
+                      <button
+                        key={`alt-${preset.value}`}
+                        onClick={() => setSettings({ ...settings, background_gradient_alt: preset.value })}
+                        className={`p-4 rounded-xl border transition-all ${
+                          settings.background_gradient_alt === preset.value
+                            ? 'border-blue-500 ring-2 ring-blue-500/20'
+                            : 'border-slate-700 hover:border-slate-600'
+                        }`}
+                      >
+                        <div className={`w-full h-12 rounded-lg bg-gradient-to-br ${preset.colors} mb-2`} />
+                        <p className="text-sm text-white">{preset.label}</p>
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-xs text-slate-400">
+                    This palette shows when you toggle the theme button on the portfolio.
+                  </p>
                 </div>
 
                 {/* Sliders */}

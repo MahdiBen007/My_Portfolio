@@ -42,6 +42,10 @@ const mergeWithDefaults = (remote: PartialPortfolioData | null) => ({
       ...defaultPortfolioData.settings.theme,
       ...(remote?.settings?.theme ?? {}),
     },
+    ui: {
+      ...defaultPortfolioData.settings.ui,
+      ...(remote?.settings?.ui ?? {}),
+    },
   },
 });
 

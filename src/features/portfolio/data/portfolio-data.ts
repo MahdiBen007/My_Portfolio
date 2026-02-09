@@ -125,6 +125,16 @@ export type PortfolioData = {
       accent: string;
     };
     locale: "ar" | "en";
+    ui: {
+      backgroundGradient: string;
+      backgroundGradientAlt: string;
+      borderRadius: number;
+      spacingDensity: string;
+      uiFont: string;
+      siteFont: string;
+      animationsEnabled: boolean;
+      shadowIntensity: number;
+    };
   };
 };
 
@@ -508,5 +518,15 @@ export const defaultPortfolioData: PortfolioData = {
       accent: "#22C55E",
     },
     locale: "ar",
+    ui: {
+      backgroundGradient: "night",
+      backgroundGradientAlt: "midnight",
+      borderRadius: 16,
+      spacingDensity: "comfortable",
+      uiFont: "Plus Jakarta Sans",
+      siteFont: "Plus Jakarta Sans",
+      animationsEnabled: true,
+      shadowIntensity: 50,
+    },
   },
 };

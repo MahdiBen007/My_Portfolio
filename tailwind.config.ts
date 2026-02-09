@@ -166,7 +166,7 @@ export default {
         glow: "0 0 40px hsl(var(--glow-cyan) / 0.25)",
         "glow-lg": "0 0 60px hsl(var(--glow-cyan) / 0.3)",
         "glow-purple": "0 0 40px hsl(var(--glow-purple) / 0.25)",
-        card: "0 8px 32px hsl(222 47% 4% / 0.5)",
+        card: "var(--shadow-card)",
       },
     },
   },

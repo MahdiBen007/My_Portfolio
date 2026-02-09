@@ -124,6 +124,14 @@ type TimelineRow = {
 type SettingsRow = {
   primary_color: string | null;
   secondary_color: string | null;
+  background_gradient: string | null;
+  background_gradient_alt: string | null;
+  border_radius: number | null;
+  spacing_density: string | null;
+  ui_font: string | null;
+  site_font: string | null;
+  animations_enabled: boolean | null;
+  shadow_intensity: number | null;
   meta_title: string | null;
   meta_description: string | null;
   keywords: string | null;
@@ -180,7 +188,7 @@ export const fetchPortfolioData = async (): Promise<PartialPortfolioData | null>
     ),
     safeRequest<SettingsRow[]>(
       "settings",
-      "?select=primary_color,secondary_color,meta_title,meta_description,keywords,github_url,linkedin_url,behance_url,email,whatsapp,footer_contact_info,copyright_text,locale&limit=1"
+      "?select=primary_color,secondary_color,background_gradient,background_gradient_alt,border_radius,spacing_density,ui_font,site_font,animations_enabled,shadow_intensity,meta_title,meta_description,keywords,github_url,linkedin_url,behance_url,email,whatsapp,footer_contact_info,copyright_text,locale&limit=1"
     ),
   ]);
 
@@ -301,6 +309,16 @@ export const fetchPortfolioData = async (): Promise<PartialPortfolioData | null>
     const themePrimary = settingsRow.primary_color ?? undefined;
     const themeSecondary = settingsRow.secondary_color ?? undefined;
     const locale = settingsRow.locale === "en" ? "en" : "ar";
+    const ui = {
+      backgroundGradient: settingsRow.background_gradient ?? "night",
+      backgroundGradientAlt: settingsRow.background_gradient_alt ?? "midnight",
+      borderRadius: settingsRow.border_radius ?? 16,
+      spacingDensity: settingsRow.spacing_density ?? "comfortable",
+      uiFont: settingsRow.ui_font ?? "Plus Jakarta Sans",
+      siteFont: settingsRow.site_font ?? "Plus Jakarta Sans",
+      animationsEnabled: settingsRow.animations_enabled ?? true,
+      shadowIntensity: settingsRow.shadow_intensity ?? 50,
+    };
 
     partial.settings = {
       seo: {
@@ -314,6 +332,7 @@ export const fetchPortfolioData = async (): Promise<PartialPortfolioData | null>
         accent: themeSecondary ?? themePrimary ?? "",
       },
       locale,
+      ui,
     };
   }
 
