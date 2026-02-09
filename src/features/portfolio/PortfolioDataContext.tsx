@@ -1,7 +1,12 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { defaultPortfolioData, type PortfolioData } from "./data/portfolio-data";
-import { fetchPortfolioData, isSupabaseConfigured, upsertPortfolioData } from "./portfolioApi";
+import {
+  fetchPortfolioData,
+  isSupabaseConfigured,
+  upsertPortfolioData,
+  type PartialPortfolioData,
+} from "./portfolioApi";
 
 type PortfolioDataContextValue = {
   data: PortfolioData;
@@ -15,7 +20,7 @@ type PortfolioDataContextValue = {
 
 const PortfolioDataContext = createContext<PortfolioDataContextValue | undefined>(undefined);
 
-const mergeWithDefaults = (remote: Partial<PortfolioData> | null) => ({
+const mergeWithDefaults = (remote: PartialPortfolioData | null) => ({
   ...defaultPortfolioData,
   ...(remote ?? {}),
   personalData: {

@@ -71,7 +71,7 @@ export const ServicesSection = ({ title, subtitle }: ServicesSectionProps) => {
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
-          className="grid md:grid-cols-2 lg:grid-cols-4 gap-6"
+          className="flex flex-wrap justify-center gap-4 md:gap-6 max-w-6xl mx-auto"
         >
           {services.map((service, index) => {
             const IconComponent = iconMap[service.icon] ?? Code;
@@ -79,15 +79,15 @@ export const ServicesSection = ({ title, subtitle }: ServicesSectionProps) => {
               <motion.div
                 key={index}
                 variants={cardVariants}
-                whileHover={{ y: -8, transition: { duration: 0.3 } }}
-                className="group glass-card glow-border p-8 rounded-2xl text-center sm:text-start"
+                whileHover={{ y: -8, scale: 1.02, transition: { duration: 0.3 } }}
+                className="group glass-card glow-border p-6 rounded-2xl text-center shadow-card w-[240px] md:w-[260px] min-h-[230px] flex flex-col items-center"
               >
                 {/* Icon */}
                 <motion.div
-                  className="w-14 h-14 rounded-xl flex items-center justify-center mb-6 relative overflow-hidden mx-auto sm:mx-0"
+                  className="w-14 h-14 rounded-xl flex items-center justify-center mb-5 relative overflow-hidden"
                   style={{
                     background: 'linear-gradient(135deg, hsl(var(--glass)), hsl(var(--glass-border) / 0.5))',
-                    boxShadow: service.hoverEffect === 'glow' ? '0 0 35px hsl(var(--glow-cyan) / 0.35)' : undefined,
+                    boxShadow: '0 0 35px hsl(var(--glow-cyan) / 0.28)',
                   }}
                   whileHover={{ scale: 1.1, rotate: 5 }}
                   transition={{ duration: 0.3 }}
@@ -102,7 +102,7 @@ export const ServicesSection = ({ title, subtitle }: ServicesSectionProps) => {
                 </motion.div>
 
                 {/* Title */}
-                <h3 className="text-xl font-semibold mb-3 group-hover:text-primary transition-colors">
+                <h3 className="text-base md:text-lg font-semibold mb-3 group-hover:text-primary transition-colors">
                   {t(service.title, service.titleEn)}
                 </h3>
 
@@ -113,7 +113,7 @@ export const ServicesSection = ({ title, subtitle }: ServicesSectionProps) => {
 
                 {/* Hover Line */}
                 <motion.div
-                  className="h-0.5 mt-6 rounded-full mx-auto sm:mx-0"
+                  className="h-0.5 mt-5 rounded-full"
                   initial={{ width: 0 }}
                   whileHover={{ width: '100%' }}
                   style={{

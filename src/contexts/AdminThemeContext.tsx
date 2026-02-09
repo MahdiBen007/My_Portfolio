@@ -14,7 +14,7 @@ const AdminThemeContext = createContext<AdminThemeContextValue | undefined>(unde
 const STORAGE_KEY = 'admin_theme';
 
 const getInitialTheme = (): AdminTheme => {
-  if (typeof window === 'undefined') return 'dark';
+  if (typeof window === 'undefined') return 'portfolio';
   const stored = window.localStorage.getItem(STORAGE_KEY);
   if (stored === 'studio' || stored === 'portfolio') return stored;
   if (stored === 'dark') return 'studio';

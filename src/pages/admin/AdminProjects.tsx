@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
-  Plus, Pencil, Trash2, Eye, EyeOff, Loader2, Star, ExternalLink, Github, Filter,
+  Plus, Pencil, Trash2, Eye, EyeOff, Loader2, Star, ExternalLink, Github, Filter, Upload,
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -74,9 +74,12 @@ const AdminProjects = () => {
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [uploadingThumbnail, setUploadingThumbnail] = useState(false);
+  const [uploadingGalleryIndex, setUploadingGalleryIndex] = useState<number | null>(null);
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const { toast } = useToast();
+  const thumbnailInputRef = useRef<HTMLInputElement | null>(null);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -230,6 +233,56 @@ const AdminProjects = () => {
       });
     } finally {
       setSaving(false);
+    }
+  };
+
+  const uploadProjectImage = async (file: File) => {
+    const extension = file.name.split('.').pop() || 'bin';
+    const safeName = `projects/${Date.now()}-${Math.random().toString(36).slice(2)}.${extension}`;
+    const { error } = await supabase.storage.from('uploads').upload(safeName, file, {
+      upsert: true,
+      contentType: file.type || undefined,
+    });
+    if (error) throw error;
+    const { data } = supabase.storage.from('uploads').getPublicUrl(safeName);
+    return data.publicUrl;
+  };
+
+  const handleThumbnailUpload = async (file: File | null) => {
+    if (!file) return;
+    setUploadingThumbnail(true);
+    try {
+      const url = await uploadProjectImage(file);
+      setFormData((prev) => ({ ...prev, thumbnail_url: url }));
+      toast({ title: 'Success', description: 'Thumbnail uploaded' });
+    } catch (error) {
+      console.error('Error uploading thumbnail:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to upload thumbnail',
+        variant: 'destructive',
+      });
+    } finally {
+      setUploadingThumbnail(false);
+    }
+  };
+
+  const handleGalleryUpload = async (index: number, file: File | null) => {
+    if (!file) return;
+    setUploadingGalleryIndex(index);
+    try {
+      const url = await uploadProjectImage(file);
+      handleGalleryChange(index, url);
+      toast({ title: 'Success', description: 'Gallery image uploaded' });
+    } catch (error) {
+      console.error('Error uploading gallery image:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to upload gallery image',
+        variant: 'destructive',
+      });
+    } finally {
+      setUploadingGalleryIndex(null);
     }
   };
 
@@ -566,13 +619,41 @@ const AdminProjects = () => {
 
             <div className="space-y-2">
               <Label htmlFor="thumbnail_url">Thumbnail URL</Label>
-              <Input
-                id="thumbnail_url"
-                value={formData.thumbnail_url}
-                onChange={(e) => setFormData({ ...formData, thumbnail_url: e.target.value })}
-                className="bg-slate-800 border-slate-600"
-                placeholder="https://example.com/image.jpg"
-              />
+              <div className="flex items-center gap-2">
+                <Input
+                  id="thumbnail_url"
+                  value={formData.thumbnail_url}
+                  onChange={(e) => setFormData({ ...formData, thumbnail_url: e.target.value })}
+                  className="bg-slate-800 border-slate-600"
+                  placeholder="https://example.com/image.jpg"
+                />
+                <input
+                  ref={thumbnailInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => handleThumbnailUpload(e.target.files?.[0] ?? null)}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => thumbnailInputRef.current?.click()}
+                  disabled={uploadingThumbnail}
+                  className="border-slate-600 bg-slate-800 text-slate-200 hover:bg-slate-700"
+                >
+                  {uploadingThumbnail ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Uploading
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="h-4 w-4 mr-2" />
+                      Upload
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -586,6 +667,31 @@ const AdminProjects = () => {
                       className="bg-slate-800 border-slate-600"
                       placeholder="https://example.com/image.jpg"
                     />
+                    <input
+                      id={`gallery-file-${index}`}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => handleGalleryUpload(index, e.target.files?.[0] ?? null)}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      onClick={() => {
+                        const input = document.getElementById(`gallery-file-${index}`) as HTMLInputElement | null;
+                        input?.click();
+                      }}
+                      disabled={uploadingGalleryIndex === index}
+                      className="border-slate-600 bg-slate-800 text-slate-200 hover:bg-slate-700"
+                      title="Upload image"
+                    >
+                      {uploadingGalleryIndex === index ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Upload className="h-4 w-4" />
+                      )}
+                    </Button>
                     <Button
                       type="button"
                       variant="outline"

@@ -145,7 +145,12 @@ const parseKeywords = (keywords: string | null) =>
         .filter(Boolean)
     : undefined;
 
-export const fetchPortfolioData = async (): Promise<Partial<PortfolioData> | null> => {
+export type PartialPortfolioData = Omit<Partial<PortfolioData>, "personalData" | "settings"> & {
+  personalData?: Partial<PortfolioData["personalData"]>;
+  settings?: Partial<PortfolioData["settings"]>;
+};
+
+export const fetchPortfolioData = async (): Promise<PartialPortfolioData | null> => {
   if (!isSupabaseConfigured) return null;
 
   const [
@@ -179,7 +184,7 @@ export const fetchPortfolioData = async (): Promise<Partial<PortfolioData> | nul
     ),
   ]);
 
-  const partial: Partial<PortfolioData> = {};
+  const partial: PartialPortfolioData = {};
 
   if (servicesRows !== undefined) {
     partial.services = (servicesRows ?? []).map((service) => ({

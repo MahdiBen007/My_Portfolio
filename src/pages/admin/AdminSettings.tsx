@@ -92,10 +92,11 @@ const AdminSettings = () => {
         .single();
 
       if (error) throw error;
+      const safeLocale = data.locale === 'en' ? 'en' : 'ar';
       setSettings({
         ...data,
         admin_meta_title: data.admin_meta_title ?? 'Admin Dashboard',
-        locale: data.locale ?? 'ar',
+        locale: safeLocale,
       });
     } catch (error) {
       console.error('Error fetching settings:', error);
