@@ -14,7 +14,13 @@ import {
 import { usePortfolioData } from '@/features/portfolio/PortfolioDataContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-export const PortfolioSection = () => {
+type PortfolioSectionProps = {
+  title?: string;
+  subtitle?: string;
+  featuredOnly?: boolean;
+};
+
+export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: PortfolioSectionProps) => {
   const { t, isRTL } = useLanguage();
   const { data } = usePortfolioData();
   const { projects, projectCategories } = data;
@@ -26,7 +32,10 @@ export const PortfolioSection = () => {
   const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
   const sortedProjects = [...projects].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-  const filteredProjects = sortedProjects.filter(
+  const visibleProjects = featuredOnly
+    ? sortedProjects.filter((project) => project.featured)
+    : sortedProjects;
+  const filteredProjects = visibleProjects.filter(
     (project) => activeFilter === 'all' || project.category === activeFilter
   );
 
@@ -93,41 +102,43 @@ export const PortfolioSection = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.9, ease: EASE_OUT }}
-          className="text-center mb-12"
+          className="section-header text-center mb-12"
         >
           <h2 className="section-title">
-            {t('مشاريعي المميزة', 'Featured Projects')}
+            {title ?? t('مشاريعي المميزة', 'Featured Projects')}
           </h2>
           <p className="section-subtitle mx-auto">
-            {t(
+            {subtitle ?? t(
               'مجموعة مختارة من أفضل المشاريع التي عملت عليها',
               'A curated selection of the best projects I have worked on'
             )}
           </p>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.85, delay: 0.18, ease: EASE_OUT }}
-          className="flex flex-wrap justify-center gap-3 mb-12"
-        >
-          {projectCategories.map((category) => (
-            <motion.button
-              key={category.id}
-              onClick={() => setActiveFilter(category.id)}
-              className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                activeFilter === category.id
-                  ? 'bg-gradient-glow text-background shadow-glow'
-                  : 'glass-card hover:border-primary/50'
-              }`}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              {t(category.label, category.labelEn)}
-            </motion.button>
-          ))}
-        </motion.div>
+        {!featuredOnly && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.85, delay: 0.18, ease: EASE_OUT }}
+            className="flex flex-wrap justify-center gap-3 mb-12"
+          >
+            {projectCategories.map((category) => (
+              <motion.button
+                key={category.id}
+                onClick={() => setActiveFilter(category.id)}
+                className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                  activeFilter === category.id
+                    ? 'bg-gradient-glow text-background shadow-glow'
+                    : 'glass-card hover:border-primary/50'
+                }`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {t(category.label, category.labelEn)}
+              </motion.button>
+            ))}
+          </motion.div>
+        )}
 
         <motion.div
           variants={containerVariants}

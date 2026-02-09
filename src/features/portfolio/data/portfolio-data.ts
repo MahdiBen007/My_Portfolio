@@ -12,6 +12,7 @@ export type PortfolioData = {
     linkedin: string;
     whatsapp: string;
     cvLink: string;
+    profileImageUrl: string;
     heroHeadline: string;
     heroHeadlineEn: string;
     heroDescription: string;
@@ -33,6 +34,7 @@ export type PortfolioData = {
   }>;
   skills: Array<{
     name: string;
+    nameEn: string;
     icon: string;
     category: string;
     customColor?: string;
@@ -140,6 +142,7 @@ export const defaultPortfolioData: PortfolioData = {
     linkedin: "https://linkedin.com/in/ahmeddev",
     whatsapp: "https://wa.me/201234567890",
     cvLink: "/cv.pdf",
+    profileImageUrl: "/hero-portrait.png",
 
     heroHeadline: "أحوّل الأفكار إلى تجارب ويب سريعة وأنيقة وقابلة للتطوير",
     heroHeadlineEn: "I transform ideas into fast, elegant, and scalable web experiences",
@@ -187,23 +190,23 @@ export const defaultPortfolioData: PortfolioData = {
     },
   ],
   skills: [
-    { name: "HTML5", icon: "html", category: "frontend" },
-    { name: "CSS3", icon: "css", category: "frontend" },
-    { name: "Tailwind CSS", icon: "tailwind", category: "frontend" },
-    { name: "JavaScript", icon: "javascript", category: "frontend" },
-    { name: "TypeScript", icon: "typescript", category: "frontend" },
-    { name: "React", icon: "react", category: "frontend" },
-    { name: "Vue.js", icon: "vue", category: "frontend" },
-    { name: "Node.js", icon: "nodejs", category: "backend" },
-    { name: "Express.js", icon: "express", category: "backend" },
-    { name: "PHP", icon: "php", category: "backend" },
-    { name: "MySQL", icon: "mysql", category: "database" },
-    { name: "MongoDB", icon: "mongodb", category: "database" },
-    { name: "PostgreSQL", icon: "postgresql", category: "database" },
-    { name: "Git", icon: "git", category: "tools" },
-    { name: "GitHub", icon: "github", category: "tools" },
-    { name: "Docker", icon: "docker", category: "tools" },
-    { name: "WordPress", icon: "wordpress", category: "tools" },
+    { name: "HTML5", nameEn: "HTML5", icon: "html", category: "frontend" },
+    { name: "CSS3", nameEn: "CSS3", icon: "css", category: "frontend" },
+    { name: "Tailwind CSS", nameEn: "Tailwind CSS", icon: "tailwind", category: "frontend" },
+    { name: "جافاسكربت", nameEn: "JavaScript", icon: "javascript", category: "frontend" },
+    { name: "تايب سكربت", nameEn: "TypeScript", icon: "typescript", category: "frontend" },
+    { name: "ريأكت", nameEn: "React", icon: "react", category: "frontend" },
+    { name: "فيو", nameEn: "Vue.js", icon: "vue", category: "frontend" },
+    { name: "نود جي اس", nameEn: "Node.js", icon: "nodejs", category: "backend" },
+    { name: "إكسبريس", nameEn: "Express.js", icon: "express", category: "backend" },
+    { name: "PHP", nameEn: "PHP", icon: "php", category: "backend" },
+    { name: "ماي إس كيو إل", nameEn: "MySQL", icon: "mysql", category: "database" },
+    { name: "مونجو دي بي", nameEn: "MongoDB", icon: "mongodb", category: "database" },
+    { name: "بوستجري إس كيو إل", nameEn: "PostgreSQL", icon: "postgresql", category: "database" },
+    { name: "جِت", nameEn: "Git", icon: "git", category: "tools" },
+    { name: "جِت هب", nameEn: "GitHub", icon: "github", category: "tools" },
+    { name: "دوكر", nameEn: "Docker", icon: "docker", category: "tools" },
+    { name: "ووردبريس", nameEn: "WordPress", icon: "wordpress", category: "tools" },
   ],
   skillCategories: [
     { id: "all", label: "الكل", labelEn: "All" },

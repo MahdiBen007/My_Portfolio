@@ -36,6 +36,10 @@ export const HeroSection = () => {
   const { t, isRTL } = useLanguage();
   const { data } = usePortfolioData();
   const { personalData } = data;
+  const [profileSrc, setProfileSrc] = useState(
+    personalData.profileImageUrl || "/hero-portrait.png"
+  );
+  const [profileLoaded, setProfileLoaded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
@@ -80,6 +84,12 @@ export const HeroSection = () => {
     setPhraseIndex(0);
     setCharIndex(0);
   }, [isRTL]);
+
+  useEffect(() => {
+    const nextSrc = personalData.profileImageUrl || "/hero-portrait.png";
+    setProfileSrc(nextSrc);
+    setProfileLoaded(false);
+  }, [personalData.profileImageUrl]);
 
   useEffect(() => {
     if (reduceMotion) {
@@ -206,12 +216,14 @@ export const HeroSection = () => {
                 <Eye className="w-5 h-5" />
                 {t('عرض الأعمال', 'View Projects')}
               </motion.a>
-              <motion.a
-                href={personalData.cvLink}
-                className="btn-secondary inline-flex items-center gap-2 text-[clamp(0.95rem,0.6vw+0.75rem,1.05rem)] px-7 py-3"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
+            <motion.a
+              href={personalData.cvLink}
+              target="_blank"
+              rel="noreferrer"
+              className="btn-secondary inline-flex items-center gap-2 text-[clamp(0.95rem,0.6vw+0.75rem,1.05rem)] px-7 py-3"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
                 <Download className="w-5 h-5" />
                 {t('تحميل السيرة', 'Download CV')}
               </motion.a>
@@ -324,10 +336,18 @@ export const HeroSection = () => {
                       transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
                     />
                     <img
-                      src="/hero-portrait.png"
+                      src={profileSrc}
                       alt={t('الصورة الشخصية', 'Profile portrait')}
-                      className="relative z-10 w-full h-full object-cover rounded-full"
-                      loading="lazy"
+                      className={`relative z-10 w-full h-full object-cover rounded-full transition-opacity duration-500 ${
+                        profileLoaded ? 'opacity-100' : 'opacity-0'
+                      }`}
+                      loading="eager"
+                      onLoad={() => setProfileLoaded(true)}
+                      onError={() => {
+                        if (profileSrc !== "/hero-portrait.png") {
+                          setProfileSrc("/hero-portrait.png");
+                        }
+                      }}
                     />
                     <div className="absolute inset-0 rounded-full ring-2 ring-white/12" />
                   </div>

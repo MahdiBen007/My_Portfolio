@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Loader2, Save, Palette, Globe, Link2, FileText, ChevronDown } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Loader2, Save, Palette, Globe, Link2, FileText, User } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,11 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible';
 import AdminHeader from '@/components/admin/AdminHeader';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -37,6 +33,7 @@ interface Settings {
   animations_enabled: boolean | null;
   shadow_intensity: number | null;
   meta_title: string | null;
+  admin_meta_title: string | null;
   meta_description: string | null;
   og_image_url: string | null;
   keywords: string | null;
@@ -75,7 +72,16 @@ const AdminSettings = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const { toast } = useToast();
-  const { isAdmin } = useAuth();
+  const { isAdmin, user, signOut } = useAuth();
+  const [accountForm, setAccountForm] = useState({
+    currentEmail: '',
+    currentPassword: '',
+    newEmail: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
+  const [updatingAccount, setUpdatingAccount] = useState(false);
+  const navigate = useNavigate();
 
   const fetchSettings = async () => {
     try {
@@ -86,7 +92,11 @@ const AdminSettings = () => {
         .single();
 
       if (error) throw error;
-      setSettings({ ...data, locale: data.locale ?? 'ar' });
+      setSettings({
+        ...data,
+        admin_meta_title: data.admin_meta_title ?? 'Admin Dashboard',
+        locale: data.locale ?? 'ar',
+      });
     } catch (error) {
       console.error('Error fetching settings:', error);
       toast({
@@ -102,6 +112,12 @@ const AdminSettings = () => {
   useEffect(() => {
     fetchSettings();
   }, []);
+
+  useEffect(() => {
+    if (user?.email) {
+      setAccountForm((prev) => ({ ...prev, currentEmail: user.email ?? '' }));
+    }
+  }, [user?.email]);
 
   const handleSave = async () => {
     if (!settings) return;
@@ -121,6 +137,7 @@ const AdminSettings = () => {
           animations_enabled: settings.animations_enabled,
           shadow_intensity: settings.shadow_intensity,
           meta_title: settings.meta_title,
+          admin_meta_title: settings.admin_meta_title,
           meta_description: settings.meta_description,
           og_image_url: settings.og_image_url,
           keywords: settings.keywords,
@@ -137,6 +154,10 @@ const AdminSettings = () => {
         .eq('id', settings.id);
 
       if (error) throw error;
+      const nextAdminTitle = settings.admin_meta_title?.trim() || 'Admin Dashboard';
+      window.dispatchEvent(
+        new CustomEvent('admin-meta-title-updated', { detail: nextAdminTitle })
+      );
       toast({ title: 'Success', description: 'Settings saved successfully' });
     } catch (error) {
       console.error('Error saving settings:', error);
@@ -147,6 +168,91 @@ const AdminSettings = () => {
       });
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleUpdateCredentials = async () => {
+    if (!user) return;
+
+    const { currentEmail, currentPassword, newEmail, newPassword, confirmPassword } = accountForm;
+
+    if (!currentEmail || !currentPassword) {
+      toast({
+        title: 'Missing info',
+        description: 'Please enter your current email and password.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!newEmail && !newPassword) {
+      toast({
+        title: 'Nothing to update',
+        description: 'Enter a new email or a new password.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (newPassword && newPassword !== confirmPassword) {
+      toast({
+        title: 'Passwords do not match',
+        description: 'Please confirm the new password correctly.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setUpdatingAccount(true);
+    try {
+      const { error: authError } = await supabase.auth.signInWithPassword({
+        email: currentEmail,
+        password: currentPassword,
+      });
+
+      if (authError) throw authError;
+
+      if (newEmail) {
+        const { error } = await supabase.auth.updateUser({ email: newEmail });
+        if (error) throw error;
+      }
+
+      let passwordChanged = false;
+      if (newPassword) {
+        const { error } = await supabase.auth.updateUser({ password: newPassword });
+        if (error) throw error;
+        passwordChanged = true;
+      }
+
+      toast({
+        title: 'Account updated',
+        description: passwordChanged
+          ? 'Password updated. Please sign in again.'
+          : 'Email update requested. Check your inbox if confirmation is required.',
+      });
+
+      setAccountForm({
+        currentEmail: newEmail || currentEmail,
+        currentPassword: '',
+        newEmail: '',
+        newPassword: '',
+        confirmPassword: '',
+      });
+
+      if (passwordChanged) {
+        await signOut();
+        navigate('/admin/login', { replace: true });
+      }
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Failed to update account details.';
+      toast({
+        title: 'Update failed',
+        description: message,
+        variant: 'destructive',
+      });
+    } finally {
+      setUpdatingAccount(false);
     }
   };
 
@@ -217,7 +323,7 @@ const AdminSettings = () => {
         </div>
 
         <Tabs defaultValue="theme" className="space-y-6">
-          <TabsList className="bg-slate-800/50 grid grid-cols-4 w-full max-w-xl">
+          <TabsList className="bg-slate-800/50 grid grid-cols-2 md:grid-cols-5 w-full max-w-3xl">
             <TabsTrigger value="theme" className="data-[state=active]:bg-blue-600">
               <Palette className="w-4 h-4 mr-2" />
               Theme
@@ -225,6 +331,10 @@ const AdminSettings = () => {
             <TabsTrigger value="seo" className="data-[state=active]:bg-blue-600">
               <Globe className="w-4 h-4 mr-2" />
               SEO
+            </TabsTrigger>
+            <TabsTrigger value="account" className="data-[state=active]:bg-blue-600">
+              <User className="w-4 h-4 mr-2" />
+              Account
             </TabsTrigger>
             <TabsTrigger value="social" className="data-[state=active]:bg-blue-600">
               <Link2 className="w-4 h-4 mr-2" />
@@ -425,6 +535,20 @@ const AdminSettings = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
+                  <Label htmlFor="admin_meta_title">Dashboard Meta Title</Label>
+                  <Input
+                    id="admin_meta_title"
+                    value={settings.admin_meta_title || ''}
+                    onChange={(e) => setSettings({ ...settings, admin_meta_title: e.target.value })}
+                    className="bg-slate-800 border-slate-600"
+                    placeholder="Admin Dashboard"
+                  />
+                  <p className="text-xs text-slate-500">
+                    {(settings.admin_meta_title || '').length}/60 characters
+                  </p>
+                </div>
+
+                <div className="space-y-2">
                   <Label htmlFor="meta_title">Meta Title</Label>
                   <Input
                     id="meta_title"
@@ -481,6 +605,114 @@ const AdminSettings = () => {
                     className="bg-slate-800 border-slate-600"
                     placeholder="https://yoursite.com"
                   />
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Account Settings */}
+          <TabsContent value="account">
+            <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
+              <CardHeader>
+                <CardTitle className="text-white">Account Security</CardTitle>
+                <CardDescription className="text-slate-400">
+                  Update the admin login email or password. For security, confirm your current credentials.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="current_email">Current Email</Label>
+                    <Input
+                      id="current_email"
+                      value={accountForm.currentEmail}
+                      onChange={(e) =>
+                        setAccountForm({ ...accountForm, currentEmail: e.target.value })
+                      }
+                      className="bg-slate-800 border-slate-600"
+                      placeholder="admin@local.test"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="current_password">Current Password</Label>
+                    <Input
+                      id="current_password"
+                      type="password"
+                      value={accountForm.currentPassword}
+                      onChange={(e) =>
+                        setAccountForm({ ...accountForm, currentPassword: e.target.value })
+                      }
+                      className="bg-slate-800 border-slate-600"
+                      placeholder="Enter current password"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="new_email">New Email</Label>
+                    <Input
+                      id="new_email"
+                      value={accountForm.newEmail}
+                      onChange={(e) =>
+                        setAccountForm({ ...accountForm, newEmail: e.target.value })
+                      }
+                      className="bg-slate-800 border-slate-600"
+                      placeholder="new-admin@example.com"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="new_password">New Password</Label>
+                    <Input
+                      id="new_password"
+                      type="password"
+                      value={accountForm.newPassword}
+                      onChange={(e) =>
+                        setAccountForm({ ...accountForm, newPassword: e.target.value })
+                      }
+                      className="bg-slate-800 border-slate-600"
+                      placeholder="Create a strong password"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="confirm_password">Confirm New Password</Label>
+                    <Input
+                      id="confirm_password"
+                      type="password"
+                      value={accountForm.confirmPassword}
+                      onChange={(e) =>
+                        setAccountForm({ ...accountForm, confirmPassword: e.target.value })
+                      }
+                      className="bg-slate-800 border-slate-600"
+                      placeholder="Repeat new password"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+                  <p className="text-xs text-slate-500">
+                    If you update the email, Supabase may require email confirmation.
+                  </p>
+                  <Button
+                    onClick={handleUpdateCredentials}
+                    disabled={updatingAccount}
+                    className="bg-gradient-to-r from-blue-600 to-purple-600"
+                  >
+                    {updatingAccount ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Updating...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-4 h-4 mr-2" />
+                        Update Account
+                      </>
+                    )}
+                  </Button>
                 </div>
               </CardContent>
             </Card>

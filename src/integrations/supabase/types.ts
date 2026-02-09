@@ -366,6 +366,7 @@ export type Database = {
       settings: {
         Row: {
           animations_enabled: boolean | null
+          admin_meta_title: string | null
           background_gradient: string | null
           behance_url: string | null
           border_radius: number | null
@@ -395,6 +396,7 @@ export type Database = {
         }
         Insert: {
           animations_enabled?: boolean | null
+          admin_meta_title?: string | null
           background_gradient?: string | null
           behance_url?: string | null
           border_radius?: number | null
@@ -424,6 +426,7 @@ export type Database = {
         }
         Update: {
           animations_enabled?: boolean | null
+          admin_meta_title?: string | null
           background_gradient?: string | null
           behance_url?: string | null
           border_radius?: number | null
@@ -462,6 +465,7 @@ export type Database = {
           id: string
           level: number
           name: string
+          name_ar: string | null
           sort_order: number
           updated_at: string
           visible: boolean
@@ -474,6 +478,7 @@ export type Database = {
           id?: string
           level?: number
           name: string
+          name_ar?: string | null
           sort_order?: number
           updated_at?: string
           visible?: boolean
@@ -486,6 +491,7 @@ export type Database = {
           id?: string
           level?: number
           name?: string
+          name_ar?: string | null
           sort_order?: number
           updated_at?: string
           visible?: boolean

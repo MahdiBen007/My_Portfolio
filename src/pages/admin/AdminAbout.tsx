@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Pencil, Trash2, GripVertical, Eye, EyeOff, Loader2, Clock, User } from 'lucide-react';
+import { Plus, Pencil, Trash2, GripVertical, Eye, EyeOff, Loader2, Clock, User, Upload, ExternalLink } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -57,6 +57,8 @@ const AdminAbout = () => {
   const [timeline, setTimeline] = useState<TimelineItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [savingAbout, setSavingAbout] = useState(false);
+  const [uploadingProfile, setUploadingProfile] = useState(false);
+  const [uploadingResume, setUploadingResume] = useState(false);
   const [isTimelineDialogOpen, setIsTimelineDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [editingTimeline, setEditingTimeline] = useState<TimelineItem | null>(null);
@@ -136,6 +138,56 @@ const AdminAbout = () => {
       });
     } finally {
       setSavingAbout(false);
+    }
+  };
+
+  const uploadFile = async (file: File, folder: 'profiles' | 'resumes') => {
+    const extension = file.name.split('.').pop() || 'bin';
+    const safeName = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}.${extension}`;
+    const { error } = await supabase.storage.from('uploads').upload(safeName, file, {
+      upsert: true,
+      contentType: file.type || undefined,
+    });
+    if (error) throw error;
+    const { data } = supabase.storage.from('uploads').getPublicUrl(safeName);
+    return data.publicUrl;
+  };
+
+  const handleProfileUpload = async (file: File | null) => {
+    if (!file) return;
+    setUploadingProfile(true);
+    try {
+      const url = await uploadFile(file, 'profiles');
+      setAboutForm((prev) => ({ ...prev, profile_image_url: url }));
+      toast({ title: 'Success', description: 'Profile image uploaded' });
+    } catch (error) {
+      console.error('Error uploading profile image:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to upload profile image',
+        variant: 'destructive',
+      });
+    } finally {
+      setUploadingProfile(false);
+    }
+  };
+
+  const handleResumeUpload = async (file: File | null) => {
+    if (!file) return;
+    setUploadingResume(true);
+    try {
+      const url = await uploadFile(file, 'resumes');
+      setAboutForm((prev) => ({ ...prev, resume_url: url }));
+      toast({ title: 'Success', description: 'Resume uploaded' });
+    } catch (error) {
+      console.error('Error uploading resume:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to upload resume',
+        variant: 'destructive',
+      });
+    } finally {
+      setUploadingResume(false);
     }
   };
 
@@ -321,23 +373,75 @@ const AdminAbout = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="profile_image_url">Profile Image URL</Label>
-                    <Input
-                      id="profile_image_url"
-                      value={aboutForm.profile_image_url}
-                      onChange={(e) => setAboutForm({ ...aboutForm, profile_image_url: e.target.value })}
-                      className="bg-slate-800 border-slate-600"
-                      placeholder="https://example.com/profile.jpg"
-                    />
+                    <div className="flex gap-2">
+                      <Input
+                        id="profile_image_url"
+                        value={aboutForm.profile_image_url}
+                        onChange={(e) => setAboutForm({ ...aboutForm, profile_image_url: e.target.value })}
+                        className="bg-slate-800 border-slate-600"
+                        placeholder="https://example.com/profile.jpg"
+                      />
+                      {aboutForm.profile_image_url && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="border-slate-600"
+                          onClick={() => window.open(aboutForm.profile_image_url, '_blank')}
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-3 text-sm text-slate-400">
+                      <label className="inline-flex items-center gap-2 cursor-pointer px-3 py-2 rounded-lg border border-slate-600 bg-slate-800/60 hover:bg-slate-800">
+                        <Upload className="w-4 h-4" />
+                        {uploadingProfile ? 'Uploading...' : 'Upload Image'}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => handleProfileUpload(e.target.files?.[0] || null)}
+                          disabled={uploadingProfile}
+                        />
+                      </label>
+                      <span>Use a URL or upload a new image</span>
+                    </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="resume_url">Resume/CV URL</Label>
-                    <Input
-                      id="resume_url"
-                      value={aboutForm.resume_url}
-                      onChange={(e) => setAboutForm({ ...aboutForm, resume_url: e.target.value })}
-                      className="bg-slate-800 border-slate-600"
-                      placeholder="https://example.com/resume.pdf"
-                    />
+                    <div className="flex gap-2">
+                      <Input
+                        id="resume_url"
+                        value={aboutForm.resume_url}
+                        onChange={(e) => setAboutForm({ ...aboutForm, resume_url: e.target.value })}
+                        className="bg-slate-800 border-slate-600"
+                        placeholder="https://example.com/resume.pdf"
+                      />
+                      {aboutForm.resume_url && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="border-slate-600"
+                          onClick={() => window.open(aboutForm.resume_url, '_blank')}
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-3 text-sm text-slate-400">
+                      <label className="inline-flex items-center gap-2 cursor-pointer px-3 py-2 rounded-lg border border-slate-600 bg-slate-800/60 hover:bg-slate-800">
+                        <Upload className="w-4 h-4" />
+                        {uploadingResume ? 'Uploading...' : 'Upload PDF'}
+                        <input
+                          type="file"
+                          accept="application/pdf"
+                          className="hidden"
+                          onChange={(e) => handleResumeUpload(e.target.files?.[0] || null)}
+                          disabled={uploadingResume}
+                        />
+                      </label>
+                      <span>Use a URL or upload your PDF</span>
+                    </div>
                   </div>
                 </div>
 

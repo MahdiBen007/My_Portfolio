@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import {
-  Plus, GripVertical, Eye, EyeOff, Trash2, Settings, Loader2, Save, Smartphone, Monitor, Tablet,
+  Plus, GripVertical, Eye, EyeOff, Trash2, Settings, Loader2, Smartphone, Monitor, Tablet,
   LayoutGrid, Users, Briefcase, Code2, FolderKanban, User, Clock, Mail, ChevronDown, ChevronUp,
+  ArrowUp, ArrowDown,
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -250,23 +251,60 @@ const AdminPageBuilder = () => {
     }
   };
 
-  const publishPage = async () => {
+  const togglePublishPage = async () => {
     if (!selectedPage) return;
 
     try {
+      const nextState = !selectedPage.is_published;
       const { error } = await supabase
         .from('pages')
-        .update({ is_published: true })
+        .update({ is_published: nextState })
         .eq('id', selectedPage.id);
 
       if (error) throw error;
-      toast({ title: 'Success', description: 'Page published!' });
+      toast({
+        title: 'Success',
+        description: nextState ? 'Page published!' : 'Page unpublished',
+      });
       fetchPages();
     } catch (error) {
-      console.error('Error publishing page:', error);
+      console.error('Error updating publish status:', error);
       toast({
         title: 'Error',
-        description: 'Failed to publish page',
+        description: 'Failed to update publish status',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const moveBlock = async (blockId: string, direction: 'up' | 'down') => {
+    if (!selectedPage) return;
+    const currentIndex = blocks.findIndex((block) => block.id === blockId);
+    const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+    if (currentIndex < 0 || targetIndex < 0 || targetIndex >= blocks.length) return;
+
+    const current = blocks[currentIndex];
+    const target = blocks[targetIndex];
+
+    try {
+      const { error: currentError } = await supabase
+        .from('page_blocks')
+        .update({ sort_order: target.sort_order })
+        .eq('id', current.id);
+      if (currentError) throw currentError;
+
+      const { error: targetError } = await supabase
+        .from('page_blocks')
+        .update({ sort_order: current.sort_order })
+        .eq('id', target.id);
+      if (targetError) throw targetError;
+
+      fetchBlocks(selectedPage.id);
+    } catch (error) {
+      console.error('Error reordering blocks:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to reorder blocks',
         variant: 'destructive',
       });
     }
@@ -286,6 +324,9 @@ const AdminPageBuilder = () => {
     const blockType = blockTypes.find((b) => b.type === type);
     return blockType?.icon || LayoutGrid;
   };
+
+  const visibleBlocks = blocks.filter((block) => block.visible);
+  const visibleBlockCount = visibleBlocks.length;
 
   if (loading) {
     return (
@@ -361,124 +402,215 @@ const AdminPageBuilder = () => {
               <Plus className="w-4 h-4 mr-2" />
               Add Block
             </Button>
-            <Button
-              onClick={publishPage}
-              className="bg-gradient-to-r from-blue-600 to-purple-600"
-              disabled={selectedPage?.is_published}
-            >
-              <Save className="w-4 h-4 mr-2" />
-              {selectedPage?.is_published ? 'Published' : 'Publish'}
-            </Button>
           </div>
         </div>
 
-        {/* Blocks List */}
-        {blocks.length === 0 ? (
-          <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50 border-dashed">
-            <CardContent className="py-16 text-center">
-              <LayoutGrid className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-              <p className="text-slate-400 mb-4">No blocks yet. Start building your page!</p>
-              <Button onClick={openAddBlockDialog} variant="outline">
-                <Plus className="w-4 h-4 mr-2" />
-                Add First Block
-              </Button>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="space-y-3">
-            {blocks.map((block, index) => {
-              const BlockIcon = getBlockIcon(block.block_type);
-              const isExpanded = expandedBlocks.has(block.id);
+        <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-6">
+          <div>
+            {/* Blocks List */}
+            {blocks.length === 0 ? (
+              <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50 border-dashed">
+                <CardContent className="py-16 text-center">
+                  <LayoutGrid className="w-12 h-12 text-slate-600 mx-auto mb-4" />
+                  <p className="text-slate-400 mb-4">No blocks yet. Start building your page!</p>
+                  <Button onClick={openAddBlockDialog} variant="outline">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add First Block
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="space-y-3">
+                {blocks.map((block, index) => {
+                  const BlockIcon = getBlockIcon(block.block_type);
+                  const isExpanded = expandedBlocks.has(block.id);
 
-              return (
-                <Collapsible key={block.id} open={isExpanded} onOpenChange={() => toggleExpand(block.id)}>
-                  <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
-                    <CardContent className="p-4">
-                      <div className="flex items-center gap-4">
-                        <button className="text-slate-500 hover:text-slate-300 cursor-grab">
-                          <GripVertical className="w-5 h-5" />
-                        </button>
+                  return (
+                    <Collapsible key={block.id} open={isExpanded} onOpenChange={() => toggleExpand(block.id)}>
+                      <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-4">
+                            <button className="text-slate-500 hover:text-slate-300 cursor-grab">
+                              <GripVertical className="w-5 h-5" />
+                            </button>
 
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-500/30 flex items-center justify-center">
-                          <BlockIcon className="w-5 h-5 text-blue-400" />
-                        </div>
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-500/30 flex items-center justify-center">
+                              <BlockIcon className="w-5 h-5 text-blue-400" />
+                            </div>
 
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <h3 className="font-medium text-white capitalize">
-                              {block.block_type.replace('_', ' ')}
-                            </h3>
-                            {!block.visible && (
-                              <Badge variant="secondary" className="bg-slate-700 text-slate-400">
-                                Hidden
-                              </Badge>
-                            )}
-                          </div>
-                          {block.title && (
-                            <p className="text-sm text-slate-400 truncate">{block.title}</p>
-                          )}
-                        </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2">
+                                <h3 className="font-medium text-white capitalize">
+                                  {block.block_type.replace('_', ' ')}
+                                </h3>
+                                {!block.visible && (
+                                  <Badge variant="secondary" className="bg-slate-700 text-slate-400">
+                                    Hidden
+                                  </Badge>
+                                )}
+                              </div>
+                              {block.title && (
+                                <p className="text-sm text-slate-400 truncate">{block.title}</p>
+                              )}
+                            </div>
 
-                        <div className="flex items-center gap-2">
-                          <CollapsibleTrigger asChild>
-                            <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white">
-                              {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                            </Button>
-                          </CollapsibleTrigger>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => toggleBlockVisibility(block)}
-                            className="text-slate-400 hover:text-white"
-                          >
-                            {block.visible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => openEditBlockDialog(block)}
-                            className="text-slate-400 hover:text-white"
-                          >
-                            <Settings className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => deleteBlock(block.id)}
-                            className="text-slate-400 hover:text-red-400"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </div>
+                            <div className="flex items-center gap-1">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => moveBlock(block.id, 'up')}
+                                disabled={index === 0}
+                                className="text-slate-400 hover:text-white disabled:opacity-30"
+                                title="Move up"
+                              >
+                                <ArrowUp className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => moveBlock(block.id, 'down')}
+                                disabled={index === blocks.length - 1}
+                                className="text-slate-400 hover:text-white disabled:opacity-30"
+                                title="Move down"
+                              >
+                                <ArrowDown className="w-4 h-4" />
+                              </Button>
+                              <CollapsibleTrigger asChild>
+                                <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white">
+                                  {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                                </Button>
+                              </CollapsibleTrigger>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => toggleBlockVisibility(block)}
+                                className="text-slate-400 hover:text-white"
+                              >
+                                {block.visible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => openEditBlockDialog(block)}
+                                className="text-slate-400 hover:text-white"
+                              >
+                                <Settings className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => deleteBlock(block.id)}
+                                className="text-slate-400 hover:text-red-400"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </div>
 
-                      <CollapsibleContent>
-                        <div className="mt-4 pt-4 border-t border-slate-700/50 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                          <div>
-                            <p className="text-slate-500">Layout</p>
-                            <p className="text-slate-300 capitalize">{block.layout_variant}</p>
-                          </div>
-                          <div>
-                            <p className="text-slate-500">Background</p>
-                            <p className="text-slate-300 capitalize">{block.background_style}</p>
-                          </div>
-                          <div>
-                            <p className="text-slate-500">Animation</p>
-                            <p className="text-slate-300 capitalize">{block.animation_preset}</p>
-                          </div>
-                          <div>
-                            <p className="text-slate-500">Padding</p>
-                            <p className="text-slate-300">{block.padding_top}px / {block.padding_bottom}px</p>
-                          </div>
-                        </div>
-                      </CollapsibleContent>
-                    </CardContent>
-                  </Card>
-                </Collapsible>
-              );
-            })}
+                          <CollapsibleContent>
+                            <div className="mt-4 pt-4 border-t border-slate-700/50 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                              <div>
+                                <p className="text-slate-500">Layout</p>
+                                <p className="text-slate-300 capitalize">{block.layout_variant}</p>
+                              </div>
+                              <div>
+                                <p className="text-slate-500">Background</p>
+                                <p className="text-slate-300 capitalize">{block.background_style}</p>
+                              </div>
+                              <div>
+                                <p className="text-slate-500">Animation</p>
+                                <p className="text-slate-300 capitalize">{block.animation_preset}</p>
+                              </div>
+                              <div>
+                                <p className="text-slate-500">Padding</p>
+                                <p className="text-slate-300">{block.padding_top}px / {block.padding_bottom}px</p>
+                              </div>
+                            </div>
+                          </CollapsibleContent>
+                        </CardContent>
+                      </Card>
+                    </Collapsible>
+                  );
+                })}
+              </div>
+            )}
           </div>
-        )}
+
+          <aside className="space-y-4 lg:sticky lg:top-6 h-fit">
+            <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base">Preview</CardTitle>
+                <CardDescription className="text-slate-400">
+                  Structure preview for the selected page
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="rounded-3xl border border-slate-700/60 bg-gradient-to-b from-slate-950/80 to-slate-900/70 p-4">
+                  <div
+                    className={`mx-auto w-full transition-all ${
+                      previewMode === 'desktop'
+                        ? 'max-w-full'
+                        : previewMode === 'tablet'
+                          ? 'max-w-[720px]'
+                          : 'max-w-[420px]'
+                    }`}
+                  >
+                    <div className="space-y-2">
+                      {visibleBlocks.length === 0 ? (
+                        <div className="rounded-2xl border border-dashed border-white/10 bg-white/5 px-4 py-6 text-center text-sm text-slate-400">
+                          No visible blocks to preview
+                        </div>
+                      ) : (
+                        visibleBlocks.map((block, index) => (
+                          <div
+                            key={`${block.id}-preview`}
+                            className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm"
+                          >
+                            <div>
+                              <p className="text-xs uppercase tracking-wider text-slate-400">
+                                {block.block_type.replace('_', ' ')}
+                              </p>
+                              <p className="text-white">
+                                {block.title || block.block_type.replace('_', ' ')}
+                              </p>
+                            </div>
+                            <Badge className="bg-blue-500/20 text-blue-300">#{index + 1}</Badge>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
+              <CardContent className="p-4 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-slate-400">Blocks</p>
+                    <p className="text-base font-semibold text-white">
+                      {visibleBlockCount} visible / {blocks.length} total
+                    </p>
+                  </div>
+                  <Badge className={selectedPage?.is_published ? 'bg-green-500/20 text-green-300' : 'bg-slate-700 text-slate-300'}>
+                    {selectedPage?.is_published ? 'Published' : 'Draft'}
+                  </Badge>
+                </div>
+                <Button
+                  onClick={togglePublishPage}
+                  className={
+                    selectedPage?.is_published
+                      ? 'bg-slate-700 hover:bg-slate-600'
+                      : 'bg-gradient-to-r from-blue-600 to-purple-600'
+                  }
+                >
+                  {selectedPage?.is_published ? 'Unpublish' : 'Publish'}
+                </Button>
+              </CardContent>
+            </Card>
+          </aside>
+        </div>
       </div>
 
       {/* Add/Edit Block Dialog */}

@@ -33,6 +33,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import AdminHeader from '@/components/admin/AdminHeader';
+import { skillBrandColors, skillIcons } from '@/components/skills/skillAssets';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -41,6 +42,7 @@ type SkillCategory = 'frontend' | 'backend' | 'database' | 'tools' | 'other';
 interface Skill {
   id: string;
   name: string;
+  name_ar: string | null;
   icon: string;
   category: SkillCategory;
   level: number;
@@ -75,6 +77,7 @@ const AdminSkills = () => {
 
   const [formData, setFormData] = useState({
     name: '',
+    name_ar: '',
     icon: 'Code',
     category: 'frontend' as SkillCategory,
     level: 80,
@@ -110,11 +113,13 @@ const AdminSkills = () => {
   const filteredSkills = filterCategory === 'all'
     ? skills
     : skills.filter((s) => s.category === filterCategory);
+  const previewSkills = filteredSkills.filter((skill) => skill.visible);
 
   const openCreateDialog = () => {
     setEditingSkill(null);
     setFormData({
       name: '',
+      name_ar: '',
       icon: 'Code',
       category: 'frontend',
       level: 80,
@@ -128,6 +133,7 @@ const AdminSkills = () => {
     setEditingSkill(skill);
     setFormData({
       name: skill.name,
+      name_ar: skill.name_ar || '',
       icon: skill.icon,
       category: skill.category,
       level: skill.level,
@@ -138,10 +144,10 @@ const AdminSkills = () => {
   };
 
   const handleSave = async () => {
-    if (!formData.name) {
+    if (!formData.name || !formData.name_ar) {
       toast({
         title: 'Validation Error',
-        description: 'Name is required',
+        description: 'English and Arabic names are required',
         variant: 'destructive',
       });
       return;
@@ -151,6 +157,7 @@ const AdminSkills = () => {
     try {
       const skillData = {
         name: formData.name,
+        name_ar: formData.name_ar,
         icon: formData.icon,
         category: formData.category,
         level: formData.level,
@@ -243,11 +250,10 @@ const AdminSkills = () => {
                   variant="ghost"
                   size="sm"
                   onClick={() => setFilterCategory(cat)}
-                  className={`capitalize ${
-                    filterCategory === cat
+                  className={`capitalize ${filterCategory === cat
                       ? 'bg-blue-600 text-white'
                       : 'text-slate-400 hover:text-white'
-                  }`}
+                    }`}
                 >
                   {cat}
                 </Button>
@@ -267,114 +273,177 @@ const AdminSkills = () => {
           <div className="flex items-center justify-center py-12">
             <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
           </div>
-        ) : filteredSkills.length === 0 ? (
-          <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
-            <CardContent className="py-12 text-center">
-              <p className="text-slate-400 mb-4">No skills yet</p>
-              <Button onClick={openCreateDialog} variant="outline">
-                <Plus className="w-4 h-4 mr-2" />
-                Add your first skill
-              </Button>
-            </CardContent>
-          </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredSkills.map((skill) => (
-              <Card
-                key={skill.id}
-                className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50 hover:border-slate-600/50 transition-all group"
-              >
-                <CardContent className="p-4">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="w-10 h-10 rounded-xl flex items-center justify-center"
-                        style={{
-                          backgroundColor: skill.brand_color ? `${skill.brand_color}20` : undefined,
-                          borderColor: skill.brand_color || undefined,
-                          borderWidth: skill.brand_color ? 1 : 0,
-                        }}
-                      >
-                        <span
-                          className="text-sm font-medium"
-                          style={{ color: skill.brand_color || '#fff' }}
+          <>
+            <Card className="bg-slate-900/40 backdrop-blur-xl border-slate-700/50 mb-6">
+              <CardContent className="p-6">
+                <div className="flex flex-col gap-2 mb-6">
+                  <h3 className="text-lg font-semibold text-white">Portfolio Preview</h3>
+                  <p className="text-sm text-slate-400">
+                    Preview how skills will appear on the portfolio (visible skills only).
+                  </p>
+                </div>
+
+                {previewSkills.length === 0 ? (
+                  <p className="text-slate-400 text-sm">No visible skills to preview.</p>
+                ) : (
+                  <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+                    {previewSkills.map((skill, index) => {
+                      const iconKey = (skill.icon ?? '').toLowerCase();
+                      const brand = skill.brand_color
+                        ? { color: skill.brand_color, glow: `${skill.brand_color}40` }
+                        : skillBrandColors[iconKey] ?? {
+                          color: '#22d3ee',
+                          glow: 'rgba(34,211,238,0.35)',
+                        };
+
+                      return (
+                        <div
+                          key={`${skill.name}-${skill.category}-${index}`}
+                          className="group glass-card rounded-2xl p-6 aspect-[5/2] w-[220px] md:w-[240px] flex flex-col items-center justify-center text-center shadow-card overflow-hidden relative"
                         >
-                          {skill.icon.substring(0, 2)}
-                        </span>
-                      </div>
-                      <div>
-                        <h3 className="font-medium text-white">{skill.name}</h3>
-                        <Badge className={`text-xs ${categoryColors[skill.category]}`}>
-                          {skill.category}
-                        </Badge>
-                      </div>
-                    </div>
-                    {!skill.visible && (
-                      <Badge variant="secondary" className="bg-slate-700 text-slate-400">
-                        Hidden
-                      </Badge>
-                    )}
+                          <div
+                            className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-105"
+                            style={{
+                              color: brand.color,
+                              boxShadow: `0 10px 35px ${brand.glow}`,
+                              background:
+                                'linear-gradient(135deg, hsl(var(--glass)), hsl(var(--glass-border) / 0.45))',
+                            }}
+                          >
+                            {skillIcons[iconKey] ?? skillIcons.react}
+                          </div>
+                          <p className="font-semibold text-base md:text-lg leading-tight">
+                            {skill.name}
+                          </p>
+                          {skill.name_ar && (
+                            <p className="text-xs text-slate-400 mt-1" dir="rtl">
+                              {skill.name_ar}
+                            </p>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
+                )}
+              </CardContent>
+            </Card>
 
-                  <div className="space-y-2 mb-4">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-400">Proficiency</span>
-                      <span className="text-white">{skill.level}%</span>
-                    </div>
-                    <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all"
-                        style={{
-                          width: `${skill.level}%`,
-                          backgroundColor: skill.brand_color || '#3b82f6',
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => toggleVisibility(skill.id, skill.visible)}
-                      className="text-slate-400 hover:text-white h-8 w-8"
-                    >
-                      {skill.visible ? (
-                        <Eye className="w-4 h-4" />
-                      ) : (
-                        <EyeOff className="w-4 h-4" />
-                      )}
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => openEditDialog(skill)}
-                      className="text-slate-400 hover:text-white h-8 w-8"
-                    >
-                      <Pencil className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => {
-                        setDeletingId(skill.id);
-                        setIsDeleteDialogOpen(true);
-                      }}
-                      className="text-slate-400 hover:text-red-400 h-8 w-8"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
+            {filteredSkills.length === 0 ? (
+              <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
+                <CardContent className="py-12 text-center">
+                  <p className="text-slate-400 mb-4">No skills yet</p>
+                  <Button onClick={openCreateDialog} variant="outline">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add your first skill
+                  </Button>
                 </CardContent>
               </Card>
-            ))}
-          </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredSkills.map((skill) => (
+                  <Card
+                    key={skill.id}
+                    className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50 hover:border-slate-600/50 transition-all group"
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div
+                            className="w-10 h-10 rounded-xl flex items-center justify-center"
+                            style={{
+                              backgroundColor: skill.brand_color ? `${skill.brand_color}20` : undefined,
+                              borderColor: skill.brand_color || undefined,
+                              borderWidth: skill.brand_color ? 1 : 0,
+                            }}
+                          >
+                            <span
+                              className="text-sm font-medium"
+                              style={{ color: skill.brand_color || '#fff' }}
+                            >
+                              {skill.icon.substring(0, 2)}
+                            </span>
+                          </div>
+                          <div>
+                            <h3 className="font-medium text-white">{skill.name}</h3>
+                            {skill.name_ar && (
+                              <p className="text-xs text-slate-400" dir="rtl">
+                                {skill.name_ar}
+                              </p>
+                            )}
+                            <Badge className={`text-xs ${categoryColors[skill.category]}`}>
+                              {skill.category}
+                            </Badge>
+                          </div>
+                        </div>
+                        {!skill.visible && (
+                          <Badge variant="secondary" className="bg-slate-700 text-slate-400">
+                            Hidden
+                          </Badge>
+                        )}
+                      </div>
+
+                      <div className="space-y-2 mb-4">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-400">Proficiency</span>
+                          <span className="text-white">{skill.level}%</span>
+                        </div>
+                        <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                          <div
+                            className="h-full rounded-full transition-all"
+                            style={{
+                              width: `${skill.level}%`,
+                              backgroundColor: skill.brand_color || '#3b82f6',
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => toggleVisibility(skill.id, skill.visible)}
+                          className="text-slate-400 hover:text-white h-8 w-8"
+                        >
+                          {skill.visible ? (
+                            <Eye className="w-4 h-4" />
+                          ) : (
+                            <EyeOff className="w-4 h-4" />
+                          )}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => openEditDialog(skill)}
+                          className="text-slate-400 hover:text-white h-8 w-8"
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => {
+                            setDeletingId(skill.id);
+                            setIsDeleteDialogOpen(true);
+                          }}
+                          className="text-slate-400 hover:text-red-400 h-8 w-8"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
 
       {/* Create/Edit Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-md">
+        <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-2xl w-[95vw] max-h-[85vh] overflow-hidden">
           <DialogHeader>
             <DialogTitle>{editingSkill ? 'Edit Skill' : 'Create Skill'}</DialogTitle>
             <DialogDescription className="text-slate-400">
@@ -382,52 +451,64 @@ const AdminSkills = () => {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Name *</Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="bg-slate-800 border-slate-600"
-                placeholder="React"
-              />
-            </div>
+          <div className="space-y-4 py-4 max-h-[60vh] md:max-h-[65vh] overflow-y-auto pr-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="name">Name (English) *</Label>
+                <Input
+                  id="name"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="bg-slate-800 border-slate-600"
+                  placeholder="React"
+                />
+              </div>
 
-            <div className="space-y-2">
-              <Label>Category</Label>
-              <Select
-                value={formData.category}
-                onValueChange={(value: SkillCategory) =>
-                  setFormData({ ...formData, category: value })
-                }
-              >
-                <SelectTrigger className="bg-slate-800 border-slate-600">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-slate-800 border-slate-700">
-                  <SelectItem value="frontend">Frontend</SelectItem>
-                  <SelectItem value="backend">Backend</SelectItem>
-                  <SelectItem value="database">Database</SelectItem>
-                  <SelectItem value="tools">Tools</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="space-y-2">
+                <Label htmlFor="name_ar">Name (Arabic) *</Label>
+                <Input
+                  id="name_ar"
+                  value={formData.name_ar}
+                  onChange={(e) => setFormData({ ...formData, name_ar: e.target.value })}
+                  className="bg-slate-800 border-slate-600"
+                  placeholder="ريأكت"
+                />
+              </div>
+
+              <div className="space-y-2 md:col-span-2">
+                <Label>Category</Label>
+                <Select
+                  value={formData.category}
+                  onValueChange={(value: SkillCategory) =>
+                    setFormData({ ...formData, category: value })
+                  }
+                >
+                  <SelectTrigger className="bg-slate-800 border-slate-600">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-slate-800 border-slate-700">
+                    <SelectItem value="frontend">Frontend</SelectItem>
+                    <SelectItem value="backend">Backend</SelectItem>
+                    <SelectItem value="database">Database</SelectItem>
+                    <SelectItem value="tools">Tools</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="space-y-2">
               <Label>Icon</Label>
-              <div className="flex flex-wrap gap-2">
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
                 {iconOptions.map((icon) => (
                   <button
                     key={icon}
                     type="button"
                     onClick={() => setFormData({ ...formData, icon })}
-                    className={`px-3 py-1.5 rounded-lg text-sm transition-all ${
-                      formData.icon === icon
+                    className={`px-3 py-1.5 rounded-lg text-sm transition-all w-full ${formData.icon === icon
                         ? 'bg-blue-600 text-white'
                         : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
-                    }`}
+                      }`}
                   >
                     {icon}
                   </button>

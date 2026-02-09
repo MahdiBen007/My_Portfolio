@@ -157,6 +157,7 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM public.skills) THEN
     INSERT INTO public.skills (
       name,
+      name_ar,
       icon,
       category,
       level,
@@ -164,16 +165,16 @@ BEGIN
       sort_order,
       visible
     ) VALUES
-      ('HTML5', 'html', 'frontend', 90, NULL, 0, true),
-      ('CSS3', 'css', 'frontend', 90, NULL, 1, true),
-      ('Tailwind CSS', 'tailwind', 'frontend', 88, NULL, 2, true),
-      ('JavaScript', 'javascript', 'frontend', 92, NULL, 3, true),
-      ('TypeScript', 'typescript', 'frontend', 86, NULL, 4, true),
-      ('React', 'react', 'frontend', 90, NULL, 5, true),
-      ('Node.js', 'nodejs', 'backend', 84, NULL, 6, true),
-      ('PostgreSQL', 'postgresql', 'database', 82, NULL, 7, true),
-      ('Supabase', 'database', 'tools', 78, NULL, 8, true),
-      ('Docker', 'docker', 'tools', 72, NULL, 9, true);
+      ('HTML5', 'HTML5', 'html', 'frontend', 90, NULL, 0, true),
+      ('CSS3', 'CSS3', 'css', 'frontend', 90, NULL, 1, true),
+      ('Tailwind CSS', 'Tailwind CSS', 'tailwind', 'frontend', 88, NULL, 2, true),
+      ('JavaScript', 'جافاسكربت', 'javascript', 'frontend', 92, NULL, 3, true),
+      ('TypeScript', 'تايب سكربت', 'typescript', 'frontend', 86, NULL, 4, true),
+      ('React', 'ريأكت', 'react', 'frontend', 90, NULL, 5, true),
+      ('Node.js', 'نود جي اس', 'nodejs', 'backend', 84, NULL, 6, true),
+      ('PostgreSQL', 'بوستجري إس كيو إل', 'postgresql', 'database', 82, NULL, 7, true),
+      ('Supabase', 'سوبابيز', 'database', 'tools', 78, NULL, 8, true),
+      ('Docker', 'دوكر', 'docker', 'tools', 72, NULL, 9, true);
   END IF;
 
   IF NOT EXISTS (SELECT 1 FROM public.projects) THEN
@@ -311,6 +312,7 @@ BEGIN
   SET primary_color = '#4F46E5',
       secondary_color = '#22C55E',
       meta_title = 'Portfolio',
+      admin_meta_title = 'Admin Dashboard',
       meta_description = 'Professional portfolio showcasing modern web projects.',
       keywords = 'portfolio, developer, web, frontend, backend',
       github_url = 'https://github.com/your-profile',
@@ -328,6 +330,7 @@ BEGIN
       primary_color,
       secondary_color,
       meta_title,
+      admin_meta_title,
       meta_description,
       keywords,
       github_url,
@@ -342,6 +345,7 @@ BEGIN
       '#4F46E5',
       '#22C55E',
       'Portfolio',
+      'Admin Dashboard',
       'Professional portfolio showcasing modern web projects.',
       'portfolio, developer, web, frontend, backend',
       'https://github.com/your-profile',

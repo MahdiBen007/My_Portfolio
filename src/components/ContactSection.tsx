@@ -16,7 +16,12 @@ import { usePortfolioData } from '@/features/portfolio/PortfolioDataContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 
-export const ContactSection = () => {
+type ContactSectionProps = {
+  title?: string;
+  subtitle?: string;
+};
+
+export const ContactSection = ({ title, subtitle }: ContactSectionProps) => {
   const { t } = useLanguage();
   const { data } = usePortfolioData();
   const { personalData } = data;
@@ -114,11 +119,11 @@ export const ContactSection = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.9, ease: EASE_OUT }}
-          className="text-center mb-16"
+          className="section-header text-center mb-16"
         >
-          <h2 className="section-title">{t('تواصل معي', 'Get In Touch')}</h2>
+          <h2 className="section-title">{title ?? t('تواصل معي', 'Get In Touch')}</h2>
           <p className="section-subtitle mx-auto">
-            {t('هل لديك مشروع في ذهنك؟ دعنا نتحدث!', "Have a project in mind? Let's talk!")}
+            {subtitle ?? t('هل لديك مشروع في ذهنك؟ دعنا نتحدث!', "Have a project in mind? Let's talk!")}
           </p>
         </motion.div>
 

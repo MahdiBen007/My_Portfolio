@@ -12,9 +12,12 @@ import { ContactSection } from '@/components/ContactSection';
 import { Footer } from '@/components/Footer';
 import { PortfolioLoader } from '@/components/PortfolioLoader';
 import { usePortfolioData } from '@/features/portfolio/PortfolioDataContext';
+import { usePageBlocks } from '@/hooks/usePageBlocks';
+import { PageBuilderSections } from '@/components/PageBuilderSections';
 
 const Index = () => {
   const { data, loading } = usePortfolioData();
+  const { blocks, loading: blocksLoading } = usePageBlocks('home');
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [minDelayPassed, setMinDelayPassed] = useState(false);
 
@@ -29,7 +32,8 @@ const Index = () => {
     }
   }, [loading, minDelayPassed]);
 
-  const showLoader = isFirstLoad && (!minDelayPassed || loading);
+  const showLoader = isFirstLoad && (!minDelayPassed || loading || blocksLoading);
+  const hasPageBuilderBlocks = Boolean(blocks && blocks.length > 0);
 
   return (
     <LanguageProvider defaultLanguage={data.settings.locale}>
@@ -42,12 +46,18 @@ const Index = () => {
           <>
             <Navbar />
             <main className="relative z-10">
-              <HeroSection />
-              <ServicesSection />
-              <SkillsSection />
-              <PortfolioSection />
-              <AboutSection />
-              <ContactSection />
+              {hasPageBuilderBlocks ? (
+                <PageBuilderSections blocks={blocks ?? []} />
+              ) : (
+                <>
+                  <HeroSection />
+                  <ServicesSection />
+                  <SkillsSection />
+                  <PortfolioSection />
+                  <AboutSection />
+                  <ContactSection />
+                </>
+              )}
             </main>
             <Footer />
           </>

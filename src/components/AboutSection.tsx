@@ -4,7 +4,11 @@ import { useRef } from 'react';
 import { usePortfolioData } from '@/features/portfolio/PortfolioDataContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-export const AboutSection = () => {
+type AboutSectionProps = {
+  title?: string;
+};
+
+export const AboutSection = ({ title }: AboutSectionProps) => {
   const { t } = useLanguage();
   const { data } = usePortfolioData();
   const { personalData, experience } = data;
@@ -19,9 +23,9 @@ export const AboutSection = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.9, ease: EASE_OUT }}
-          className="text-center mb-16"
+          className="section-header text-center mb-16"
         >
-          <h2 className="section-title">{t('\u0646\u0628\u0630\u0629 \u0639\u0646\u064a', 'About Me')}</h2>
+          <h2 className="section-title">{title ?? t('\u0646\u0628\u0630\u0629 \u0639\u0646\u064a', 'About Me')}</h2>
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-12">

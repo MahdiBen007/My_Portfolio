@@ -11,7 +11,12 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Palette,
 };
 
-export const ServicesSection = () => {
+type ServicesSectionProps = {
+  title?: string;
+  subtitle?: string;
+};
+
+export const ServicesSection = ({ title, subtitle }: ServicesSectionProps) => {
   const { t } = useLanguage();
   const { data } = usePortfolioData();
   const { services } = data;
@@ -48,13 +53,13 @@ export const ServicesSection = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.9, ease: EASE_OUT }}
-          className="text-center mb-16"
+          className="section-header text-center mb-16"
         >
           <h2 className="section-title">
-            {t('الخدمات', 'Services')}
+            {title ?? t('الخدمات', 'Services')}
           </h2>
           <p className="section-subtitle mx-auto">
-            {t(
+            {subtitle ?? t(
               'أقدم مجموعة شاملة من الخدمات لتحويل أفكارك إلى واقع رقمي',
               'I offer a comprehensive range of services to transform your ideas into digital reality'
             )}

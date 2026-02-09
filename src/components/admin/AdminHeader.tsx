@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Bell, Search, ExternalLink } from 'lucide-react';
+import { Bell, Search, ExternalLink, Sparkles, LayoutGrid } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
+import { useAdminTheme } from '@/contexts/AdminThemeContext';
 
 interface AdminHeaderProps {
   title: string;
@@ -24,6 +25,8 @@ const AdminHeader = ({ title, subtitle }: AdminHeaderProps) => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [latestMessages, setLatestMessages] = useState<MessagePreview[]>([]);
   const [loadingMessages, setLoadingMessages] = useState(true);
+  const { theme, toggleTheme } = useAdminTheme();
+  const isPortfolio = theme === 'portfolio';
 
   useEffect(() => {
     let isMounted = true;
@@ -84,6 +87,16 @@ const AdminHeader = ({ title, subtitle }: AdminHeaderProps) => {
       </div>
 
       <div className="flex items-center gap-4">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-slate-400 hover:text-white hover:bg-slate-800"
+          onClick={toggleTheme}
+          aria-label={isPortfolio ? 'Switch to studio theme' : 'Switch to portfolio theme'}
+          title={isPortfolio ? 'Switch to studio theme' : 'Switch to portfolio theme'}
+        >
+          {isPortfolio ? <LayoutGrid className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
+        </Button>
         {/* Search */}
         <div className="relative hidden md:block">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />

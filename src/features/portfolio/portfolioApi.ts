@@ -13,6 +13,26 @@ const getHeaders = () => ({
 
 const getBaseUrl = (table: string) => `${SUPABASE_URL}/rest/v1/${table}`;
 
+const normalizeAssetUrl = (value: string | null) => {
+  if (!value) return undefined;
+  const trimmed = value.trim();
+  if (!trimmed) return undefined;
+  if (
+    trimmed.startsWith('http://') ||
+    trimmed.startsWith('https://') ||
+    trimmed.startsWith('data:') ||
+    trimmed.startsWith('blob:') ||
+    trimmed.startsWith('/')
+  ) {
+    return trimmed;
+  }
+  if (SUPABASE_URL && (trimmed.startsWith('uploads/') || trimmed.startsWith('public/'))) {
+    const path = trimmed.replace(/^public\//, '');
+    return `${SUPABASE_URL}/storage/v1/object/public/${path}`;
+  }
+  return `/${trimmed}`;
+};
+
 const parseErrorMessage = async (res: Response) => {
   try {
     const body = await res.json();
@@ -57,6 +77,7 @@ type ServiceRow = {
 
 type SkillRow = {
   name: string | null;
+  name_ar: string | null;
   icon: string | null;
   category: string | null;
   brand_color: string | null;
@@ -141,7 +162,7 @@ export const fetchPortfolioData = async (): Promise<Partial<PortfolioData> | nul
     ),
     safeRequest<SkillRow[]>(
       "skills",
-      "?select=name,icon,category,brand_color,sort_order,visible&visible=eq.true&order=sort_order.asc"
+      "?select=name,name_ar,icon,category,brand_color,sort_order,visible&visible=eq.true&order=sort_order.asc"
     ),
     safeRequest<ProjectRow[]>(
       "projects",
@@ -172,7 +193,8 @@ export const fetchPortfolioData = async (): Promise<Partial<PortfolioData> | nul
 
   if (skillsRows !== undefined) {
     partial.skills = (skillsRows ?? []).map((skill) => ({
-      name: skill.name ?? "",
+      name: skill.name_ar ?? skill.name ?? "",
+      nameEn: skill.name ?? skill.name_ar ?? "",
       icon: skill.icon ?? "code",
       category: skill.category ?? "other",
       customColor: skill.brand_color ?? undefined,
@@ -241,7 +263,10 @@ export const fetchPortfolioData = async (): Promise<Partial<PortfolioData> | nul
 
     if (aboutRow?.bio_ar) personalData.aboutBio = aboutRow.bio_ar;
     if (aboutRow?.bio) personalData.aboutBioEn = aboutRow.bio;
-    if (aboutRow?.resume_url) personalData.cvLink = aboutRow.resume_url;
+    if (aboutRow?.resume_url) personalData.cvLink = normalizeAssetUrl(aboutRow.resume_url);
+    if (aboutRow?.profile_image_url) {
+      personalData.profileImageUrl = normalizeAssetUrl(aboutRow.profile_image_url);
+    }
     if (settingsRow?.email) personalData.email = settingsRow.email;
     if (settingsRow?.whatsapp) personalData.whatsapp = settingsRow.whatsapp;
     if (settingsRow?.github_url) personalData.github = settingsRow.github_url;
