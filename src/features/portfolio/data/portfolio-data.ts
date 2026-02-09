@@ -71,6 +71,7 @@ export type PortfolioData = {
     liveUrl: string;
     githubUrl: string;
     images: string[];
+    videoUrl?: string;
     featured?: boolean;
     status?: string;
     order?: number;

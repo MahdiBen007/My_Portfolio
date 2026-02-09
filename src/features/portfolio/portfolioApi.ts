@@ -92,6 +92,7 @@ type ProjectRow = {
   description: string | null;
   description_ar: string | null;
   thumbnail_url: string | null;
+  video_url: string | null;
   gallery_images: string[] | null;
   tech_stack: string[] | null;
   github_link: string | null;
@@ -182,7 +183,7 @@ export const fetchPortfolioData = async (): Promise<PartialPortfolioData | null>
     ),
     safeRequest<ProjectRow[]>(
       "projects",
-      "?select=id,title,title_ar,description,description_ar,thumbnail_url,gallery_images,tech_stack,github_link,live_demo_link,category,status,featured,sort_order,visible&visible=eq.true&order=sort_order.asc"
+      "?select=id,title,title_ar,description,description_ar,thumbnail_url,video_url,gallery_images,tech_stack,github_link,live_demo_link,category,status,featured,sort_order,visible&visible=eq.true&order=sort_order.asc"
     ),
     safeRequest<AboutRow[]>("about", "?select=bio,bio_ar,profile_image_url,resume_url&limit=1"),
     safeRequest<TimelineRow[]>(
@@ -249,6 +250,7 @@ export const fetchPortfolioData = async (): Promise<PartialPortfolioData | null>
         resultEn: "",
         liveUrl: project.live_demo_link ?? "",
         githubUrl: project.github_link ?? "",
+        videoUrl: project.video_url ?? "",
         images,
         featured: project.featured ?? false,
         status: project.status ?? "completed",

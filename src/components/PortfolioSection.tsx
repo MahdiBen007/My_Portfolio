@@ -6,6 +6,7 @@ import {
   ChevronRight,
   ExternalLink,
   Github,
+  Play,
   Star,
   Target,
   TrendingUp,
@@ -98,6 +99,32 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
       setCurrentImageIndex(0);
     }
   }, [selectedProject, currentImageIndex]);
+
+  const getVideoEmbedUrl = (url: string) => {
+    try {
+      const parsed = new URL(url);
+      const host = parsed.hostname.replace('www.', '');
+      if (host.includes('youtu.be')) {
+        const id = parsed.pathname.replace('/', '');
+        return id ? `https://www.youtube.com/embed/${id}` : null;
+      }
+      if (host.includes('youtube.com')) {
+        const id = parsed.searchParams.get('v') ?? parsed.pathname.split('/').pop();
+        return id ? `https://www.youtube.com/embed/${id}` : null;
+      }
+      if (host.includes('vimeo.com')) {
+        const id = parsed.pathname.split('/').pop();
+        return id ? `https://player.vimeo.com/video/${id}` : null;
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  };
+
+  const videoUrl = selectedProject?.videoUrl?.trim() ?? '';
+  const embedUrl = videoUrl ? getVideoEmbedUrl(videoUrl) : null;
+  const hasVideo = Boolean(videoUrl);
 
   return (
     <section id="portfolio" className="relative py-[clamp(64px,8vw,112px)]" ref={ref}>
@@ -267,36 +294,69 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
               <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-0 lg:gap-6">
                 {/* Gallery */}
                 <div className="relative bg-black/40 overflow-hidden group">
-                  <img
-                    src={selectedProject.images?.[currentImageIndex] ?? '/project-placeholder.jpg'}
-                    alt={t(selectedProject.title, selectedProject.titleEn)}
-                    className={`w-full h-[220px] sm:h-[280px] lg:h-[420px] object-contain object-center bg-black/40 ${
-                      (selectedProject.images?.length ?? 0) > 1 ? 'cursor-pointer' : ''
+                  <div
+                    className={`absolute top-3 left-3 z-10 inline-flex items-center gap-2 rounded-full border border-white/10 px-3 py-1 text-xs backdrop-blur ${
+                      hasVideo ? 'bg-black/60 text-white' : 'bg-white/5 text-white/70'
                     }`}
-                    onClick={() => {
-                      if ((selectedProject.images?.length ?? 0) > 1) nextImage();
-                    }}
-                  />
-                  {selectedProject.images && selectedProject.images.length > 1 && (
-                    <div className="absolute inset-0 flex items-center justify-between px-4 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                      <button
-                        onClick={isRTL ? nextImage : prevImage}
-                        className="p-2 rounded-full bg-black/60 hover:bg-black/80"
-                      >
-                        <ChevronLeft className="w-5 h-5" />
-                      </button>
-                      <button
-                        onClick={isRTL ? prevImage : nextImage}
-                        className="p-2 rounded-full bg-black/60 hover:bg-black/80"
-                      >
-                        <ChevronRight className="w-5 h-5" />
-                      </button>
-                    </div>
-                  )}
-                  {selectedProject.images && selectedProject.images.length > 1 && (
-                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-black/60 px-3 py-1 text-xs text-white/80">
-                      {currentImageIndex + 1} / {selectedProject.images.length}
-                    </div>
+                  >
+                    <Play className="h-3.5 w-3.5" />
+                    <span>{t('فيديو', 'Video')}</span>
+                  </div>
+                  {videoUrl ? (
+                    embedUrl ? (
+                      <iframe
+                        src={`${embedUrl}?autoplay=1&mute=1&playsinline=1`}
+                        title={t(selectedProject.title, selectedProject.titleEn)}
+                        className="w-full h-[220px] sm:h-[280px] lg:h-[420px]"
+                        allow="autoplay; accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    ) : (
+                      <video
+                        src={videoUrl}
+                        autoPlay
+                        muted
+                        playsInline
+                        loop
+                        controls
+                        preload="metadata"
+                        className="w-full h-[220px] sm:h-[280px] lg:h-[420px] object-contain bg-black/60"
+                      />
+                    )
+                  ) : (
+                    <>
+                      <img
+                        src={selectedProject.images?.[currentImageIndex] ?? '/project-placeholder.jpg'}
+                        alt={t(selectedProject.title, selectedProject.titleEn)}
+                        className={`w-full h-[220px] sm:h-[280px] lg:h-[420px] object-contain object-center bg-black/40 ${
+                          (selectedProject.images?.length ?? 0) > 1 ? 'cursor-pointer' : ''
+                        }`}
+                        onClick={() => {
+                          if ((selectedProject.images?.length ?? 0) > 1) nextImage();
+                        }}
+                      />
+                      {selectedProject.images && selectedProject.images.length > 1 && (
+                        <div className="absolute inset-0 flex items-center justify-between px-4 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                          <button
+                            onClick={isRTL ? nextImage : prevImage}
+                            className="p-2 rounded-full bg-black/60 hover:bg-black/80"
+                          >
+                            <ChevronLeft className="w-5 h-5" />
+                          </button>
+                          <button
+                            onClick={isRTL ? prevImage : nextImage}
+                            className="p-2 rounded-full bg-black/60 hover:bg-black/80"
+                          >
+                            <ChevronRight className="w-5 h-5" />
+                          </button>
+                        </div>
+                      )}
+                      {selectedProject.images && selectedProject.images.length > 1 && (
+                        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-black/60 px-3 py-1 text-xs text-white/80">
+                          {currentImageIndex + 1} / {selectedProject.images.length}
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
 

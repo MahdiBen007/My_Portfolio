@@ -255,17 +255,18 @@ export type Database = {
           },
         ]
       }
-      projects: {
-        Row: {
+        projects: {
+          Row: {
           category: string | null
           created_at: string
           description: string
           description_ar: string | null
           featured: boolean
           gallery_images: string[] | null
-          github_link: string | null
-          id: string
-          live_demo_link: string | null
+            github_link: string | null
+            video_url: string | null
+            id: string
+            live_demo_link: string | null
           sort_order: number
           status: Database["public"]["Enums"]["project_status"]
           tech_stack: string[] | null
@@ -275,16 +276,17 @@ export type Database = {
           updated_at: string
           visible: boolean
         }
-        Insert: {
+          Insert: {
           category?: string | null
           created_at?: string
           description: string
           description_ar?: string | null
           featured?: boolean
           gallery_images?: string[] | null
-          github_link?: string | null
-          id?: string
-          live_demo_link?: string | null
+            github_link?: string | null
+            video_url?: string | null
+            id?: string
+            live_demo_link?: string | null
           sort_order?: number
           status?: Database["public"]["Enums"]["project_status"]
           tech_stack?: string[] | null
@@ -294,16 +296,17 @@ export type Database = {
           updated_at?: string
           visible?: boolean
         }
-        Update: {
+          Update: {
           category?: string | null
           created_at?: string
           description?: string
           description_ar?: string | null
           featured?: boolean
           gallery_images?: string[] | null
-          github_link?: string | null
-          id?: string
-          live_demo_link?: string | null
+            github_link?: string | null
+            video_url?: string | null
+            id?: string
+            live_demo_link?: string | null
           sort_order?: number
           status?: Database["public"]["Enums"]["project_status"]
           tech_stack?: string[] | null

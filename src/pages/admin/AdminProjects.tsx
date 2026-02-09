@@ -74,6 +74,7 @@ interface Project {
   description: string;
   description_ar: string | null;
   thumbnail_url: string | null;
+  video_url: string | null;
   gallery_images: string[];
   tech_stack: string[];
   github_link: string | null;
@@ -137,10 +138,12 @@ const AdminProjects = () => {
   const [saving, setSaving] = useState(false);
   const [uploadingThumbnail, setUploadingThumbnail] = useState(false);
   const [uploadingGalleryIndex, setUploadingGalleryIndex] = useState<number | null>(null);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const { toast } = useToast();
   const thumbnailInputRef = useRef<HTMLInputElement | null>(null);
+  const videoInputRef = useRef<HTMLInputElement | null>(null);
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
     useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } })
@@ -152,6 +155,7 @@ const AdminProjects = () => {
     description: '',
     description_ar: '',
     thumbnail_url: '',
+    video_url: '',
     gallery_images: [''],
     tech_stack: '',
     github_link: '',
@@ -237,6 +241,7 @@ const AdminProjects = () => {
       description: '',
       description_ar: '',
       thumbnail_url: '',
+      video_url: '',
       gallery_images: [''],
       tech_stack: '',
       github_link: '',
@@ -257,6 +262,7 @@ const AdminProjects = () => {
       description: project.description,
       description_ar: project.description_ar || '',
       thumbnail_url: project.thumbnail_url || '',
+      video_url: project.video_url || '',
       gallery_images: project.gallery_images?.length ? project.gallery_images : [''],
       tech_stack: project.tech_stack?.join(', ') || '',
       github_link: project.github_link || '',
@@ -295,6 +301,7 @@ const AdminProjects = () => {
         description: formData.description,
         description_ar: formData.description_ar || null,
         thumbnail_url: formData.thumbnail_url || null,
+        video_url: formData.video_url || null,
         gallery_images: galleryImages,
         tech_stack: techArray,
         github_link: formData.github_link || null,
@@ -384,6 +391,25 @@ const AdminProjects = () => {
       });
     } finally {
       setUploadingGalleryIndex(null);
+    }
+  };
+
+  const handleVideoUpload = async (file: File | null) => {
+    if (!file) return;
+    setUploadingVideo(true);
+    try {
+      const url = await uploadProjectImage(file);
+      setFormData((prev) => ({ ...prev, video_url: url }));
+      toast({ title: 'Success', description: 'Video uploaded' });
+    } catch (error) {
+      console.error('Error uploading video:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to upload video',
+        variant: 'destructive',
+      });
+    } finally {
+      setUploadingVideo(false);
     }
   };
 
@@ -746,6 +772,45 @@ const AdminProjects = () => {
                   className="border-slate-600 bg-slate-800 text-slate-200 hover:bg-slate-700"
                 >
                   {uploadingThumbnail ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Uploading
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="h-4 w-4 mr-2" />
+                      Upload
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="video_url">Video URL (Details)</Label>
+              <div className="flex items-center gap-2">
+                <Input
+                  id="video_url"
+                  value={formData.video_url}
+                  onChange={(e) => setFormData({ ...formData, video_url: e.target.value })}
+                  className="bg-slate-800 border-slate-600"
+                  placeholder="https://example.com/demo.mp4 or YouTube link"
+                />
+                <input
+                  ref={videoInputRef}
+                  type="file"
+                  accept="video/*"
+                  className="hidden"
+                  onChange={(e) => handleVideoUpload(e.target.files?.[0] ?? null)}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => videoInputRef.current?.click()}
+                  disabled={uploadingVideo}
+                  className="border-slate-600 bg-slate-800 text-slate-200 hover:bg-slate-700"
+                >
+                  {uploadingVideo ? (
                     <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                       Uploading
