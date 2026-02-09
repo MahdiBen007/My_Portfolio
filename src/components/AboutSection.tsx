@@ -16,6 +16,13 @@ export const AboutSection = ({ title }: AboutSectionProps) => {
   const isInView = useInView(ref, { once: true, margin: '-100px' });
   const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
+  const hasBio = Boolean(personalData.aboutBio || personalData.aboutBioEn);
+  const hasExperience = experience && experience.length > 0;
+
+  if (!hasBio && !hasExperience) {
+    return null;
+  }
+
   return (
     <section id="about" className="relative py-[clamp(64px,8vw,112px)]" ref={ref}>
       <div className="container mx-auto px-6">

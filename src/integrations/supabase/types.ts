@@ -382,9 +382,12 @@ export type Database = {
           keywords: string | null
           linkedin_url: string | null
           locale: string | null
+          location: string | null
+          location_en: string | null
           meta_description: string | null
           meta_title: string | null
           og_image_url: string | null
+          phone: string | null
           primary_color: string | null
           secondary_color: string | null
           shadow_intensity: number | null
@@ -412,9 +415,12 @@ export type Database = {
           keywords?: string | null
           linkedin_url?: string | null
           locale?: string | null
+          location?: string | null
+          location_en?: string | null
           meta_description?: string | null
           meta_title?: string | null
           og_image_url?: string | null
+          phone?: string | null
           primary_color?: string | null
           secondary_color?: string | null
           shadow_intensity?: number | null
@@ -442,9 +448,12 @@ export type Database = {
           keywords?: string | null
           linkedin_url?: string | null
           locale?: string | null
+          location?: string | null
+          location_en?: string | null
           meta_description?: string | null
           meta_title?: string | null
           og_image_url?: string | null
+          phone?: string | null
           primary_color?: string | null
           secondary_color?: string | null
           shadow_intensity?: number | null

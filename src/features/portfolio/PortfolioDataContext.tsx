@@ -90,6 +90,15 @@ export const PortfolioDataProvider = ({ children }: { children: React.ReactNode 
     refresh();
   }, [refresh]);
 
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+    const handleUpdate = () => {
+      refresh();
+    };
+    window.addEventListener('portfolio-data-updated', handleUpdate);
+    return () => window.removeEventListener('portfolio-data-updated', handleUpdate);
+  }, [refresh]);
+
   const value = useMemo(
     () => ({
       data,

@@ -38,9 +38,9 @@ export const ContactSection = ({ title, subtitle }: ContactSectionProps) => {
   const socialLinks = [
     { icon: Github, href: personalData.github, label: 'GitHub' },
     { icon: Linkedin, href: personalData.linkedin, label: 'LinkedIn' },
-    { icon: Mail, href: `mailto:${personalData.email}`, label: 'Email' },
+    { icon: Mail, href: personalData.email ? `mailto:${personalData.email}` : '', label: 'Email' },
     { icon: MessageCircle, href: personalData.whatsapp, label: 'WhatsApp' },
-  ];
+  ].filter((link) => Boolean(link.href && link.href.trim().length > 0));
 
   const contactCards = [
     {
@@ -76,7 +76,12 @@ export const ContactSection = ({ title, subtitle }: ContactSectionProps) => {
       href: '',
       external: false,
     },
-  ];
+  ].filter((card) => {
+    const value =
+      (card.valueAr ?? '').toString().trim() ||
+      (card.valueEn ?? '').toString().trim();
+    return value.length > 0;
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

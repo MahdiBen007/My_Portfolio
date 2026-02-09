@@ -24,6 +24,10 @@ export const ServicesSection = ({ title, subtitle }: ServicesSectionProps) => {
   const isInView = useInView(ref, { once: true, margin: '-100px' });
   const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
+  if (!services || services.length === 0) {
+    return null;
+  }
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {

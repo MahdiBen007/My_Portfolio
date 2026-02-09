@@ -60,8 +60,13 @@ const categoryColors: Record<SkillCategory, string> = {
 };
 
 const iconOptions = [
-  'Code', 'Braces', 'FileCode', 'Terminal', 'Database', 'Server',
-  'Globe', 'Layout', 'Palette', 'GitBranch', 'Box', 'Cloud',
+  'Code', 'Braces', 'Terminal', 'Server', 'Globe', 'Layout', 'Palette', 'GitBranch', 'Box', 'Cloud',
+  'FileCode', 'Database',
+  'HTML', 'CSS', 'Tailwind', 'Bootstrap',
+  'JavaScript', 'TypeScript', 'React', 'Vue', 'NodeJS', 'Express',
+  'Python', 'Firebase',
+  'PHP', 'Laravel', 'MySQL', 'MongoDB', 'PostgreSQL',
+  'Git', 'GitHub', 'Docker', 'WordPress',
 ];
 
 const AdminSkills = () => {
@@ -144,10 +149,10 @@ const AdminSkills = () => {
   };
 
   const handleSave = async () => {
-    if (!formData.name || !formData.name_ar) {
+    if (!formData.name) {
       toast({
         title: 'Validation Error',
-        description: 'English and Arabic names are required',
+        description: 'English name is required',
         variant: 'destructive',
       });
       return;
@@ -157,7 +162,7 @@ const AdminSkills = () => {
     try {
       const skillData = {
         name: formData.name,
-        name_ar: formData.name_ar,
+        name_ar: formData.name_ar || null,
         icon: formData.icon,
         category: formData.category,
         level: formData.level,
@@ -465,7 +470,7 @@ const AdminSkills = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="name_ar">Name (Arabic) *</Label>
+                <Label htmlFor="name_ar">Name (Arabic)</Label>
                 <Input
                   id="name_ar"
                   value={formData.name_ar}

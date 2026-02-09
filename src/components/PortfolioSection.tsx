@@ -39,6 +39,10 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
     (project) => activeFilter === 'all' || project.category === activeFilter
   );
 
+  if (visibleProjects.length === 0) {
+    return null;
+  }
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -144,13 +148,13 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="flex flex-wrap justify-center gap-4 md:gap-6 max-w-6xl mx-auto"
         >
           {filteredProjects.map((project) => (
             <motion.div
               key={project.id}
               variants={cardVariants}
-              className="glass-card rounded-2xl overflow-hidden shadow-card group flex flex-col h-full preserve-3d"
+              className="glass-card rounded-2xl overflow-hidden shadow-card group flex flex-col h-full preserve-3d w-[280px] sm:w-[320px] md:w-[340px]"
               whileHover={{ y: -10, scale: 1.015, rotate: isRTL ? 0.6 : -0.6 }}
               transition={{ type: 'spring', stiffness: 180, damping: 18 }}
               style={{ transformPerspective: 1200 }}
@@ -159,7 +163,7 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
                   <img
                     src={project.images?.[0] ?? '/project-placeholder.jpg'}
                     alt={t(project.title, project.titleEn)}
-                    className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                    className="h-full w-full object-contain object-center transition-transform duration-700 group-hover:scale-[1.02] bg-black/40"
                     loading="lazy"
                     decoding="async"
                   />
@@ -194,7 +198,7 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
                   <h3 className="text-lg font-semibold leading-tight">
                     {t(project.title, project.titleEn)}
                   </h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground line-clamp-2">
                     {t(project.shortDescription, project.shortDescriptionEn)}
                   </p>
                 </div>
@@ -266,7 +270,7 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
                   <img
                     src={selectedProject.images?.[currentImageIndex] ?? '/project-placeholder.jpg'}
                     alt={t(selectedProject.title, selectedProject.titleEn)}
-                    className={`w-full h-[220px] sm:h-[280px] lg:h-[420px] object-cover object-center ${
+                    className={`w-full h-[220px] sm:h-[280px] lg:h-[420px] object-contain object-center bg-black/40 ${
                       (selectedProject.images?.length ?? 0) > 1 ? 'cursor-pointer' : ''
                     }`}
                     onClick={() => {

@@ -140,6 +140,9 @@ type SettingsRow = {
   behance_url: string | null;
   email: string | null;
   whatsapp: string | null;
+  phone: string | null;
+  location: string | null;
+  location_en: string | null;
   footer_contact_info: string | null;
   copyright_text: string | null;
   locale: "ar" | "en" | null;
@@ -188,7 +191,7 @@ export const fetchPortfolioData = async (): Promise<PartialPortfolioData | null>
     ),
     safeRequest<SettingsRow[]>(
       "settings",
-      "?select=primary_color,secondary_color,background_gradient,background_gradient_alt,border_radius,spacing_density,ui_font,site_font,animations_enabled,shadow_intensity,meta_title,meta_description,keywords,github_url,linkedin_url,behance_url,email,whatsapp,footer_contact_info,copyright_text,locale&limit=1"
+      "?select=primary_color,secondary_color,background_gradient,background_gradient_alt,border_radius,spacing_density,ui_font,site_font,animations_enabled,shadow_intensity,meta_title,meta_description,keywords,github_url,linkedin_url,behance_url,email,whatsapp,phone,location,location_en,footer_contact_info,copyright_text,locale&limit=1"
     ),
   ]);
 
@@ -280,10 +283,15 @@ export const fetchPortfolioData = async (): Promise<PartialPortfolioData | null>
     if (aboutRow?.profile_image_url) {
       personalData.profileImageUrl = normalizeAssetUrl(aboutRow.profile_image_url);
     }
-    if (settingsRow?.email) personalData.email = settingsRow.email;
-    if (settingsRow?.whatsapp) personalData.whatsapp = settingsRow.whatsapp;
-    if (settingsRow?.github_url) personalData.github = settingsRow.github_url;
-    if (settingsRow?.linkedin_url) personalData.linkedin = settingsRow.linkedin_url;
+    if (settingsRow) {
+      personalData.email = settingsRow.email ?? "";
+      personalData.whatsapp = settingsRow.whatsapp ?? "";
+      personalData.github = settingsRow.github_url ?? "";
+      personalData.linkedin = settingsRow.linkedin_url ?? "";
+      personalData.phone = settingsRow.phone ?? "";
+      personalData.location = settingsRow.location ?? "";
+      personalData.locationEn = settingsRow.location_en ?? "";
+    }
 
     if (Object.keys(personalData).length > 0) {
       partial.personalData = personalData;

@@ -19,6 +19,14 @@ export const SkillsSection = ({ title, subtitle }: SkillsSectionProps) => {
   const isInView = useInView(ref, { once: true, margin: '-100px' });
   const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
+  const visibleSkillCount = skills.filter(
+    (skill) => skillCategories.find((c) => c.id === skill.category)?.visible !== false
+  ).length;
+
+  if (!skills || skills.length === 0 || visibleSkillCount === 0) {
+    return null;
+  }
+
   const filteredSkills = skills.filter((skill) => {
     const categoryVisible = skillCategories.find((c) => c.id === skill.category)?.visible !== false;
     const matchesFilter = activeFilter === 'all' || skill.category === activeFilter;

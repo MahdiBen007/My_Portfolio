@@ -26,6 +26,19 @@ export const ResumeSection = ({ title, subtitle }: ResumeSectionProps) => {
   const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
   const hasCv = Boolean(personalData.cvLink);
+  const hasStats =
+    Boolean(personalData.stats?.yearsExperience) ||
+    Boolean(personalData.stats?.projectsCompleted) ||
+    Boolean(personalData.stats?.happyClients);
+  const hasProfile =
+    Boolean(personalData.name || personalData.nameEn) ||
+    Boolean(personalData.title || personalData.titleEn) ||
+    Boolean(personalData.location || personalData.locationEn) ||
+    Boolean(personalData.email);
+
+  if (!hasCv && !hasStats && !hasProfile) {
+    return null;
+  }
 
   return (
     <section id="resume" className="relative py-[clamp(64px,8vw,112px)]" ref={ref}>
@@ -90,23 +103,29 @@ export const ResumeSection = ({ title, subtitle }: ResumeSectionProps) => {
                 <p className="text-xs text-slate-400">{t('عملاء سعداء', 'Clients')}</p>
                 <p className="text-lg font-semibold text-white">{personalData.stats.happyClients}+</p>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <p className="text-xs text-slate-400">{t('الموقع', 'Location')}</p>
-                <p className="text-sm font-semibold text-white">
-                  {t(personalData.location, personalData.locationEn)}
-                </p>
-              </div>
+              {(personalData.location || personalData.locationEn) && (
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <p className="text-xs text-slate-400">{t('الموقع', 'Location')}</p>
+                  <p className="text-sm font-semibold text-white">
+                    {t(personalData.location, personalData.locationEn)}
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="mt-6 space-y-3 text-sm text-slate-300">
-              <div className="flex items-center gap-2">
-                <Mail className="h-4 w-4 text-primary" />
-                <span>{personalData.email}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-primary" />
-                <span>{t(personalData.location, personalData.locationEn)}</span>
-              </div>
+              {personalData.email && (
+                <div className="flex items-center gap-2">
+                  <Mail className="h-4 w-4 text-primary" />
+                  <span>{personalData.email}</span>
+                </div>
+              )}
+              {(personalData.location || personalData.locationEn) && (
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4 text-primary" />
+                  <span>{t(personalData.location, personalData.locationEn)}</span>
+                </div>
+              )}
             </div>
           </motion.div>
 

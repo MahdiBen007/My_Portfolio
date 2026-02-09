@@ -48,6 +48,9 @@ interface Settings {
   behance_url: string | null;
   email: string | null;
   whatsapp: string | null;
+  phone: string | null;
+  location: string | null;
+  location_en: string | null;
   custom_links: unknown;
   copyright_text: string | null;
   footer_links: unknown;
@@ -124,6 +127,9 @@ const AdminSettings = () => {
         behance_url: data.behance_url ?? '',
         email: data.email ?? '',
         whatsapp: data.whatsapp ?? '',
+        phone: data.phone ?? '',
+        location: data.location ?? '',
+        location_en: data.location_en ?? '',
         copyright_text: data.copyright_text ?? '',
         footer_contact_info: data.footer_contact_info ?? '',
         admin_meta_title: data.admin_meta_title ?? 'Admin Dashboard',
@@ -156,41 +162,66 @@ const AdminSettings = () => {
 
     setSaving(true);
     try {
-      const { error } = await supabase
-        .from('settings')
-        .update({
-          primary_color: settings.primary_color,
-          secondary_color: settings.secondary_color,
-          background_gradient: settings.background_gradient,
-          background_gradient_alt: settings.background_gradient_alt,
-          border_radius: settings.border_radius,
-          spacing_density: settings.spacing_density,
-          ui_font: settings.ui_font,
-          site_font: settings.site_font,
-          animations_enabled: settings.animations_enabled,
-          shadow_intensity: settings.shadow_intensity,
-          admin_portfolio_primary_color: settings.admin_portfolio_primary_color,
-          admin_portfolio_secondary_color: settings.admin_portfolio_secondary_color,
-          admin_studio_primary_color: settings.admin_studio_primary_color,
-          admin_studio_secondary_color: settings.admin_studio_secondary_color,
-          meta_title: settings.meta_title,
-          admin_meta_title: settings.admin_meta_title,
-          meta_description: settings.meta_description,
-          og_image_url: settings.og_image_url,
-          keywords: settings.keywords,
-          canonical_url: settings.canonical_url,
-          github_url: settings.github_url,
-          linkedin_url: settings.linkedin_url,
-          behance_url: settings.behance_url,
-          email: settings.email,
-          whatsapp: settings.whatsapp,
-          copyright_text: settings.copyright_text,
-          footer_contact_info: settings.footer_contact_info,
-          locale: settings.locale ?? 'ar',
-        })
-        .eq('id', settings.id);
+      const payload = {
+        primary_color: settings.primary_color,
+        secondary_color: settings.secondary_color,
+        background_gradient: settings.background_gradient,
+        background_gradient_alt: settings.background_gradient_alt,
+        border_radius: settings.border_radius,
+        spacing_density: settings.spacing_density,
+        ui_font: settings.ui_font,
+        site_font: settings.site_font,
+        animations_enabled: settings.animations_enabled,
+        shadow_intensity: settings.shadow_intensity,
+        admin_portfolio_primary_color: settings.admin_portfolio_primary_color,
+        admin_portfolio_secondary_color: settings.admin_portfolio_secondary_color,
+        admin_studio_primary_color: settings.admin_studio_primary_color,
+        admin_studio_secondary_color: settings.admin_studio_secondary_color,
+        meta_title: settings.meta_title,
+        admin_meta_title: settings.admin_meta_title,
+        meta_description: settings.meta_description,
+        og_image_url: settings.og_image_url,
+        keywords: settings.keywords,
+        canonical_url: settings.canonical_url,
+        github_url: settings.github_url,
+        linkedin_url: settings.linkedin_url,
+        behance_url: settings.behance_url,
+        email: settings.email,
+        whatsapp: settings.whatsapp,
+        phone: settings.phone,
+        location: settings.location,
+        location_en: settings.location_en,
+        copyright_text: settings.copyright_text,
+        footer_contact_info: settings.footer_contact_info,
+        locale: settings.locale ?? 'ar',
+      };
 
-      if (error) throw error;
+      let usedFallback = false;
+
+      const { error } = await supabase.from('settings').update(payload).eq('id', settings.id);
+
+      if (error) {
+        const message = typeof error?.message === 'string' ? error.message : '';
+        const code = (error as { code?: string }).code;
+        const schemaMissing =
+          message.includes('schema cache') ||
+          message.includes('column') ||
+          code === 'PGRST204' ||
+          code === '42703';
+
+        if (schemaMissing) {
+          const { phone, location, location_en, ...fallback } = payload;
+          const { error: fallbackError } = await supabase
+            .from('settings')
+            .update(fallback)
+            .eq('id', settings.id);
+          if (fallbackError) throw fallbackError;
+          usedFallback = true;
+        } else {
+          throw error;
+        }
+      }
+
       const nextAdminTitle = settings.admin_meta_title?.trim() || 'Admin Dashboard';
       window.dispatchEvent(
         new CustomEvent('admin-meta-title-updated', { detail: nextAdminTitle })
@@ -209,7 +240,15 @@ const AdminSettings = () => {
           },
         })
       );
-      toast({ title: 'Success', description: 'Settings saved successfully' });
+      if (usedFallback) {
+        toast({
+          title: 'Saved with warning',
+          description:
+            'تم الحفظ، لكن حقول الهاتف/الموقع تحتاج تحديث قاعدة البيانات.',
+        });
+      } else {
+        toast({ title: 'Success', description: 'Settings saved successfully' });
+      }
     } catch (error) {
       console.error('Error saving settings:', error);
       toast({
@@ -950,6 +989,40 @@ const AdminSettings = () => {
                     onChange={(e) => setSettings({ ...settings, whatsapp: e.target.value })}
                     className="bg-slate-800 border-slate-600"
                     placeholder="+1234567890"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Phone</Label>
+                    <Input
+                      id="phone"
+                      value={settings.phone || ''}
+                      onChange={(e) => setSettings({ ...settings, phone: e.target.value })}
+                      className="bg-slate-800 border-slate-600"
+                      placeholder="+20 123 456 7890"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="location">Location (Arabic)</Label>
+                    <Input
+                      id="location"
+                      value={settings.location || ''}
+                      onChange={(e) => setSettings({ ...settings, location: e.target.value })}
+                      className="bg-slate-800 border-slate-600"
+                      placeholder="القاهرة، مصر"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="location_en">Location (English)</Label>
+                  <Input
+                    id="location_en"
+                    value={settings.location_en || ''}
+                    onChange={(e) => setSettings({ ...settings, location_en: e.target.value })}
+                    className="bg-slate-800 border-slate-600"
+                    placeholder="Cairo, Egypt"
                   />
                 </div>
               </CardContent>

@@ -1,7 +1,34 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, type ReactNode } from 'react';
 import {
-  Plus, Pencil, Trash2, Eye, EyeOff, Loader2, Star, ExternalLink, Github, Filter, Upload,
+  Plus,
+  Pencil,
+  Trash2,
+  Eye,
+  EyeOff,
+  Loader2,
+  Star,
+  ExternalLink,
+  Github,
+  Filter,
+  Upload,
+  GripVertical,
 } from 'lucide-react';
+import {
+  DndContext,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  closestCenter,
+  type DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  rectSortingStrategy,
+  arrayMove,
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -64,7 +91,41 @@ const statusColors: Record<ProjectStatus, string> = {
   planned: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
 };
 
-const categories = ['E-commerce', 'Dashboard', 'Landing Page', 'API', 'UI/UX', 'Mobile App', 'Other'];
+const categories = ['E-commerce', 'Dashboard', 'Landing Page', 'API', 'UI/UX', 'Mobile App', 'Portfolio', 'Other'];
+
+const SortableProjectCard = ({
+  project,
+  children,
+}: {
+  project: Project;
+  children: ReactNode;
+}) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: project.id,
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className={isDragging ? 'opacity-70' : ''}>
+      <div className="relative">
+        <button
+          type="button"
+          {...attributes}
+          {...listeners}
+          className="absolute bottom-2 left-2 z-10 inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-900/70 text-slate-300 hover:text-white border border-slate-700/60 backdrop-blur cursor-grab active:cursor-grabbing"
+          aria-label="Reorder project"
+        >
+          <GripVertical className="h-4 w-4" />
+        </button>
+        {children}
+      </div>
+    </div>
+  );
+};
 
 const AdminProjects = () => {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -80,6 +141,10 @@ const AdminProjects = () => {
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const { toast } = useToast();
   const thumbnailInputRef = useRef<HTMLInputElement | null>(null);
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } })
+  );
 
   const [formData, setFormData] = useState({
     title: '',
@@ -127,6 +192,42 @@ const AdminProjects = () => {
     if (filterStatus !== 'all' && p.status !== filterStatus) return false;
     return true;
   });
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = projects.findIndex((p) => p.id === active.id);
+    const newIndex = projects.findIndex((p) => p.id === over.id);
+    if (oldIndex === -1 || newIndex === -1) return;
+
+    const previousOrder = new Map(projects.map((p) => [p.id, p.sort_order ?? 0]));
+    const reordered = arrayMove(projects, oldIndex, newIndex).map((project, index) => ({
+      ...project,
+      sort_order: index,
+    }));
+
+    setProjects(reordered);
+
+    try {
+      const updates = reordered.filter(
+        (project) => (previousOrder.get(project.id) ?? 0) !== project.sort_order
+      );
+      await Promise.all(
+        updates.map((project) =>
+          supabase.from('projects').update({ sort_order: project.sort_order }).eq('id', project.id)
+        )
+      );
+      window.dispatchEvent(new Event('portfolio-data-updated'));
+    } catch (error) {
+      console.error('Error updating project order:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to update project order',
+        variant: 'destructive',
+      });
+    }
+  };
 
   const openCreateDialog = () => {
     setEditingProject(null);
@@ -418,146 +519,149 @@ const AdminProjects = () => {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredProjects.map((project) => (
-              <Card
-                key={project.id}
-                className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50 hover:border-slate-600/50 transition-all group overflow-hidden"
-              >
-                <div className="relative aspect-video bg-slate-800">
-                  {project.thumbnail_url ? (
-                    <img
-                      src={project.thumbnail_url}
-                      alt={project.title}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-slate-600">
-                      No Image
-                    </div>
-                  )}
-                  {project.featured && (
-                    <div className="absolute top-2 left-2">
-                      <Badge className="bg-yellow-500/90 text-yellow-900">
-                        <Star className="w-3 h-3 mr-1" />
-                        Featured
-                      </Badge>
-                    </div>
-                  )}
-                  {!project.visible && (
-                    <div className="absolute top-2 right-2">
-                      <Badge variant="secondary" className="bg-slate-800/80 text-slate-400">
-                        Hidden
-                      </Badge>
-                    </div>
-                  )}
-                </div>
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={filteredProjects.map((project) => project.id)} strategy={rectSortingStrategy}>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredProjects.map((project) => (
+                  <SortableProjectCard key={project.id} project={project}>
+                    <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50 hover:border-slate-600/50 transition-all group overflow-hidden">
+                      <div className="relative aspect-video bg-slate-800">
+                        {project.thumbnail_url ? (
+                          <img
+                            src={project.thumbnail_url}
+                            alt={project.title}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-slate-600">
+                            No Image
+                          </div>
+                        )}
+                        {project.featured && (
+                          <div className="absolute top-2 left-2">
+                            <Badge className="bg-yellow-500/90 text-yellow-900">
+                              <Star className="w-3 h-3 mr-1" />
+                              Featured
+                            </Badge>
+                          </div>
+                        )}
+                        {!project.visible && (
+                          <div className="absolute top-2 right-2">
+                            <Badge variant="secondary" className="bg-slate-800/80 text-slate-400">
+                              Hidden
+                            </Badge>
+                          </div>
+                        )}
+                      </div>
 
-                <CardContent className="p-4">
-                  <div className="flex items-start justify-between mb-2">
-                    <div>
-                      <h3 className="font-medium text-white">{project.title}</h3>
-                      <p className="text-sm text-slate-400 line-clamp-2">{project.description}</p>
-                    </div>
-                  </div>
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between mb-2">
+                          <div>
+                            <h3 className="font-medium text-white">{project.title}</h3>
+                            <p className="text-sm text-slate-400 line-clamp-2">{project.description}</p>
+                          </div>
+                        </div>
 
-                  <div className="flex items-center gap-2 mb-3">
-                    <Badge className={`text-xs ${statusColors[project.status]}`}>
-                      {project.status.replace('_', ' ')}
-                    </Badge>
-                    {project.category && (
-                      <Badge variant="outline" className="text-xs border-slate-600 text-slate-400">
-                        {project.category}
-                      </Badge>
-                    )}
-                  </div>
+                        <div className="flex items-center gap-2 mb-3">
+                          <Badge className={`text-xs ${statusColors[project.status]}`}>
+                            {project.status.replace('_', ' ')}
+                          </Badge>
+                          {project.category && (
+                            <Badge variant="outline" className="text-xs border-slate-600 text-slate-400">
+                              {project.category}
+                            </Badge>
+                          )}
+                        </div>
 
-                  {project.tech_stack?.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mb-3">
-                      {project.tech_stack.slice(0, 3).map((tech) => (
-                        <Badge
-                          key={tech}
-                          variant="secondary"
-                          className="text-xs bg-slate-800 text-slate-300"
-                        >
-                          {tech}
-                        </Badge>
-                      ))}
-                      {project.tech_stack.length > 3 && (
-                        <Badge variant="secondary" className="text-xs bg-slate-800 text-slate-400">
-                          +{project.tech_stack.length - 3}
-                        </Badge>
-                      )}
-                    </div>
-                  )}
+                        {project.tech_stack?.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mb-3">
+                            {project.tech_stack.slice(0, 3).map((tech) => (
+                              <Badge
+                                key={tech}
+                                variant="secondary"
+                                className="text-xs bg-slate-800 text-slate-300"
+                              >
+                                {tech}
+                              </Badge>
+                            ))}
+                            {project.tech_stack.length > 3 && (
+                              <Badge variant="secondary" className="text-xs bg-slate-800 text-slate-400">
+                                +{project.tech_stack.length - 3}
+                              </Badge>
+                            )}
+                          </div>
+                        )}
 
-                  <div className="flex items-center justify-between pt-3 border-t border-slate-700/50">
-                    <div className="flex gap-2">
-                      {project.github_link && (
-                        <a
-                          href={project.github_link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-slate-400 hover:text-white transition-colors"
-                        >
-                          <Github className="w-4 h-4" />
-                        </a>
-                      )}
-                      {project.live_demo_link && (
-                        <a
-                          href={project.live_demo_link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-slate-400 hover:text-white transition-colors"
-                        >
-                          <ExternalLink className="w-4 h-4" />
-                        </a>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => toggleFeatured(project.id, project.featured)}
-                        className={`h-8 w-8 ${
-                          project.featured ? 'text-yellow-400' : 'text-slate-400 hover:text-yellow-400'
-                        }`}
-                      >
-                        <Star className="w-4 h-4" fill={project.featured ? 'currentColor' : 'none'} />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => toggleVisibility(project.id, project.visible)}
-                        className="text-slate-400 hover:text-white h-8 w-8"
-                      >
-                        {project.visible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => openEditDialog(project)}
-                        className="text-slate-400 hover:text-white h-8 w-8"
-                      >
-                        <Pencil className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => {
-                          setDeletingId(project.id);
-                          setIsDeleteDialogOpen(true);
-                        }}
-                        className="text-slate-400 hover:text-red-400 h-8 w-8"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                        <div className="flex items-center justify-between pt-3 border-t border-slate-700/50">
+                          <div className="flex gap-2">
+                            {project.github_link && (
+                              <a
+                                href={project.github_link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-slate-400 hover:text-white transition-colors"
+                              >
+                                <Github className="w-4 h-4" />
+                              </a>
+                            )}
+                            {project.live_demo_link && (
+                              <a
+                                href={project.live_demo_link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-slate-400 hover:text-white transition-colors"
+                              >
+                                <ExternalLink className="w-4 h-4" />
+                              </a>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => toggleFeatured(project.id, project.featured)}
+                              className={`h-8 w-8 ${
+                                project.featured ? 'text-yellow-400' : 'text-slate-400 hover:text-yellow-400'
+                              }`}
+                            >
+                              <Star className="w-4 h-4" fill={project.featured ? 'currentColor' : 'none'} />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => toggleVisibility(project.id, project.visible)}
+                              className="text-slate-400 hover:text-white h-8 w-8"
+                            >
+                              {project.visible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => openEditDialog(project)}
+                              className="text-slate-400 hover:text-white h-8 w-8"
+                            >
+                              <Pencil className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => {
+                                setDeletingId(project.id);
+                                setIsDeleteDialogOpen(true);
+                              }}
+                              className="text-slate-400 hover:text-red-400 h-8 w-8"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </SortableProjectCard>
+                ))}
+              </div>
+            </SortableContext>
+          </DndContext>
         )}
       </div>
 
