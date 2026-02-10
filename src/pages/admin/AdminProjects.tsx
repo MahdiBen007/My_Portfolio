@@ -92,7 +92,7 @@ const statusColors: Record<ProjectStatus, string> = {
   planned: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
 };
 
-const categories = ['E-commerce', 'Dashboard', 'Landing Page', 'API', 'UI/UX', 'Mobile App', 'Portfolio', 'Other'];
+const categories = ['E-commerce', 'Dashboard', 'Landing Page', 'API', 'UI/UX', 'Mobile App', 'Games', 'Portfolio', 'Other'];
 
 const SortableProjectCard = ({
   project,
