@@ -6,6 +6,7 @@ import {
   ChevronRight,
   ExternalLink,
   Github,
+  Laptop,
   Play,
   Star,
   Target,
@@ -43,6 +44,22 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
   if (visibleProjects.length === 0) {
     return null;
   }
+
+  const ProjectThumbnailFallback = ({ className = '' }: { className?: string }) => {
+    return (
+      <div
+        className={`h-full w-full bg-gradient-to-br from-night-start via-night-mid to-night-end ${className}`}
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,hsl(var(--glow-cyan)/0.22),transparent_55%),radial-gradient(circle_at_80%_75%,hsl(var(--glow-purple)/0.20),transparent_55%)]" />
+        <div className="relative h-full w-full flex flex-col items-center justify-center text-center px-6">
+          <Laptop className="h-14 w-14 text-white/25 drop-shadow" />
+          <div className="mt-3 text-xs font-medium tracking-wide text-white/20">
+            {t('عرض التفاصيل', 'View details')}
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -186,14 +203,18 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
               transition={{ type: 'spring', stiffness: 180, damping: 18 }}
               style={{ transformPerspective: 1200 }}
             >
-                <div className="relative aspect-[1360/607] bg-black/40 overflow-hidden">
+              <div className="relative aspect-[1360/607] bg-black/40 overflow-hidden">
+                {project.images?.[0] ? (
                   <img
-                    src={project.images?.[0] ?? '/project-placeholder.jpg'}
+                    src={project.images[0]}
                     alt={t(project.title, project.titleEn)}
                     className="h-full w-full object-contain object-center transition-transform duration-700 group-hover:scale-[1.02] bg-black/40"
                     loading="lazy"
                     decoding="async"
                   />
+                ) : (
+                  <ProjectThumbnailFallback />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
                 <div className="absolute inset-0 bg-black/35 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 {project.featured && (
@@ -325,16 +346,22 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
                     )
                   ) : (
                     <>
-                      <img
-                        src={selectedProject.images?.[currentImageIndex] ?? '/project-placeholder.jpg'}
-                        alt={t(selectedProject.title, selectedProject.titleEn)}
-                        className={`w-full h-[220px] sm:h-[280px] lg:h-[420px] object-contain object-center bg-black/40 ${
-                          (selectedProject.images?.length ?? 0) > 1 ? 'cursor-pointer' : ''
-                        }`}
-                        onClick={() => {
-                          if ((selectedProject.images?.length ?? 0) > 1) nextImage();
-                        }}
-                      />
+                      {selectedProject.images?.[currentImageIndex] ? (
+                        <img
+                          src={selectedProject.images[currentImageIndex]}
+                          alt={t(selectedProject.title, selectedProject.titleEn)}
+                          className={`w-full h-[220px] sm:h-[280px] lg:h-[420px] object-contain object-center bg-black/40 ${
+                            (selectedProject.images?.length ?? 0) > 1 ? 'cursor-pointer' : ''
+                          }`}
+                          onClick={() => {
+                            if ((selectedProject.images?.length ?? 0) > 1) nextImage();
+                          }}
+                        />
+                      ) : (
+                        <div className="relative w-full h-[220px] sm:h-[280px] lg:h-[420px] bg-black/40">
+                          <ProjectThumbnailFallback />
+                        </div>
+                      )}
                       {selectedProject.images && selectedProject.images.length > 1 && (
                         <div className="absolute inset-0 flex items-center justify-between px-4 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                           <button
