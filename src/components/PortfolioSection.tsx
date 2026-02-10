@@ -141,6 +141,7 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
   const videoUrl = selectedProject?.videoUrl?.trim() ?? '';
   const embedUrl = videoUrl ? getVideoEmbedUrl(videoUrl) : null;
   const hasVideo = Boolean(videoUrl);
+  const hasGoal = Boolean(selectedProject?.goal?.trim() || selectedProject?.goalEn?.trim());
 
   return (
     <section id="portfolio" className="relative py-[clamp(64px,8vw,112px)]" ref={ref}>
@@ -398,15 +399,17 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <h4 className="text-sm font-semibold flex items-center gap-2">
-                      <TrendingUp className="w-4 h-4" />
-                      {t('الهدف', 'Goal')}
-                    </h4>
-                    <p className="text-sm text-muted-foreground">
-                      {t(selectedProject.goal, selectedProject.goalEn)}
-                    </p>
-                  </div>
+                  {hasGoal && (
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold flex items-center gap-2">
+                        <TrendingUp className="w-4 h-4" />
+                        {t('الهدف', 'Goal')}
+                      </h4>
+                      <p className="text-sm text-muted-foreground">
+                        {t(selectedProject.goal, selectedProject.goalEn)}
+                      </p>
+                    </div>
+                  )}
 
                   <div className="space-y-3">
                     <h4 className="text-sm font-semibold">{t('التقنيات', 'Tech Stack')}</h4>

@@ -250,8 +250,8 @@ export const fetchPortfolioData = async (): Promise<PartialPortfolioData | null>
 
       const descriptionAr = project.description_ar ?? project.description ?? "";
       const descriptionEn = project.description ?? project.description_ar ?? "";
-      const goalAr = project.goal_ar ?? project.goal ?? descriptionAr;
-      const goalEn = project.goal ?? project.goal_ar ?? descriptionEn;
+      const goalAr = project.goal_ar ?? project.goal ?? "";
+      const goalEn = project.goal ?? project.goal_ar ?? "";
 
       return {
         id: project.id,
