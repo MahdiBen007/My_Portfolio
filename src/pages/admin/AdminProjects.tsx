@@ -551,7 +551,7 @@ const AdminProjects = () => {
                 {filteredProjects.map((project) => (
                   <SortableProjectCard key={project.id} project={project}>
                     <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50 hover:border-slate-600/50 transition-all group overflow-hidden">
-                      <div className="relative aspect-video bg-slate-800">
+                      <div className="relative aspect-[1360/606] bg-slate-800">
                         {project.thumbnail_url ? (
                           <img
                             src={project.thumbnail_url}
