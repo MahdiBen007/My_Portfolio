@@ -28,6 +28,7 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
   const [activeFilter, setActiveFilter] = useState('all');
   const [selectedProject, setSelectedProject] = useState<typeof projects[0] | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [expandedDetails, setExpandedDetails] = useState({ description: false, goal: false });
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
   const EASE_OUT = [0.22, 1, 0.36, 1] as const;
@@ -108,6 +109,11 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
   }, [selectedProject]);
 
   useEffect(() => {
+    // Reset "read more" when opening a different project
+    setExpandedDetails({ description: false, goal: false });
+  }, [selectedProject?.id]);
+
+  useEffect(() => {
     if (!selectedProject) return;
     const total = selectedProject.images?.length ?? 0;
     if (total === 0) return;
@@ -142,6 +148,12 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
   const embedUrl = videoUrl ? getVideoEmbedUrl(videoUrl) : null;
   const hasVideo = Boolean(videoUrl);
   const hasGoal = Boolean(selectedProject?.goal?.trim() || selectedProject?.goalEn?.trim());
+  const descriptionText = selectedProject
+    ? t(selectedProject.shortDescription, selectedProject.shortDescriptionEn).trim()
+    : '';
+  const goalText = selectedProject ? t(selectedProject.goal, selectedProject.goalEn).trim() : '';
+  const canToggleDescription = descriptionText.length > 260;
+  const canToggleGoal = goalText.length > 260;
 
   return (
     <section id="portfolio" className="relative py-[clamp(64px,8vw,112px)]" ref={ref}>
@@ -393,9 +405,26 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
                     <Target className="w-5 h-5 text-primary" />
                     <div>
                       <h3 className="text-xl font-semibold">{t(selectedProject.title, selectedProject.titleEn)}</h3>
-                      <p className="text-sm text-muted-foreground">
+                      <p
+                        className={`text-sm text-muted-foreground ${
+                          !expandedDetails.description && canToggleDescription ? 'line-clamp-5' : ''
+                        }`}
+                      >
                         {t(selectedProject.shortDescription, selectedProject.shortDescriptionEn)}
                       </p>
+                      {canToggleDescription && (
+                        <div className="mt-2 flex justify-end">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setExpandedDetails((prev) => ({ ...prev, description: !prev.description }))
+                            }
+                            className="text-xs font-semibold text-primary/90 hover:text-primary underline-offset-4 hover:underline"
+                          >
+                            {expandedDetails.description ? t('أقل', 'Less') : t('المزيد', 'More')}
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -405,9 +434,24 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
                         <TrendingUp className="w-4 h-4" />
                         {t('الهدف', 'Goal')}
                       </h4>
-                      <p className="text-sm text-muted-foreground">
+                      <p
+                        className={`text-sm text-muted-foreground ${
+                          !expandedDetails.goal && canToggleGoal ? 'line-clamp-5' : ''
+                        }`}
+                      >
                         {t(selectedProject.goal, selectedProject.goalEn)}
                       </p>
+                      {canToggleGoal && (
+                        <div className="mt-2 flex justify-end">
+                          <button
+                            type="button"
+                            onClick={() => setExpandedDetails((prev) => ({ ...prev, goal: !prev.goal }))}
+                            className="text-xs font-semibold text-primary/90 hover:text-primary underline-offset-4 hover:underline"
+                          >
+                            {expandedDetails.goal ? t('أقل', 'Less') : t('المزيد', 'More')}
+                          </button>
+                        </div>
+                      )}
                     </div>
                   )}
 
