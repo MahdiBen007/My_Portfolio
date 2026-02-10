@@ -91,6 +91,8 @@ type ProjectRow = {
   title_ar: string | null;
   description: string | null;
   description_ar: string | null;
+  goal?: string | null;
+  goal_ar?: string | null;
   thumbnail_url: string | null;
   video_url: string | null;
   gallery_images: string[] | null;
@@ -165,6 +167,11 @@ export type PartialPortfolioData = Omit<Partial<PortfolioData>, "personalData" |
 export const fetchPortfolioData = async (): Promise<PartialPortfolioData | null> => {
   if (!isSupabaseConfigured) return null;
 
+  const projectsQueryV2 =
+    "?select=id,title,title_ar,description,description_ar,goal,goal_ar,thumbnail_url,video_url,gallery_images,tech_stack,github_link,live_demo_link,category,status,featured,sort_order,visible&visible=eq.true&order=sort_order.asc";
+  const projectsQueryV1 =
+    "?select=id,title,title_ar,description,description_ar,thumbnail_url,video_url,gallery_images,tech_stack,github_link,live_demo_link,category,status,featured,sort_order,visible&visible=eq.true&order=sort_order.asc";
+
   const [
     servicesRows,
     skillsRows,
@@ -181,10 +188,24 @@ export const fetchPortfolioData = async (): Promise<PartialPortfolioData | null>
       "skills",
       "?select=name,name_ar,icon,category,brand_color,sort_order,visible&visible=eq.true&order=sort_order.asc"
     ),
-    safeRequest<ProjectRow[]>(
-      "projects",
-      "?select=id,title,title_ar,description,description_ar,thumbnail_url,video_url,gallery_images,tech_stack,github_link,live_demo_link,category,status,featured,sort_order,visible&visible=eq.true&order=sort_order.asc"
-    ),
+    (async () => {
+      try {
+        return await requestJson<ProjectRow[]>("projects", projectsQueryV2);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "";
+        const schemaMissing = message.includes("schema cache") || message.includes("column");
+        if (schemaMissing) {
+          try {
+            return await requestJson<ProjectRow[]>("projects", projectsQueryV1);
+          } catch (fallbackError) {
+            console.error("[portfolioApi] Failed to fetch projects:", fallbackError);
+            return undefined;
+          }
+        }
+        console.error("[portfolioApi] Failed to fetch projects:", error);
+        return undefined;
+      }
+    })(),
     safeRequest<AboutRow[]>("about", "?select=bio,bio_ar,profile_image_url,resume_url&limit=1"),
     safeRequest<TimelineRow[]>(
       "timeline",
@@ -229,6 +250,8 @@ export const fetchPortfolioData = async (): Promise<PartialPortfolioData | null>
 
       const descriptionAr = project.description_ar ?? project.description ?? "";
       const descriptionEn = project.description ?? project.description_ar ?? "";
+      const goalAr = project.goal_ar ?? project.goal ?? descriptionAr;
+      const goalEn = project.goal ?? project.goal_ar ?? descriptionEn;
 
       return {
         id: project.id,
@@ -242,8 +265,8 @@ export const fetchPortfolioData = async (): Promise<PartialPortfolioData | null>
         technologies: project.tech_stack ?? [],
         features: [],
         featuresEn: [],
-        goal: descriptionAr,
-        goalEn: descriptionEn,
+        goal: goalAr,
+        goalEn: goalEn,
         challenges: "",
         challengesEn: "",
         result: "",

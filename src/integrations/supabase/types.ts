@@ -263,6 +263,8 @@ export type Database = {
           description_ar: string | null
           featured: boolean
           gallery_images: string[] | null
+          goal: string | null
+          goal_ar: string | null
             github_link: string | null
             video_url: string | null
             id: string
@@ -283,6 +285,8 @@ export type Database = {
           description_ar?: string | null
           featured?: boolean
           gallery_images?: string[] | null
+          goal?: string | null
+          goal_ar?: string | null
             github_link?: string | null
             video_url?: string | null
             id?: string
@@ -303,6 +307,8 @@ export type Database = {
           description_ar?: string | null
           featured?: boolean
           gallery_images?: string[] | null
+          goal?: string | null
+          goal_ar?: string | null
             github_link?: string | null
             video_url?: string | null
             id?: string

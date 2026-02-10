@@ -73,6 +73,8 @@ interface Project {
   title_ar: string | null;
   description: string;
   description_ar: string | null;
+  goal: string | null;
+  goal_ar: string | null;
   thumbnail_url: string | null;
   video_url: string | null;
   gallery_images: string[];
@@ -154,6 +156,8 @@ const AdminProjects = () => {
     title_ar: '',
     description: '',
     description_ar: '',
+    goal: '',
+    goal_ar: '',
     thumbnail_url: '',
     video_url: '',
     gallery_images: [''],
@@ -240,6 +244,8 @@ const AdminProjects = () => {
       title_ar: '',
       description: '',
       description_ar: '',
+      goal: '',
+      goal_ar: '',
       thumbnail_url: '',
       video_url: '',
       gallery_images: [''],
@@ -261,6 +267,8 @@ const AdminProjects = () => {
       title_ar: project.title_ar || '',
       description: project.description,
       description_ar: project.description_ar || '',
+      goal: project.goal || '',
+      goal_ar: project.goal_ar || '',
       thumbnail_url: project.thumbnail_url || '',
       video_url: project.video_url || '',
       gallery_images: project.gallery_images?.length ? project.gallery_images : [''],
@@ -300,6 +308,8 @@ const AdminProjects = () => {
         title_ar: formData.title_ar || null,
         description: formData.description,
         description_ar: formData.description_ar || null,
+        goal: formData.goal || null,
+        goal_ar: formData.goal_ar || null,
         thumbnail_url: formData.thumbnail_url || null,
         video_url: formData.video_url || null,
         gallery_images: galleryImages,
@@ -312,22 +322,70 @@ const AdminProjects = () => {
         visible: formData.visible,
       };
 
-      if (editingProject) {
-        const { error } = await supabase
-          .from('projects')
-          .update(projectData)
-          .eq('id', editingProject.id);
+      const { goal, goal_ar, ...fallbackProjectData } = projectData;
+      let usedFallback = false;
 
-        if (error) throw error;
-        toast({ title: 'Success', description: 'Project updated successfully' });
+      if (editingProject) {
+        const { error } = await supabase.from('projects').update(projectData).eq('id', editingProject.id);
+
+        if (error) {
+          const message = typeof error?.message === 'string' ? error.message : '';
+          const code = (error as { code?: string }).code;
+          const schemaMissing =
+            message.includes('schema cache') ||
+            message.includes('column') ||
+            code === 'PGRST204' ||
+            code === '42703';
+
+          if (schemaMissing) {
+            const { error: fallbackError } = await supabase
+              .from('projects')
+              .update(fallbackProjectData)
+              .eq('id', editingProject.id);
+            if (fallbackError) throw fallbackError;
+            usedFallback = true;
+          } else {
+            throw error;
+          }
+        }
+
+        toast(
+          usedFallback
+            ? { title: 'Saved with warning', description: 'Project updated, but goal fields need a database migration.' }
+            : { title: 'Success', description: 'Project updated successfully' }
+        );
       } else {
         const { error } = await supabase.from('projects').insert({
           ...projectData,
           sort_order: projects.length,
         });
 
-        if (error) throw error;
-        toast({ title: 'Success', description: 'Project created successfully' });
+        if (error) {
+          const message = typeof error?.message === 'string' ? error.message : '';
+          const code = (error as { code?: string }).code;
+          const schemaMissing =
+            message.includes('schema cache') ||
+            message.includes('column') ||
+            code === 'PGRST204' ||
+            code === '42703';
+
+          if (schemaMissing) {
+            const { error: fallbackError } = await supabase.from('projects').insert({
+              ...fallbackProjectData,
+              sort_order: projects.length,
+            });
+            if (fallbackError) throw fallbackError;
+            usedFallback = true;
+          } else {
+            throw error;
+          }
+        }
+
+        toast(
+          usedFallback
+            ? { title: 'Saved with warning', description: 'Project created, but goal fields need a database migration.' }
+            : { title: 'Success', description: 'Project created successfully' }
+        );
       }
 
       setIsDialogOpen(false);
@@ -742,6 +800,29 @@ const AdminProjects = () => {
                   value={formData.description_ar}
                   onChange={(e) => setFormData({ ...formData, description_ar: e.target.value })}
                   className="bg-slate-800 border-slate-600 min-h-[100px]"
+                  dir="rtl"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="goal">Goal (English)</Label>
+                <Textarea
+                  id="goal"
+                  value={formData.goal}
+                  onChange={(e) => setFormData({ ...formData, goal: e.target.value })}
+                  className="bg-slate-800 border-slate-600 min-h-[90px]"
+                  placeholder="What was the main objective of this project?"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="goal_ar">Goal (Arabic)</Label>
+                <Textarea
+                  id="goal_ar"
+                  value={formData.goal_ar}
+                  onChange={(e) => setFormData({ ...formData, goal_ar: e.target.value })}
+                  className="bg-slate-800 border-slate-600 min-h-[90px]"
                   dir="rtl"
                 />
               </div>
