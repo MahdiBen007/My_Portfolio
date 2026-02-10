@@ -186,7 +186,7 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
               transition={{ type: 'spring', stiffness: 180, damping: 18 }}
               style={{ transformPerspective: 1200 }}
             >
-                <div className="relative aspect-[16/9] bg-black/40 overflow-hidden">
+                <div className="relative aspect-[1360/607] bg-black/40 overflow-hidden">
                   <img
                     src={project.images?.[0] ?? '/project-placeholder.jpg'}
                     alt={t(project.title, project.titleEn)}
