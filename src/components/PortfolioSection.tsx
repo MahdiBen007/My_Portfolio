@@ -314,7 +314,7 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
 
               <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-0 lg:gap-6">
                 {/* Gallery */}
-                <div className="relative bg-black/40 overflow-hidden group lg:self-start">
+                <div className="relative bg-black/40 overflow-hidden group">
                   <div
                     className={`absolute top-3 left-3 z-10 inline-flex items-center gap-2 rounded-full border border-white/10 px-3 py-1 text-xs backdrop-blur ${
                       hasVideo ? 'bg-black/60 text-white' : 'bg-white/5 text-white/70'
