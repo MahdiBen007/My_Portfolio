@@ -192,13 +192,13 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
-          className="flex flex-wrap justify-center gap-4 md:gap-6 max-w-6xl mx-auto"
+          className="flex flex-wrap justify-center gap-4 md:gap-6 w-full mx-auto"
         >
           {filteredProjects.map((project) => (
             <motion.div
               key={project.id}
               variants={cardVariants}
-              className="glass-card rounded-2xl overflow-hidden shadow-card group flex flex-col h-full preserve-3d w-[280px] sm:w-[320px] md:w-[340px]"
+              className="glass-card rounded-2xl overflow-hidden shadow-card group flex flex-col h-full preserve-3d w-full sm:w-[340px] md:w-[360px]"
               whileHover={{ y: -10, scale: 1.015, rotate: isRTL ? 0.6 : -0.6 }}
               transition={{ type: 'spring', stiffness: 180, damping: 18 }}
               style={{ transformPerspective: 1200 }}
@@ -260,13 +260,13 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
                 </div>
 
                 <div className="mt-auto pt-4 border-t border-white/10">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-[auto_1fr] gap-3">
                     <button
                       onClick={() => {
                         setSelectedProject(project);
                         setCurrentImageIndex(0);
                       }}
-                      className="btn-secondary inline-flex items-center justify-center gap-2 px-5"
+                      className="btn-secondary btn-laser inline-flex items-center justify-center gap-2 px-5 h-11 bg-white/5 hover:bg-white/10 whitespace-nowrap"
                       aria-label={t('عرض التفاصيل', 'View details')}
                     >
                       <Target className="w-4 h-4" />
@@ -276,7 +276,7 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
                       href={project.liveUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="btn-primary btn-shine inline-flex items-center justify-center gap-2 px-6"
+                      className="btn-primary btn-shine btn-laser w-full inline-flex items-center justify-center gap-2 px-6 h-11"
                     >
                       <ExternalLink className="w-4 h-4" />
                       {t('معاينة', 'Live')}
