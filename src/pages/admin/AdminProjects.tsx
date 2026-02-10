@@ -73,12 +73,6 @@ interface Project {
   title_ar: string | null;
   description: string;
   description_ar: string | null;
-  goal: string | null;
-  goal_ar: string | null;
-  challenges: string | null;
-  challenges_ar: string | null;
-  result: string | null;
-  result_ar: string | null;
   thumbnail_url: string | null;
   video_url: string | null;
   gallery_images: string[];
@@ -98,7 +92,7 @@ const statusColors: Record<ProjectStatus, string> = {
   planned: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
 };
 
-const categories = ['E-commerce', 'Dashboard', 'Landing Page', 'API', 'UI/UX', 'Mobile App', 'Games', 'Portfolio', 'Other'];
+const categories = ['E-commerce', 'Dashboard', 'Landing Page', 'API', 'UI/UX', 'Mobile App', 'Portfolio', 'Other'];
 
 const SortableProjectCard = ({
   project,
@@ -160,12 +154,6 @@ const AdminProjects = () => {
     title_ar: '',
     description: '',
     description_ar: '',
-    goal: '',
-    goal_ar: '',
-    challenges: '',
-    challenges_ar: '',
-    result: '',
-    result_ar: '',
     thumbnail_url: '',
     video_url: '',
     gallery_images: [''],
@@ -252,12 +240,6 @@ const AdminProjects = () => {
       title_ar: '',
       description: '',
       description_ar: '',
-      goal: '',
-      goal_ar: '',
-      challenges: '',
-      challenges_ar: '',
-      result: '',
-      result_ar: '',
       thumbnail_url: '',
       video_url: '',
       gallery_images: [''],
@@ -279,12 +261,6 @@ const AdminProjects = () => {
       title_ar: project.title_ar || '',
       description: project.description,
       description_ar: project.description_ar || '',
-      goal: project.goal || '',
-      goal_ar: project.goal_ar || '',
-      challenges: project.challenges || '',
-      challenges_ar: project.challenges_ar || '',
-      result: project.result || '',
-      result_ar: project.result_ar || '',
       thumbnail_url: project.thumbnail_url || '',
       video_url: project.video_url || '',
       gallery_images: project.gallery_images?.length ? project.gallery_images : [''],
@@ -324,12 +300,6 @@ const AdminProjects = () => {
         title_ar: formData.title_ar || null,
         description: formData.description,
         description_ar: formData.description_ar || null,
-        goal: formData.goal || null,
-        goal_ar: formData.goal_ar || null,
-        challenges: formData.challenges || null,
-        challenges_ar: formData.challenges_ar || null,
-        result: formData.result || null,
-        result_ar: formData.result_ar || null,
         thumbnail_url: formData.thumbnail_url || null,
         video_url: formData.video_url || null,
         gallery_images: galleryImages,
@@ -772,75 +742,6 @@ const AdminProjects = () => {
                   value={formData.description_ar}
                   onChange={(e) => setFormData({ ...formData, description_ar: e.target.value })}
                   className="bg-slate-800 border-slate-600 min-h-[100px]"
-                  dir="rtl"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="goal">Goal (English)</Label>
-                <Textarea
-                  id="goal"
-                  value={formData.goal}
-                  onChange={(e) => setFormData({ ...formData, goal: e.target.value })}
-                  className="bg-slate-800 border-slate-600 min-h-[90px]"
-                  placeholder="What was the main objective of this project?"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="goal_ar">Goal (Arabic)</Label>
-                <Textarea
-                  id="goal_ar"
-                  value={formData.goal_ar}
-                  onChange={(e) => setFormData({ ...formData, goal_ar: e.target.value })}
-                  className="bg-slate-800 border-slate-600 min-h-[90px]"
-                  dir="rtl"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="challenges">Challenges (English)</Label>
-                <Textarea
-                  id="challenges"
-                  value={formData.challenges}
-                  onChange={(e) => setFormData({ ...formData, challenges: e.target.value })}
-                  className="bg-slate-800 border-slate-600 min-h-[90px]"
-                  placeholder="What were the key challenges you faced?"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="challenges_ar">Challenges (Arabic)</Label>
-                <Textarea
-                  id="challenges_ar"
-                  value={formData.challenges_ar}
-                  onChange={(e) => setFormData({ ...formData, challenges_ar: e.target.value })}
-                  className="bg-slate-800 border-slate-600 min-h-[90px]"
-                  dir="rtl"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="result">Result (English)</Label>
-                <Textarea
-                  id="result"
-                  value={formData.result}
-                  onChange={(e) => setFormData({ ...formData, result: e.target.value })}
-                  className="bg-slate-800 border-slate-600 min-h-[90px]"
-                  placeholder="What was the outcome / impact?"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="result_ar">Result (Arabic)</Label>
-                <Textarea
-                  id="result_ar"
-                  value={formData.result_ar}
-                  onChange={(e) => setFormData({ ...formData, result_ar: e.target.value })}
-                  className="bg-slate-800 border-slate-600 min-h-[90px]"
                   dir="rtl"
                 />
               </div>

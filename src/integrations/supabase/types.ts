@@ -259,20 +259,14 @@ export type Database = {
           Row: {
           category: string | null
           created_at: string
-          challenges: string | null
-          challenges_ar: string | null
           description: string
           description_ar: string | null
           featured: boolean
           gallery_images: string[] | null
-          goal: string | null
-          goal_ar: string | null
             github_link: string | null
             video_url: string | null
             id: string
             live_demo_link: string | null
-          result: string | null
-          result_ar: string | null
           sort_order: number
           status: Database["public"]["Enums"]["project_status"]
           tech_stack: string[] | null
@@ -285,20 +279,14 @@ export type Database = {
           Insert: {
           category?: string | null
           created_at?: string
-          challenges?: string | null
-          challenges_ar?: string | null
           description: string
           description_ar?: string | null
           featured?: boolean
           gallery_images?: string[] | null
-          goal?: string | null
-          goal_ar?: string | null
             github_link?: string | null
             video_url?: string | null
             id?: string
             live_demo_link?: string | null
-          result?: string | null
-          result_ar?: string | null
           sort_order?: number
           status?: Database["public"]["Enums"]["project_status"]
           tech_stack?: string[] | null
@@ -311,20 +299,14 @@ export type Database = {
           Update: {
           category?: string | null
           created_at?: string
-          challenges?: string | null
-          challenges_ar?: string | null
           description?: string
           description_ar?: string | null
           featured?: boolean
           gallery_images?: string[] | null
-          goal?: string | null
-          goal_ar?: string | null
             github_link?: string | null
             video_url?: string | null
             id?: string
             live_demo_link?: string | null
-          result?: string | null
-          result_ar?: string | null
           sort_order?: number
           status?: Database["public"]["Enums"]["project_status"]
           tech_stack?: string[] | null
