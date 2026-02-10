@@ -91,6 +91,12 @@ type ProjectRow = {
   title_ar: string | null;
   description: string | null;
   description_ar: string | null;
+  goal: string | null;
+  goal_ar: string | null;
+  challenges: string | null;
+  challenges_ar: string | null;
+  result: string | null;
+  result_ar: string | null;
   thumbnail_url: string | null;
   video_url: string | null;
   gallery_images: string[] | null;
@@ -183,7 +189,7 @@ export const fetchPortfolioData = async (): Promise<PartialPortfolioData | null>
     ),
     safeRequest<ProjectRow[]>(
       "projects",
-      "?select=id,title,title_ar,description,description_ar,thumbnail_url,video_url,gallery_images,tech_stack,github_link,live_demo_link,category,status,featured,sort_order,visible&visible=eq.true&order=sort_order.asc"
+      "?select=id,title,title_ar,description,description_ar,goal,goal_ar,challenges,challenges_ar,result,result_ar,thumbnail_url,video_url,gallery_images,tech_stack,github_link,live_demo_link,category,status,featured,sort_order,visible&visible=eq.true&order=sort_order.asc"
     ),
     safeRequest<AboutRow[]>("about", "?select=bio,bio_ar,profile_image_url,resume_url&limit=1"),
     safeRequest<TimelineRow[]>(
@@ -229,6 +235,12 @@ export const fetchPortfolioData = async (): Promise<PartialPortfolioData | null>
 
       const descriptionAr = project.description_ar ?? project.description ?? "";
       const descriptionEn = project.description ?? project.description_ar ?? "";
+      const goalAr = project.goal_ar ?? project.goal ?? descriptionAr;
+      const goalEn = project.goal ?? project.goal_ar ?? descriptionEn;
+      const challengesAr = project.challenges_ar ?? project.challenges ?? "";
+      const challengesEn = project.challenges ?? project.challenges_ar ?? "";
+      const resultAr = project.result_ar ?? project.result ?? "";
+      const resultEn = project.result ?? project.result_ar ?? "";
 
       return {
         id: project.id,
@@ -242,12 +254,12 @@ export const fetchPortfolioData = async (): Promise<PartialPortfolioData | null>
         technologies: project.tech_stack ?? [],
         features: [],
         featuresEn: [],
-        goal: descriptionAr,
-        goalEn: descriptionEn,
-        challenges: "",
-        challengesEn: "",
-        result: "",
-        resultEn: "",
+        goal: goalAr,
+        goalEn: goalEn,
+        challenges: challengesAr,
+        challengesEn: challengesEn,
+        result: resultAr,
+        resultEn: resultEn,
         liveUrl: project.live_demo_link ?? "",
         githubUrl: project.github_link ?? "",
         videoUrl: project.video_url ?? "",
