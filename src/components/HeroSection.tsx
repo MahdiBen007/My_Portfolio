@@ -32,12 +32,14 @@ const Counter = ({ value, suffix = '' }: { value: number; suffix?: string }) => 
   );
 };
 
+const DEFAULT_PROFILE_IMAGE = "/hero-portrait.svg";
+
 export const HeroSection = () => {
   const { t, isRTL } = useLanguage();
   const { data } = usePortfolioData();
   const { personalData } = data;
   const [profileSrc, setProfileSrc] = useState(
-    personalData.profileImageUrl || "/hero-portrait.png"
+    personalData.profileImageUrl || DEFAULT_PROFILE_IMAGE
   );
   const [profileLoaded, setProfileLoaded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -86,7 +88,7 @@ export const HeroSection = () => {
   }, [isRTL]);
 
   useEffect(() => {
-    const nextSrc = personalData.profileImageUrl || "/hero-portrait.png";
+    const nextSrc = personalData.profileImageUrl || DEFAULT_PROFILE_IMAGE;
     setProfileSrc(nextSrc);
     setProfileLoaded(false);
   }, [personalData.profileImageUrl]);
@@ -344,8 +346,8 @@ export const HeroSection = () => {
                       loading="eager"
                       onLoad={() => setProfileLoaded(true)}
                       onError={() => {
-                        if (profileSrc !== "/hero-portrait.png") {
-                          setProfileSrc("/hero-portrait.png");
+                        if (profileSrc !== DEFAULT_PROFILE_IMAGE) {
+                          setProfileSrc(DEFAULT_PROFILE_IMAGE);
                         }
                       }}
                     />

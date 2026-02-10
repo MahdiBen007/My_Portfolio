@@ -153,7 +153,7 @@ export const defaultPortfolioData: PortfolioData = {
     linkedin: "https://linkedin.com/in/ahmeddev",
     whatsapp: "https://wa.me/201234567890",
     cvLink: "/cv.pdf",
-    profileImageUrl: "/hero-portrait.png",
+    profileImageUrl: "/hero-portrait.svg",
 
     heroHeadline: "أحوّل الأفكار إلى تجارب ويب سريعة وأنيقة وقابلة للتطوير",
     heroHeadlineEn: "I transform ideas into fast, elegant, and scalable web experiences",

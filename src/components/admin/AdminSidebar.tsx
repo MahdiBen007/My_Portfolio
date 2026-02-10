@@ -159,7 +159,7 @@ const AdminSidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }: AdminS
             >
               <div className="relative">
                 <Avatar className="h-10 w-10 border border-slate-700/60 shadow-lg shadow-blue-500/10">
-                  <AvatarImage src="/hero-portrait.png" alt={displayName} />
+                  <AvatarImage src="/hero-portrait.svg" alt={displayName} />
                   <AvatarFallback className="bg-slate-700 text-white text-sm font-semibold">
                     {initials}
                   </AvatarFallback>

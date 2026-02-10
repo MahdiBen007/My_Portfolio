@@ -71,7 +71,7 @@ export const ResumeSection = ({ title, subtitle }: ResumeSectionProps) => {
             <div className="flex items-center gap-4">
               <div className="h-20 w-20 rounded-2xl overflow-hidden border border-white/10 bg-black/30">
                 <img
-                  src={personalData.profileImageUrl || '/hero-portrait.png'}
+                  src={personalData.profileImageUrl || '/hero-portrait.svg'}
                   alt={t('الصورة الشخصية', 'Profile portrait')}
                   className="h-full w-full object-cover"
                   loading="lazy"
