@@ -1,7 +1,6 @@
 ﻿import { AnimatePresence, motion, useInView } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import {
-  AlertTriangle,
   ChevronLeft,
   ChevronRight,
   ExternalLink,
@@ -406,23 +405,6 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
                     </h4>
                     <p className="text-sm text-muted-foreground">
                       {t(selectedProject.goal, selectedProject.goalEn)}
-                    </p>
-                  </div>
-
-                  <div className="space-y-2">
-                    <h4 className="text-sm font-semibold flex items-center gap-2">
-                      <AlertTriangle className="w-4 h-4" />
-                      {t('التحديات', 'Challenges')}
-                    </h4>
-                    <p className="text-sm text-muted-foreground">
-                      {t(selectedProject.challenges, selectedProject.challengesEn)}
-                    </p>
-                  </div>
-
-                  <div className="space-y-2">
-                    <h4 className="text-sm font-semibold">{t('النتيجة', 'Result')}</h4>
-                    <p className="text-sm text-muted-foreground">
-                      {t(selectedProject.result, selectedProject.resultEn)}
                     </p>
                   </div>
 
