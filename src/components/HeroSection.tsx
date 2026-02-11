@@ -42,6 +42,7 @@ export const HeroSection = () => {
     personalData.profileImageUrl || DEFAULT_PROFILE_IMAGE
   );
   const [profileLoaded, setProfileLoaded] = useState(false);
+  const portraitRef = useRef<HTMLImageElement | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
@@ -92,6 +93,14 @@ export const HeroSection = () => {
     setProfileSrc(nextSrc);
     setProfileLoaded(false);
   }, [personalData.profileImageUrl]);
+
+  useEffect(() => {
+    const img = portraitRef.current;
+    // If the image is already in cache, the load event may fire before React attaches onLoad.
+    if (img?.complete && img.naturalWidth > 0) {
+      setProfileLoaded(true);
+    }
+  }, [profileSrc]);
 
   useEffect(() => {
     if (reduceMotion) {
@@ -338,6 +347,7 @@ export const HeroSection = () => {
                       transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
                     />
                     <img
+                      ref={portraitRef}
                       src={profileSrc}
                       alt={t('الصورة الشخصية', 'Profile portrait')}
                       className={`relative z-10 w-full h-full object-cover rounded-full transition-opacity duration-500 ${
