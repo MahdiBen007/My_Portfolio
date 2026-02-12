@@ -136,7 +136,9 @@ export const HeroSection = () => {
     >
       <motion.div
         style={{ y, opacity, scale }}
-        className="container mx-auto px-6 py-14 lg:py-18"
+        className={`container mx-auto px-6 py-14 lg:py-18 ${
+          isRTL ? '' : 'lg:pl-8 xl:pl-10'
+        }`}
       >
         <motion.div
           variants={containerVariants}
@@ -280,10 +282,10 @@ export const HeroSection = () => {
             className={`relative flex items-center justify-center lg:justify-self-end ${isRTL ? 'lg:order-1' : 'lg:order-2'}`}
           >
             <div
-              className={`relative w-[200px] sm:w-[250px] md:w-[280px] lg:w-[330px] xl:w-[360px] 2xl:w-[390px] -translate-y-4 sm:-translate-y-6 lg:-translate-y-8 ${
+              className={`relative w-[200px] sm:w-[250px] md:w-[280px] lg:w-[330px] xl:w-[360px] 2xl:w-[390px] ${
                 isRTL
-                  ? 'lg:-translate-x-12 xl:-translate-x-16'
-                  : 'lg:-translate-x-6 xl:-translate-x-10'
+                  ? '-translate-y-4 sm:-translate-y-6 lg:-translate-y-8 lg:-translate-x-12 xl:-translate-x-16'
+                  : '-translate-y-6 sm:-translate-y-8 lg:-translate-y-[3.4rem] xl:-translate-y-[4.2rem] lg:translate-x-6 xl:translate-x-10'
               }`}
             >
               <div className="relative aspect-square">
