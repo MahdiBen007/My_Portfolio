@@ -95,6 +95,8 @@ const statusColors: Record<ProjectStatus, string> = {
 };
 
 const categories = ['E-commerce', 'Dashboard', 'Landing Page', 'API', 'UI/UX', 'Mobile App', 'Games', 'Portfolio', 'Other'];
+const MAX_IMAGE_UPLOAD_SIZE = 4 * 1024 * 1024; // 4 MB
+const MAX_VIDEO_UPLOAD_SIZE = 25 * 1024 * 1024; // 25 MB
 
 const SortableProjectCard = ({
   project,
@@ -169,6 +171,34 @@ const AdminProjects = () => {
     featured: false,
     visible: true,
   });
+
+  const validateUpload = (file: File, kind: 'image' | 'video') => {
+    const isExpectedType = kind === 'image' ? file.type.startsWith('image/') : file.type.startsWith('video/');
+    if (!isExpectedType) {
+      toast({
+        title: 'Invalid file type',
+        description: kind === 'image' ? 'Please upload an image file.' : 'Please upload a video file.',
+        variant: 'destructive',
+      });
+      return false;
+    }
+
+    const maxSize = kind === 'image' ? MAX_IMAGE_UPLOAD_SIZE : MAX_VIDEO_UPLOAD_SIZE;
+    if (file.size > maxSize) {
+      const maxLabel = `${Math.round(maxSize / (1024 * 1024))}MB`;
+      toast({
+        title: 'File too large',
+        description:
+          kind === 'image'
+            ? `Image size must be ${maxLabel} or less. Prefer WebP and 1360x607 for thumbnails.`
+            : `Video size must be ${maxLabel} or less for smooth mobile playback.`,
+        variant: 'destructive',
+      });
+      return false;
+    }
+
+    return true;
+  };
 
   const fetchProjects = async () => {
     try {
@@ -416,6 +446,7 @@ const AdminProjects = () => {
 
   const handleThumbnailUpload = async (file: File | null) => {
     if (!file) return;
+    if (!validateUpload(file, 'image')) return;
     setUploadingThumbnail(true);
     try {
       const url = await uploadProjectImage(file);
@@ -435,6 +466,7 @@ const AdminProjects = () => {
 
   const handleGalleryUpload = async (index: number, file: File | null) => {
     if (!file) return;
+    if (!validateUpload(file, 'image')) return;
     setUploadingGalleryIndex(index);
     try {
       const url = await uploadProjectImage(file);
@@ -454,6 +486,7 @@ const AdminProjects = () => {
 
   const handleVideoUpload = async (file: File | null) => {
     if (!file) return;
+    if (!validateUpload(file, 'video')) return;
     setUploadingVideo(true);
     try {
       const url = await uploadProjectImage(file);
@@ -865,6 +898,9 @@ const AdminProjects = () => {
                   )}
                 </Button>
               </div>
+              <p className="text-xs text-slate-400">
+                Recommended: WebP image, ratio 1360x607, max size 4MB.
+              </p>
             </div>
 
             <div className="space-y-2">
@@ -904,6 +940,9 @@ const AdminProjects = () => {
                   )}
                 </Button>
               </div>
+              <p className="text-xs text-slate-400">
+                For mobile performance, keep videos under 25MB.
+              </p>
             </div>
 
             <div className="space-y-2">
@@ -965,6 +1004,9 @@ const AdminProjects = () => {
                   </div>
                 ))}
               </div>
+              <p className="text-xs text-slate-400">
+                Gallery images use the same 4MB limit per image.
+              </p>
             </div>
 
             <div className="space-y-2">
