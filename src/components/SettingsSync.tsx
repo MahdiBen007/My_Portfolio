@@ -99,6 +99,24 @@ export const SettingsSync = () => {
       root.style.setProperty('--glow-pink', accentHsl);
     }
 
+    const navbarBorderHsl = ui?.navbarBorderColor
+      ? hexToHsl(ui.navbarBorderColor) ?? primaryHsl
+      : primaryHsl;
+    const navbarGlowHsl = ui?.navbarGlowColor
+      ? hexToHsl(ui.navbarGlowColor) ?? primaryHsl
+      : primaryHsl;
+
+    if (navbarBorderHsl) {
+      root.style.setProperty('--navbar-border-color', navbarBorderHsl);
+    }
+
+    if (navbarGlowHsl) {
+      root.style.setProperty('--navbar-glow-color', navbarGlowHsl);
+    }
+
+    const navbarGlowIntensity = Math.min(Math.max(ui?.navbarGlowIntensity ?? 100, 0), 100);
+    root.style.setProperty('--navbar-glow-strength', (navbarGlowIntensity / 100).toFixed(2));
+
     if (ui) {
       const paletteMap: Record<string, {
         background: string;

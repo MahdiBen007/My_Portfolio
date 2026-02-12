@@ -61,6 +61,9 @@
     --glow-purple: 262 83% 58%;
     --glow-pink: 330 80% 60%;
     --glow-blue: 217 91% 60%;
+    --navbar-border-color: var(--glow-cyan);
+    --navbar-glow-color: var(--glow-cyan);
+    --navbar-glow-strength: 1;
     
     --glass-base: 222 47% 12%;
     --glass: var(--glass-base);
@@ -524,11 +527,13 @@
   .navbar-capsule-scrolled {
     background: hsl(var(--background) / 0.85);
     backdrop-filter: blur(30px);
-    border-color: hsl(var(--glow-cyan) / 0.2);
+    border-color: hsl(var(--navbar-border-color) / 0.75);
     box-shadow: 
-      0 0 30px hsl(var(--glow-cyan) / 0.15),
-      0 0 60px hsl(var(--glow-purple) / 0.08),
+      0 0 0 1px hsl(var(--navbar-border-color) / 0.35),
+      0 0 26px hsl(var(--navbar-glow-color) / calc(0.45 * var(--navbar-glow-strength))),
+      0 0 64px hsl(var(--navbar-glow-color) / calc(0.24 * var(--navbar-glow-strength))),
       inset 0 1px 0 hsl(var(--glass-highlight) / 0.15);
+    animation: navbar-scroll-glow 2.4s ease-in-out infinite;
   }
 
   /* Glow border animation for capsule */
@@ -547,6 +552,23 @@
 
   .navbar-capsule:hover::before {
     @apply opacity-40;
+  }
+
+  @keyframes navbar-scroll-glow {
+    0%, 100% {
+      box-shadow:
+        0 0 0 1px hsl(var(--navbar-border-color) / 0.3),
+        0 0 20px hsl(var(--navbar-glow-color) / calc(0.35 * var(--navbar-glow-strength))),
+        0 0 52px hsl(var(--navbar-glow-color) / calc(0.2 * var(--navbar-glow-strength))),
+        inset 0 1px 0 hsl(var(--glass-highlight) / 0.15);
+    }
+    50% {
+      box-shadow:
+        0 0 0 1px hsl(var(--navbar-border-color) / 0.45),
+        0 0 32px hsl(var(--navbar-glow-color) / calc(0.55 * var(--navbar-glow-strength))),
+        0 0 74px hsl(var(--navbar-glow-color) / calc(0.32 * var(--navbar-glow-strength))),
+        inset 0 1px 0 hsl(var(--glass-highlight) / 0.2);
+    }
   }
 
   /* Navbar idle glow/pulse */

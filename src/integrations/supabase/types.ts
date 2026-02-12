@@ -396,6 +396,9 @@ export type Database = {
           meta_description: string | null
           meta_title: string | null
           og_image_url: string | null
+          navbar_border_color: string | null
+          navbar_glow_color: string | null
+          navbar_glow_intensity: number | null
           phone: string | null
           primary_color: string | null
           secondary_color: string | null
@@ -429,6 +432,9 @@ export type Database = {
           meta_description?: string | null
           meta_title?: string | null
           og_image_url?: string | null
+          navbar_border_color?: string | null
+          navbar_glow_color?: string | null
+          navbar_glow_intensity?: number | null
           phone?: string | null
           primary_color?: string | null
           secondary_color?: string | null
@@ -462,6 +468,9 @@ export type Database = {
           meta_description?: string | null
           meta_title?: string | null
           og_image_url?: string | null
+          navbar_border_color?: string | null
+          navbar_glow_color?: string | null
+          navbar_glow_intensity?: number | null
           phone?: string | null
           primary_color?: string | null
           secondary_color?: string | null

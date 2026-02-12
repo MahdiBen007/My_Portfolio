@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Globe, Moon, ChevronRight, Sparkles } from 'lucide-react';
+import { Menu, X, Globe, Moon } from 'lucide-react';
 import { navLinks } from '@/data/portfolio-data';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -185,25 +185,10 @@ export const Navbar = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.98 }}
               transition={{ duration: 0.25, ease: 'easeOut' }}
-              className="lg:hidden mx-4 mt-3 relative z-10"
+              className="lg:hidden fixed top-[78px] inset-x-0 z-[70] mx-auto w-[min(88vw,340px)]"
             >
-              <div className="rounded-3xl border border-glass-border/50 bg-gradient-to-b from-night-start/90 via-night-mid/88 to-night-end/92 shadow-glow-lg backdrop-blur-xl overflow-hidden">
-                <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
-                  <div className="flex items-center gap-2 text-primary font-semibold">
-                    <Sparkles className="w-4 h-4" />
-                    <span>{t('التنقل', 'Navigation')}</span>
-                  </div>
-                  <motion.button
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="p-2 rounded-full bg-white/5 hover:bg-white/10"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <X className="w-4 h-4" />
-                  </motion.button>
-                </div>
-
-                <div className="py-2 divide-y divide-white/5">
+              <div className="rounded-2xl border border-primary/25 bg-gradient-to-b from-night-start via-night-mid to-night-end shadow-glow-lg p-3">
+                <div className="rounded-2xl bg-[#0d1733] border border-primary/20 px-2 py-2 space-y-0.5">
                   {navLinks.map((link) => (
                     <motion.a
                       key={link.href}
@@ -212,11 +197,15 @@ export const Navbar = () => {
                         e.preventDefault();
                         scrollToSection(link.href);
                       }}
-                      className="flex items-center justify-between px-5 py-4 text-sm font-medium text-foreground hover:bg-white/5"
-                      whileHover={{ x: 4 }}
+                      className={`block w-full rounded-xl px-4 py-3 text-center text-[1.05rem] font-semibold transition-colors ${
+                        activeSection === link.href.replace('#', '')
+                          ? 'text-primary'
+                          : 'text-slate-100 hover:bg-white/10'
+                      }`}
+                      whileHover={{ scale: 1.01 }}
+                      whileTap={{ scale: 0.99 }}
                     >
-                      <span>{t(link.label, link.labelEn)}</span>
-                      <ChevronRight className="w-4 h-4" />
+                      {t(link.label, link.labelEn)}
                     </motion.a>
                   ))}
                 </div>

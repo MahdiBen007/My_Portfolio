@@ -131,6 +131,9 @@ CREATE TABLE public.settings (
     -- Theme settings
     primary_color TEXT DEFAULT '#3b82f6',
     secondary_color TEXT DEFAULT '#8b5cf6',
+    navbar_border_color TEXT DEFAULT '#22d3ee',
+    navbar_glow_color TEXT DEFAULT '#22d3ee',
+    navbar_glow_intensity INTEGER DEFAULT 100,
     background_gradient TEXT DEFAULT 'night',
     border_radius INTEGER DEFAULT 16,
     spacing_density TEXT DEFAULT 'comfortable',

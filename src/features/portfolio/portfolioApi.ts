@@ -127,6 +127,9 @@ type TimelineRow = {
 type SettingsRow = {
   primary_color: string | null;
   secondary_color: string | null;
+  navbar_border_color?: string | null;
+  navbar_glow_color?: string | null;
+  navbar_glow_intensity?: number | null;
   background_gradient: string | null;
   background_gradient_alt: string | null;
   border_radius: number | null;
@@ -171,6 +174,10 @@ export const fetchPortfolioData = async (): Promise<PartialPortfolioData | null>
     "?select=id,title,title_ar,description,description_ar,goal,goal_ar,thumbnail_url,video_url,gallery_images,tech_stack,github_link,live_demo_link,category,status,featured,sort_order,visible&visible=eq.true&order=sort_order.asc";
   const projectsQueryV1 =
     "?select=id,title,title_ar,description,description_ar,thumbnail_url,video_url,gallery_images,tech_stack,github_link,live_demo_link,category,status,featured,sort_order,visible&visible=eq.true&order=sort_order.asc";
+  const settingsQueryV2 =
+    "?select=primary_color,secondary_color,navbar_border_color,navbar_glow_color,navbar_glow_intensity,background_gradient,background_gradient_alt,border_radius,spacing_density,ui_font,site_font,animations_enabled,shadow_intensity,meta_title,meta_description,keywords,github_url,linkedin_url,behance_url,email,whatsapp,phone,location,location_en,footer_contact_info,copyright_text,locale&limit=1";
+  const settingsQueryV1 =
+    "?select=primary_color,secondary_color,background_gradient,background_gradient_alt,border_radius,spacing_density,ui_font,site_font,animations_enabled,shadow_intensity,meta_title,meta_description,keywords,github_url,linkedin_url,behance_url,email,whatsapp,phone,location,location_en,footer_contact_info,copyright_text,locale&limit=1";
 
   const [
     servicesRows,
@@ -211,10 +218,24 @@ export const fetchPortfolioData = async (): Promise<PartialPortfolioData | null>
       "timeline",
       "?select=id,year,title,title_ar,description,description_ar,sort_order,visible&visible=eq.true&order=sort_order.asc"
     ),
-    safeRequest<SettingsRow[]>(
-      "settings",
-      "?select=primary_color,secondary_color,background_gradient,background_gradient_alt,border_radius,spacing_density,ui_font,site_font,animations_enabled,shadow_intensity,meta_title,meta_description,keywords,github_url,linkedin_url,behance_url,email,whatsapp,phone,location,location_en,footer_contact_info,copyright_text,locale&limit=1"
-    ),
+    (async () => {
+      try {
+        return await requestJson<SettingsRow[]>("settings", settingsQueryV2);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "";
+        const schemaMissing = message.includes("schema cache") || message.includes("column");
+        if (schemaMissing) {
+          try {
+            return await requestJson<SettingsRow[]>("settings", settingsQueryV1);
+          } catch (fallbackError) {
+            console.error("[portfolioApi] Failed to fetch settings:", fallbackError);
+            return undefined;
+          }
+        }
+        console.error("[portfolioApi] Failed to fetch settings:", error);
+        return undefined;
+      }
+    })(),
   ]);
 
   const partial: PartialPortfolioData = {};
@@ -351,6 +372,9 @@ export const fetchPortfolioData = async (): Promise<PartialPortfolioData | null>
       siteFont: settingsRow.site_font ?? "Plus Jakarta Sans",
       animationsEnabled: settingsRow.animations_enabled ?? true,
       shadowIntensity: settingsRow.shadow_intensity ?? 50,
+      navbarBorderColor: settingsRow.navbar_border_color ?? "",
+      navbarGlowColor: settingsRow.navbar_glow_color ?? "",
+      navbarGlowIntensity: settingsRow.navbar_glow_intensity ?? 100,
     };
 
     partial.settings = {

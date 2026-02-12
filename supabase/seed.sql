@@ -311,6 +311,9 @@ BEGIN
   UPDATE public.settings
   SET primary_color = '#4F46E5',
       secondary_color = '#22C55E',
+      navbar_border_color = '#22d3ee',
+      navbar_glow_color = '#22d3ee',
+      navbar_glow_intensity = 100,
       meta_title = 'Portfolio',
       admin_meta_title = 'Admin Dashboard',
       meta_description = 'Professional portfolio showcasing modern web projects.',
@@ -329,6 +332,9 @@ BEGIN
     INSERT INTO public.settings (
       primary_color,
       secondary_color,
+      navbar_border_color,
+      navbar_glow_color,
+      navbar_glow_intensity,
       meta_title,
       admin_meta_title,
       meta_description,
@@ -344,6 +350,9 @@ BEGIN
     ) VALUES (
       '#4F46E5',
       '#22C55E',
+      '#22d3ee',
+      '#22d3ee',
+      100,
       'Portfolio',
       'Admin Dashboard',
       'Professional portfolio showcasing modern web projects.',

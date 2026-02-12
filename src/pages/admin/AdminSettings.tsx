@@ -25,6 +25,9 @@ interface Settings {
   id: string;
   primary_color: string | null;
   secondary_color: string | null;
+  navbar_border_color: string | null;
+  navbar_glow_color: string | null;
+  navbar_glow_intensity: number | null;
   background_gradient: string | null;
   background_gradient_alt: string | null;
   border_radius: number | null;
@@ -105,6 +108,9 @@ const AdminSettings = () => {
         ...data,
         primary_color: data.primary_color ?? '#3b82f6',
         secondary_color: data.secondary_color ?? '#8b5cf6',
+        navbar_border_color: data.navbar_border_color ?? (data.primary_color ?? '#22d3ee'),
+        navbar_glow_color: data.navbar_glow_color ?? (data.primary_color ?? '#22d3ee'),
+        navbar_glow_intensity: data.navbar_glow_intensity ?? 100,
         background_gradient: data.background_gradient ?? 'night',
         background_gradient_alt: data.background_gradient_alt ?? 'midnight',
         border_radius: data.border_radius ?? 16,
@@ -165,6 +171,9 @@ const AdminSettings = () => {
       const payload = {
         primary_color: settings.primary_color,
         secondary_color: settings.secondary_color,
+        navbar_border_color: settings.navbar_border_color,
+        navbar_glow_color: settings.navbar_glow_color,
+        navbar_glow_intensity: settings.navbar_glow_intensity,
         background_gradient: settings.background_gradient,
         background_gradient_alt: settings.background_gradient_alt,
         border_radius: settings.border_radius,
@@ -210,7 +219,15 @@ const AdminSettings = () => {
           code === '42703';
 
         if (schemaMissing) {
-          const { phone, location, location_en, ...fallback } = payload;
+          const {
+            phone,
+            location,
+            location_en,
+            navbar_border_color,
+            navbar_glow_color,
+            navbar_glow_intensity,
+            ...fallback
+          } = payload;
           const { error: fallbackError } = await supabase
             .from('settings')
             .update(fallback)
@@ -480,6 +497,53 @@ const AdminSettings = () => {
                       />
                     </div>
                   </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label>Header Scroll Border Color</Label>
+                    <div className="flex gap-2">
+                      <input
+                        type="color"
+                        value={settings.navbar_border_color || '#22d3ee'}
+                        onChange={(e) => setSettings({ ...settings, navbar_border_color: e.target.value })}
+                        className="w-12 h-10 rounded cursor-pointer"
+                      />
+                      <Input
+                        value={settings.navbar_border_color || ''}
+                        onChange={(e) => setSettings({ ...settings, navbar_border_color: e.target.value })}
+                        className="bg-slate-800 border-slate-600 flex-1"
+                        placeholder="#22d3ee"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Header Scroll Glow Color</Label>
+                    <div className="flex gap-2">
+                      <input
+                        type="color"
+                        value={settings.navbar_glow_color || '#22d3ee'}
+                        onChange={(e) => setSettings({ ...settings, navbar_glow_color: e.target.value })}
+                        className="w-12 h-10 rounded cursor-pointer"
+                      />
+                      <Input
+                        value={settings.navbar_glow_color || ''}
+                        onChange={(e) => setSettings({ ...settings, navbar_glow_color: e.target.value })}
+                        className="bg-slate-800 border-slate-600 flex-1"
+                        placeholder="#22d3ee"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>Header Glow Intensity: {settings.navbar_glow_intensity ?? 100}%</Label>
+                  <Slider
+                    value={[settings.navbar_glow_intensity ?? 100]}
+                    onValueChange={([value]) => setSettings({ ...settings, navbar_glow_intensity: value })}
+                    max={100}
+                    step={5}
+                    className="py-2"
+                  />
                 </div>
 
                 {/* Admin Theme Colors */}

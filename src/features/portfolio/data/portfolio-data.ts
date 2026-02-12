@@ -135,6 +135,9 @@ export type PortfolioData = {
       siteFont: string;
       animationsEnabled: boolean;
       shadowIntensity: number;
+      navbarBorderColor: string;
+      navbarGlowColor: string;
+      navbarGlowIntensity: number;
     };
   };
 };
@@ -528,6 +531,9 @@ export const defaultPortfolioData: PortfolioData = {
       siteFont: "Plus Jakarta Sans",
       animationsEnabled: true,
       shadowIntensity: 50,
+      navbarBorderColor: "",
+      navbarGlowColor: "",
+      navbarGlowIntensity: 100,
     },
   },
 };

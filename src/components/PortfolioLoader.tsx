@@ -28,6 +28,11 @@ export const PortfolioLoader = () => {
         <div className="relative mx-auto h-16 w-16">
           <div className="absolute inset-0 rounded-full border border-white/10" />
           <Loader2 className="h-16 w-16 animate-spin text-primary" />
+          <img
+            src="/favicon.svg"
+            alt="Mahdi logo"
+            className="absolute inset-0 m-auto h-6 w-6 object-contain"
+          />
         </div>
         <div className="flex items-center justify-center gap-2 text-base font-semibold text-white">
           <span className="min-h-[1.6em]">{typedText}</span>

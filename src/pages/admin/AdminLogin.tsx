@@ -49,6 +49,11 @@ const AdminWelcomeLoader = ({ compact = false }: AdminWelcomeLoaderProps) => {
       <div className={`relative mx-auto ${compact ? 'h-12 w-12' : 'h-16 w-16'}`}>
         <div className="absolute inset-0 rounded-full border border-white/10" />
         <Loader2 className="h-full w-full animate-spin text-primary" />
+        <img
+          src="/favicon.svg"
+          alt="Mahdi logo"
+          className="absolute inset-0 m-auto h-6 w-6 object-contain"
+        />
       </div>
       <div className={`flex items-center justify-center gap-2 font-semibold text-white ${compact ? 'text-sm' : 'text-base'}`}>
         <span className="min-h-[1.6em]">{typedText}</span>
