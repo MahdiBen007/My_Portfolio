@@ -32,6 +32,7 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
   const EASE_OUT = [0.22, 1, 0.36, 1] as const;
+  const isProjectOpen = Boolean(selectedProject);
 
   const sortedProjects = [...projects].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   const visibleProjects = featuredOnly
@@ -100,13 +101,38 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
 
   useEffect(() => {
     const root = document.documentElement;
-    if (selectedProject) {
+    if (isProjectOpen) {
       root.classList.add('hide-navbar');
     } else {
       root.classList.remove('hide-navbar');
     }
     return () => root.classList.remove('hide-navbar');
-  }, [selectedProject]);
+  }, [isProjectOpen]);
+
+  useEffect(() => {
+    if (!isProjectOpen) return;
+
+    const root = document.documentElement;
+    const body = document.body;
+    const previousStyles = {
+      bodyOverflow: body.style.overflow,
+      rootOverflow: root.style.overflow,
+      bodyOverscrollBehavior: body.style.overscrollBehavior,
+      overscrollBehavior: root.style.overscrollBehavior,
+    };
+
+    body.style.overflow = 'hidden';
+    root.style.overflow = 'hidden';
+    body.style.overscrollBehavior = 'none';
+    root.style.overscrollBehavior = 'none';
+
+    return () => {
+      body.style.overflow = previousStyles.bodyOverflow;
+      root.style.overflow = previousStyles.rootOverflow;
+      body.style.overscrollBehavior = previousStyles.bodyOverscrollBehavior;
+      root.style.overscrollBehavior = previousStyles.overscrollBehavior;
+    };
+  }, [isProjectOpen]);
 
   useEffect(() => {
     // Reset "read more" when opening a different project
@@ -309,16 +335,18 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            onClick={() => setSelectedProject(null)}
           >
             <motion.div
               initial={{ y: 40, scale: 0.98, opacity: 0 }}
               animate={{ y: 0, scale: 1, opacity: 1 }}
               exit={{ y: 20, opacity: 0 }}
               className="relative w-[min(1100px,94vw)] max-h-[90vh] overflow-hidden rounded-3xl bg-gradient-to-br from-night-start to-night-mid border border-white/10 shadow-glow"
+              onClick={(event) => event.stopPropagation()}
             >
               <button
                 onClick={() => setSelectedProject(null)}
-                className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20"
+                className="absolute top-4 right-4 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full border border-red-200/40 bg-red-500/85 text-white shadow-[0_0_18px_rgba(239,68,68,0.45)] transition-colors hover:bg-red-500"
                 aria-label="Close"
               >
                 <X className="w-5 h-5" />
