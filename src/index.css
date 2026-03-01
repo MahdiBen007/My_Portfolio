@@ -170,6 +170,94 @@
     --admin-accent-strong: 262 83% 58%;
   }
 
+  [data-admin-theme] .admin-sidebar {
+    background: linear-gradient(
+      180deg,
+      hsl(223 49% 19%) 0%,
+      hsl(223 47% 18%) 52%,
+      hsl(223 44% 16%) 100%
+    ) !important;
+    border-right-color: hsl(218 30% 34% / 0.55) !important;
+    box-shadow: inset -1px 0 0 hsl(218 30% 42% / 0.22);
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  [data-admin-theme] .admin-sidebar-header,
+  [data-admin-theme] .admin-sidebar-footer {
+    border-color: hsl(218 30% 38% / 0.36) !important;
+  }
+
+  [data-admin-theme] .admin-sidebar-logo {
+    background: linear-gradient(145deg, hsl(221 65% 56%) 0%, hsl(220 63% 49%) 100%) !important;
+    border-color: hsl(220 62% 64% / 0.45) !important;
+    box-shadow: none !important;
+  }
+
+  [data-admin-theme] .admin-sidebar-control {
+    color: hsl(218 24% 74%) !important;
+  }
+
+  [data-admin-theme] .admin-sidebar-control:hover {
+    color: hsl(210 40% 96%) !important;
+    background-color: hsl(218 30% 30% / 0.45) !important;
+  }
+
+  [data-admin-theme] .admin-nav-link {
+    color: hsl(218 22% 75%) !important;
+    border: 1px solid transparent;
+  }
+
+  [data-admin-theme] .admin-nav-link:hover {
+    color: hsl(210 40% 96%) !important;
+    background-color: hsl(216 35% 31% / 0.55) !important;
+    border-color: transparent !important;
+  }
+
+  [data-admin-theme] .admin-nav-link-active {
+    color: hsl(210 40% 98%) !important;
+    border-color: transparent !important;
+    background: hsl(213 43% 34% / 0.92) !important;
+    box-shadow: none !important;
+  }
+
+  [data-admin-theme] .admin-nav-link-icon {
+    color: hsl(218 23% 72%) !important;
+  }
+
+  [data-admin-theme] .admin-nav-link:hover .admin-nav-link-icon {
+    color: hsl(210 40% 96%) !important;
+  }
+
+  [data-admin-theme] .admin-nav-link-icon-active {
+    color: hsl(200 95% 72%) !important;
+  }
+
+  [data-admin-theme] .admin-sidebar-profile {
+    border-color: hsl(218 30% 40% / 0.45) !important;
+    background-color: hsl(218 34% 26% / 0.86) !important;
+  }
+
+  [data-admin-theme] .admin-sidebar-profile:hover {
+    border-color: hsl(218 30% 50% / 0.55) !important;
+    background-color: hsl(218 34% 29% / 0.9) !important;
+  }
+
+  [data-admin-theme] .admin-sidebar-avatar {
+    border-color: hsl(218 30% 42% / 0.55) !important;
+    box-shadow: none !important;
+  }
+
+  [data-admin-theme] .admin-sidebar-status-dot {
+    border-color: hsl(223 44% 16%) !important;
+  }
+
+  [data-admin-theme] .admin-sidebar-tooltip {
+    background-color: hsl(221 34% 24%) !important;
+    color: hsl(210 40% 96%) !important;
+    border-color: hsl(218 30% 40% / 0.55) !important;
+  }
+
   [data-admin-theme] .bg-slate-950 {
     background-color: hsl(var(--admin-bg)) !important;
   }

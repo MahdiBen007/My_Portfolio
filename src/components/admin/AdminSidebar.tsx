@@ -66,16 +66,16 @@ const AdminSidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }: AdminS
   return (
     <aside
       className={cn(
-        'fixed left-0 top-0 h-screen bg-slate-900/95 backdrop-blur-xl border-r border-slate-700/50 z-50 transition-all duration-300 flex flex-col transform',
+        'admin-sidebar fixed left-0 top-0 h-screen backdrop-blur-xl border-r border-slate-700/50 z-50 transition-all duration-300 flex flex-col transform',
         collapsed ? 'w-64 lg:w-16' : 'w-64',
         mobileOpen ? 'translate-x-0' : '-translate-x-full',
         'lg:translate-x-0'
       )}
     >
       {/* Logo */}
-      <div className="h-16 flex items-center justify-between px-4 border-b border-slate-700/50">
+      <div className="admin-sidebar-header h-16 flex items-center justify-between px-4 border-b border-slate-700/50">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg border border-slate-600/60 bg-slate-800/80 flex items-center justify-center shadow-lg shadow-blue-500/20">
+          <div className="admin-sidebar-logo w-8 h-8 rounded-lg border border-slate-600/60 bg-slate-800/80 flex items-center justify-center shadow-lg shadow-blue-500/20">
             <img
               src="/favicon.svg"
               alt="Mahdi logo"
@@ -89,7 +89,7 @@ const AdminSidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }: AdminS
           variant="ghost"
           size="icon"
           onClick={onToggle}
-          className="text-slate-400 hover:text-white hover:bg-slate-800 hidden lg:inline-flex"
+          className="admin-sidebar-control text-slate-400 hover:text-white hover:bg-slate-800 hidden lg:inline-flex"
         >
           {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
         </Button>
@@ -97,7 +97,7 @@ const AdminSidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }: AdminS
           variant="ghost"
           size="icon"
           onClick={onMobileClose}
-          className="text-slate-400 hover:text-white hover:bg-slate-800 lg:hidden"
+          className="admin-sidebar-control text-slate-400 hover:text-white hover:bg-slate-800 lg:hidden"
         >
           <X className="w-4 h-4" />
         </Button>
@@ -116,16 +116,16 @@ const AdminSidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }: AdminS
               end={item.end}
               onClick={onMobileClose}
               className={cn(
-                'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group',
+                'admin-nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group',
                 isActive
-                  ? 'bg-gradient-to-r from-blue-600/20 to-purple-600/20 text-white border border-blue-500/30 shadow-lg shadow-blue-500/10'
+                  ? 'admin-nav-link-active text-white shadow-lg shadow-blue-500/10'
                   : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
               )}
             >
               <item.icon
                 className={cn(
-                  'w-5 h-5 flex-shrink-0 transition-colors',
-                  isActive ? 'text-blue-400' : 'group-hover:text-blue-400'
+                  'admin-nav-link-icon w-5 h-5 flex-shrink-0 transition-colors',
+                  isActive ? 'admin-nav-link-icon-active' : ''
                 )}
               />
               {!collapsed && (
@@ -138,7 +138,7 @@ const AdminSidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }: AdminS
             return (
               <Tooltip key={item.path} delayDuration={0}>
                 <TooltipTrigger asChild>{linkContent}</TooltipTrigger>
-                <TooltipContent side="right" className="bg-slate-800 text-white border-slate-700">
+                <TooltipContent side="right" className="admin-sidebar-tooltip bg-slate-800 text-white border-slate-700">
                   {item.label}
                 </TooltipContent>
               </Tooltip>
@@ -150,24 +150,24 @@ const AdminSidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }: AdminS
       </nav>
 
       {/* User Menu */}
-      <div className="p-3 border-t border-slate-700/50">
+      <div className="admin-sidebar-footer p-3 border-t border-slate-700/50">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
               className={cn(
-                'w-full flex items-center gap-3 rounded-2xl border border-slate-700/60 bg-slate-800/60 px-3 py-2 text-left transition-all',
+                'admin-sidebar-profile w-full flex items-center gap-3 rounded-2xl border border-slate-700/60 bg-slate-800/60 px-3 py-2 text-left transition-all',
                 'hover:border-blue-500/40 hover:bg-slate-800/80',
                 collapsed ? 'justify-center px-2 py-2.5' : ''
               )}
             >
               <div className="relative">
-                <Avatar className="h-10 w-10 border border-slate-700/60 shadow-lg shadow-blue-500/10">
+                <Avatar className="admin-sidebar-avatar h-10 w-10 border border-slate-700/60 shadow-lg shadow-blue-500/10">
                   <AvatarImage src="/hero-portrait.svg" alt={displayName} />
                   <AvatarFallback className="bg-slate-700 text-white text-sm font-semibold">
                     {initials}
                   </AvatarFallback>
                 </Avatar>
-                <span className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full border-2 border-slate-900 bg-emerald-400" />
+                <span className="admin-sidebar-status-dot absolute -bottom-1 -right-1 h-4 w-4 rounded-full border-2 border-slate-900 bg-emerald-400" />
               </div>
               {!collapsed && (
                 <>
