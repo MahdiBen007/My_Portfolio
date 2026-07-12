@@ -21,8 +21,6 @@ export const WhatsAppCTA = () => {
 
   useEffect(() => {
     if (!href) return;
-    const isMobile = window.matchMedia('(max-width: 768px)').matches;
-    if (isMobile) return;
     attentionRef.current = setInterval(() => {
       controls.start({
         y: [0, -8, 0],
@@ -61,17 +59,17 @@ export const WhatsAppCTA = () => {
         transition={{ type: 'spring', stiffness: 400, damping: 15 }}
         onClick={handleClick}
         className="relative flex items-center justify-center cursor-pointer"
-        style={{ width: 52, height: 52 }}
+        style={{ width: 64, height: 64 }}
       >
-        <span className="absolute inset-0 rounded-full animate-[wa-pulse_2s_ease-out_infinite] pointer-events-none max-md:animate-none" />
-        <span className="absolute inset-0 rounded-full animate-[wa-pulse_2s_ease-out_0.8s_infinite] pointer-events-none max-md:hidden" />
-        <span className="absolute inset-0 rounded-full animate-[wa-float_3s_ease-in-out_infinite] pointer-events-none max-md:hidden" />
+        <span className="absolute inset-0 rounded-full animate-[wa-pulse_2s_ease-out_infinite] pointer-events-none" />
+        <span className="absolute inset-0 rounded-full animate-[wa-pulse_2s_ease-out_0.8s_infinite] pointer-events-none" />
+        <span className="absolute inset-0 rounded-full animate-[wa-float_3s_ease-in-out_infinite] pointer-events-none" />
         {clickRipple && (
           <span className="absolute inset-[-8px] rounded-full animate-[wa-ripple_0.7s_ease-out_forwards] pointer-events-none" />
         )}
         <svg
           viewBox="0 0 24 24"
-          className="relative z-10 w-12 h-12 transition-[filter] duration-300"
+          className="relative z-10 w-16 h-16 transition-[filter] duration-300"
           style={{ filter: 'drop-shadow(0 0 10px rgba(37,211,102,0.5))' }}
         >
           <path

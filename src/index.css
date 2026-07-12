@@ -1059,14 +1059,6 @@
     transform: none !important;
   }
 
-  [style*="scale("] {
-    transform: none !important;
-  }
-
-  [style*="rotate("] {
-    transform: none !important;
-  }
-
   [style*="opacity: 0"],
   [style*="opacity:0"] {
     opacity: 1 !important;

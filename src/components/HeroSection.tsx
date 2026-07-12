@@ -255,7 +255,7 @@ export const HeroSection = () => {
               className="flex flex-row gap-2.5 sm:gap-3 justify-center mt-6 sm:mt-8"
             >
               <motion.a
-                href="#demo"
+                href="#portfolio"
                 className="btn-primary btn-shine inline-flex items-center justify-center gap-1.5 sm:gap-2 text-[clamp(0.8rem,0.5vw+0.7rem,0.95rem)] px-4 sm:px-5 py-2.5 sm:py-3"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
