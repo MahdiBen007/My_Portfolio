@@ -1036,6 +1036,35 @@
     filter: none !important;
   }
 
+  .glass-card {
+    background: rgba(11, 17, 32, 0.9) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    box-shadow: none !important;
+  }
+
+  .animate-float,
+  .animate-pulse-glow,
+  .animate-gradient,
+  .animate-scroll,
+  .animate-fade-in-up {
+    animation: none !important;
+  }
+
+  * {
+    transition-duration: 0.15s !important;
+    animation-duration: 0.15s !important;
+  }
+
+  .project-card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2) !important;
+    transform: none !important;
+  }
+
+  .store-card:hover {
+    box-shadow: none !important;
+    transform: none !important;
+  }
+
   /* Mobile Navbar */
   .navbar-capsule {
     max-width: 100%;
