@@ -1045,18 +1045,18 @@ const AdminSettings = () => {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="whatsapp">WhatsApp</Label>
-                  <Input
-                    id="whatsapp"
-                    value={settings.whatsapp || ''}
-                    onChange={(e) => setSettings({ ...settings, whatsapp: e.target.value })}
-                    className="bg-slate-800 border-slate-600"
-                    placeholder="+1234567890"
-                  />
-                </div>
-
                 <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="whatsapp">WhatsApp</Label>
+                    <Input
+                      id="whatsapp"
+                      value={settings.whatsapp || ''}
+                      onChange={(e) => setSettings({ ...settings, whatsapp: e.target.value })}
+                      className="bg-slate-800 border-slate-600"
+                      placeholder="0555000000"
+                    />
+                    <p className="text-xs text-slate-400">رقم الهاتف فقط (بدون +). مثال: 0555000000</p>
+                  </div>
                   <div className="space-y-2">
                     <Label htmlFor="phone">Phone</Label>
                     <Input
@@ -1067,6 +1067,9 @@ const AdminSettings = () => {
                       placeholder="+20 123 456 7890"
                     />
                   </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="location">Location (Arabic)</Label>
                     <Input
@@ -1077,17 +1080,16 @@ const AdminSettings = () => {
                       placeholder="القاهرة، مصر"
                     />
                   </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="location_en">Location (English)</Label>
-                  <Input
-                    id="location_en"
-                    value={settings.location_en || ''}
-                    onChange={(e) => setSettings({ ...settings, location_en: e.target.value })}
-                    className="bg-slate-800 border-slate-600"
-                    placeholder="Cairo, Egypt"
-                  />
+                  <div className="space-y-2">
+                    <Label htmlFor="location_en">Location (English)</Label>
+                    <Input
+                      id="location_en"
+                      value={settings.location_en || ''}
+                      onChange={(e) => setSettings({ ...settings, location_en: e.target.value })}
+                      className="bg-slate-800 border-slate-600"
+                      placeholder="Cairo, Egypt"
+                    />
+                  </div>
                 </div>
               </CardContent>
             </Card>

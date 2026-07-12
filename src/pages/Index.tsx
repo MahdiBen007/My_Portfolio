@@ -4,11 +4,15 @@ import { SettingsSync } from '@/components/SettingsSync';
 import { AnimatedBackground } from '@/components/AnimatedBackground';
 import { Navbar } from '@/components/Navbar';
 import { HeroSection } from '@/components/HeroSection';
+import { PricingSection } from '@/components/PricingSection';
+import { DashboardShowcase } from '@/components/DashboardShowcase';
+import { DemoSection } from '@/components/DemoSection';
 import { ServicesSection } from '@/components/ServicesSection';
-import { SkillsSection } from '@/components/SkillsSection';
 import { PortfolioSection } from '@/components/PortfolioSection';
 import { AboutSection } from '@/components/AboutSection';
+import { WhyClientsChooseUs } from '@/components/WhyClientsChooseUs';
 import { ContactSection } from '@/components/ContactSection';
+import { WhatsAppCTA } from '@/components/WhatsAppCTA';
 import { Footer } from '@/components/Footer';
 import { PortfolioLoader } from '@/components/PortfolioLoader';
 import { usePortfolioData } from '@/features/portfolio/PortfolioDataContext';
@@ -52,9 +56,12 @@ const Index = () => {
                 ) : (
                   <>
                     <HeroSection />
-                    <ServicesSection />
-                    <SkillsSection />
+                    <PricingSection />
+                    <DashboardShowcase />
+                    <DemoSection />
                     <PortfolioSection />
+                    <ServicesSection />
+                    <WhyClientsChooseUs />
                     <AboutSection />
                     <ContactSection />
                   </>
@@ -62,6 +69,7 @@ const Index = () => {
               </main>
               <Footer />
             </div>
+            <WhatsAppCTA />
           </>
         )}
       </div>

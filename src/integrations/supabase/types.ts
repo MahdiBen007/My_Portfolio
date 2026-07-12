@@ -44,10 +44,56 @@ export type Database = {
         }
         Relationships: []
       }
+      dashboard_screenshots: {
+        Row: {
+          created_at: string
+          demo_url: string | null
+          description: string | null
+          description_ar: string | null
+          id: string
+          image_url: string
+          is_active: boolean
+          sort_order: number
+          title: string
+          title_ar: string | null
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          demo_url?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          image_url: string
+          is_active?: boolean
+          sort_order?: number
+          title: string
+          title_ar?: string | null
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          demo_url?: string | null
+          description?: string | null
+          description_ar?: string | null
+          id?: string
+          image_url?: string
+          is_active?: boolean
+          sort_order?: number
+          title?: string
+          title_ar?: string | null
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           created_at: string
           email: string
+          phone: string | null
           id: string
           internal_notes: string | null
           is_read: boolean
@@ -61,7 +107,8 @@ export type Database = {
         }
         Insert: {
           created_at?: string
-          email: string
+          email?: string
+          phone?: string | null
           id?: string
           internal_notes?: string | null
           is_read?: boolean
@@ -76,6 +123,7 @@ export type Database = {
         Update: {
           created_at?: string
           email?: string
+          phone?: string | null
           id?: string
           internal_notes?: string | null
           is_read?: boolean
@@ -153,6 +201,129 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      pricing_plans: {
+        Row: {
+          badge_ar: string | null
+          badge_en: string | null
+          created_at: string
+          cta_ar: string
+          cta_en: string
+          cta_link: string | null
+          currency_ar: string
+          currency_en: string
+          desc_ar: string
+          desc_en: string
+          featured: boolean
+          features_ar: string[]
+          features_en: string[]
+          icon: string
+          id: string
+          name_ar: string
+          name_en: string
+          price_ar: string
+          price_en: string
+          sort_order: number
+          updated_at: string
+          visible: boolean
+        }
+        Insert: {
+          badge_ar?: string | null
+          badge_en?: string | null
+          created_at?: string
+          cta_ar?: string
+          cta_en?: string
+          cta_link?: string | null
+          currency_ar?: string
+          currency_en?: string
+          desc_ar?: string
+          desc_en?: string
+          featured?: boolean
+          features_ar?: string[]
+          features_en?: string[]
+          icon?: string
+          id?: string
+          name_ar?: string
+          name_en?: string
+          price_ar?: string
+          price_en?: string
+          sort_order?: number
+          updated_at?: string
+          visible?: boolean
+        }
+        Update: {
+          badge_ar?: string | null
+          badge_en?: string | null
+          created_at?: string
+          cta_ar?: string
+          cta_en?: string
+          cta_link?: string | null
+          currency_ar?: string
+          currency_en?: string
+          desc_ar?: string
+          desc_en?: string
+          featured?: boolean
+          features_ar?: string[]
+          features_en?: string[]
+          icon?: string
+          id?: string
+          name_ar?: string
+          name_en?: string
+          price_ar?: string
+          price_en?: string
+          sort_order?: number
+          updated_at?: string
+          visible?: boolean
+        }
+        Relationships: []
+      }
+      testimonials: {
+        Row: {
+          company: string
+          company_ar: string
+          created_at: string
+          customer_name: string
+          customer_name_ar: string
+          id: string
+          photo_url: string | null
+          review: string
+          review_ar: string
+          sort_order: number
+          stars: number
+          updated_at: string
+          visible: boolean
+        }
+        Insert: {
+          company?: string
+          company_ar?: string
+          created_at?: string
+          customer_name?: string
+          customer_name_ar?: string
+          id?: string
+          photo_url?: string | null
+          review?: string
+          review_ar?: string
+          sort_order?: number
+          stars?: number
+          updated_at?: string
+          visible?: boolean
+        }
+        Update: {
+          company?: string
+          company_ar?: string
+          created_at?: string
+          customer_name?: string
+          customer_name_ar?: string
+          id?: string
+          photo_url?: string | null
+          review?: string
+          review_ar?: string
+          sort_order?: number
+          stars?: number
+          updated_at?: string
+          visible?: boolean
+        }
+        Relationships: []
       }
       pages: {
         Row: {
@@ -257,7 +428,7 @@ export type Database = {
       }
         projects: {
           Row: {
-          category: string | null
+           category: string | null
           created_at: string
           description: string
           description_ar: string | null
@@ -269,6 +440,7 @@ export type Database = {
             video_url: string | null
             id: string
             live_demo_link: string | null
+          package_type: string | null
           sort_order: number
           status: Database["public"]["Enums"]["project_status"]
           tech_stack: string[] | null
@@ -291,6 +463,7 @@ export type Database = {
             video_url?: string | null
             id?: string
             live_demo_link?: string | null
+          package_type?: string | null
           sort_order?: number
           status?: Database["public"]["Enums"]["project_status"]
           tech_stack?: string[] | null
@@ -309,10 +482,11 @@ export type Database = {
           gallery_images?: string[] | null
           goal?: string | null
           goal_ar?: string | null
-            github_link?: string | null
+           github_link?: string | null
             video_url?: string | null
             id?: string
             live_demo_link?: string | null
+          package_type?: string | null
           sort_order?: number
           status?: Database["public"]["Enums"]["project_status"]
           tech_stack?: string[] | null
@@ -377,13 +551,17 @@ export type Database = {
           animations_enabled: boolean | null
           admin_meta_title: string | null
           background_gradient: string | null
+          background_gradient_alt: string | null
           behance_url: string | null
           border_radius: number | null
           canonical_url: string | null
           copyright_text: string | null
           created_at: string
           custom_links: Json | null
+          demo_url: string | null
+          demo_video_url: string | null
           email: string | null
+          featured_category: string | null
           footer_contact_info: string | null
           footer_links: Json | null
           github_url: string | null
@@ -408,18 +586,26 @@ export type Database = {
           ui_font: string | null
           updated_at: string
           whatsapp: string | null
+          admin_portfolio_primary_color: string | null
+          admin_portfolio_secondary_color: string | null
+          admin_studio_primary_color: string | null
+          admin_studio_secondary_color: string | null
         }
         Insert: {
           animations_enabled?: boolean | null
           admin_meta_title?: string | null
           background_gradient?: string | null
+          background_gradient_alt?: string | null
           behance_url?: string | null
           border_radius?: number | null
           canonical_url?: string | null
           copyright_text?: string | null
           created_at?: string
           custom_links?: Json | null
+          demo_url?: string | null
+          demo_video_url?: string | null
           email?: string | null
+          featured_category?: string | null
           footer_contact_info?: string | null
           footer_links?: Json | null
           github_url?: string | null
@@ -444,18 +630,26 @@ export type Database = {
           ui_font?: string | null
           updated_at?: string
           whatsapp?: string | null
+          admin_portfolio_primary_color?: string | null
+          admin_portfolio_secondary_color?: string | null
+          admin_studio_primary_color?: string | null
+          admin_studio_secondary_color?: string | null
         }
         Update: {
           animations_enabled?: boolean | null
           admin_meta_title?: string | null
           background_gradient?: string | null
+          background_gradient_alt?: string | null
           behance_url?: string | null
           border_radius?: number | null
           canonical_url?: string | null
           copyright_text?: string | null
           created_at?: string
           custom_links?: Json | null
+          demo_url?: string | null
+          demo_video_url?: string | null
           email?: string | null
+          featured_category?: string | null
           footer_contact_info?: string | null
           footer_links?: Json | null
           github_url?: string | null
@@ -480,6 +674,10 @@ export type Database = {
           ui_font?: string | null
           updated_at?: string
           whatsapp?: string | null
+          admin_portfolio_primary_color?: string | null
+          admin_portfolio_secondary_color?: string | null
+          admin_studio_primary_color?: string | null
+          admin_studio_secondary_color?: string | null
         }
         Relationships: []
       }

@@ -1,48 +1,12 @@
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
-import { useRef, useEffect, useState, useMemo } from 'react';
-import { ArrowDown, Download, Eye, Sparkles, Briefcase } from 'lucide-react';
-import { usePortfolioData } from '@/features/portfolio/PortfolioDataContext';
+import { useRef } from 'react';
+import { Eye, LayoutDashboard, ShoppingCart, TrendingUp, Package, BarChart3 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
-
-const Counter = ({ value, suffix = '' }: { value: number; suffix?: string }) => {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    const duration = 2000;
-    const steps = 60;
-    const increment = value / steps;
-    let current = 0;
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= value) {
-        setCount(value);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(current));
-      }
-    }, duration / steps);
-    return () => clearInterval(timer);
-  }, [value]);
-
-  return (
-    <span className="text-3xl md:text-4xl font-bold gradient-text">
-      {count}
-      {suffix}
-    </span>
-  );
-};
 
 const DEFAULT_PROFILE_IMAGE = "/hero-portrait.svg";
 
 export const HeroSection = () => {
   const { t, isRTL } = useLanguage();
-  const { data } = usePortfolioData();
-  const { personalData } = data;
-  const [profileSrc, setProfileSrc] = useState(
-    personalData.profileImageUrl || DEFAULT_PROFILE_IMAGE
-  );
-  const [profileLoaded, setProfileLoaded] = useState(false);
-  const portraitRef = useRef<HTMLImageElement | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
@@ -74,320 +38,244 @@ export const HeroSection = () => {
     },
   };
 
-  const phrases = useMemo(
-    () => (isRTL ? ["مطور ويب", "مهندس برمجيات", "واجهات حديثة", "تجربة سريعة"] : ["Web Developer", "Full-Stack", "Modern UI", "Fast Experience"]),
-    [isRTL]
-  );
-  const [typedText, setTypedText] = useState('');
-  const [phraseIndex, setPhraseIndex] = useState(0);
-  const [charIndex, setCharIndex] = useState(0);
-
-  useEffect(() => {
-    setTypedText('');
-    setPhraseIndex(0);
-    setCharIndex(0);
-  }, [isRTL]);
-
-  useEffect(() => {
-    const nextSrc = personalData.profileImageUrl || DEFAULT_PROFILE_IMAGE;
-    setProfileSrc(nextSrc);
-    setProfileLoaded(false);
-  }, [personalData.profileImageUrl]);
-
-  useEffect(() => {
-    const img = portraitRef.current;
-    // If the image is already in cache, the load event may fire before React attaches onLoad.
-    if (img?.complete && img.naturalWidth > 0) {
-      setProfileLoaded(true);
-    }
-  }, [profileSrc]);
-
-  useEffect(() => {
-    if (reduceMotion) {
-      setTypedText(Array.isArray(phrases) ? phrases[phraseIndex] : '');
-      return;
-    }
-
-    if (!Array.isArray(phrases) || phrases.length === 0) return;
-
-    const currentPhrase = phrases[phraseIndex % phrases.length] ?? '';
-
-    const shouldType = charIndex <= currentPhrase.length;
-    const delay = shouldType ? 80 : 1600;
-    const timeout = setTimeout(() => {
-      if (shouldType) {
-        setTypedText(currentPhrase.slice(0, charIndex));
-        setCharIndex((c) => c + 1);
-      } else {
-        setTypedText('');
-        setCharIndex(0);
-        setPhraseIndex((i) => (i + 1) % phrases.length);
-      }
-    }, delay);
-
-    return () => clearTimeout(timeout);
-  }, [charIndex, phraseIndex, phrases, reduceMotion]);
+  const features = [
+    { icon: LayoutDashboard, labelAr: 'لوحة تحكم متقدمة', labelEn: 'Professional Dashboard' },
+    { icon: ShoppingCart, labelAr: 'متجر مخصص', labelEn: 'Fully Customized Store' },
+    { icon: TrendingUp, labelAr: 'أداء فائق', labelEn: 'Fast Performance' },
+    { icon: Package, labelAr: 'متجاوب مع الجوال', labelEn: 'Mobile Optimized' },
+    { icon: BarChart3, labelAr: 'مصمم للشركات الجزائرية', labelEn: 'Built for Algerian Businesses' },
+  ];
 
   return (
     <section
       id="home"
       ref={containerRef}
-      className="relative min-h-[90vh] lg:min-h-screen flex items-center justify-center overflow-hidden pt-16 lg:pt-20"
+      className="relative min-h-[85vh] sm:min-h-[90vh] lg:min-h-screen flex items-center justify-center overflow-hidden pt-14 sm:pt-16 lg:pt-20"
     >
       <motion.div
         style={{ y, opacity, scale }}
-        className={`container mx-auto px-6 py-14 lg:py-18 ${
-          isRTL ? '' : 'lg:pl-8 xl:pl-10'
+        className={`container mx-auto px-5 sm:px-6 py-10 sm:py-14 lg:py-18 ${
+          isRTL ? 'lg:pr-8 xl:pr-10' : 'lg:pl-8 xl:pl-10'
         }`}
       >
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid lg:grid-cols-2 gap-18 lg:gap-22 xl:gap-26 items-center justify-items-center lg:justify-items-start"
+          className={`grid lg:grid-cols-2 gap-10 sm:gap-14 lg:gap-18 xl:gap-22 items-center justify-items-center ${isRTL ? 'lg:justify-items-end' : 'lg:justify-items-start'}`}
         >
           {/* Content */}
           <div
-            dir={isRTL ? 'rtl' : 'ltr'}
-            className={`space-y-6 md:space-y-7 lg:space-y-8 max-w-[780px] text-center ${
+            className={`space-y-5 sm:space-y-6 md:space-y-7 lg:space-y-8 max-w-[780px] text-center ${
               isRTL ? 'lg:text-right lg:order-1' : 'lg:text-left lg:order-1'
             }`}
           >
-            {/* Badges */}
+            {/* Badge */}
             <motion.div
               variants={itemVariants}
-              className={`flex flex-wrap gap-2.5 md:gap-3 justify-center ${
-                isRTL ? 'lg:justify-end' : 'lg:justify-start'
-              }`}
+              className="flex flex-wrap gap-2.5 md:gap-3 justify-center"
             >
               <motion.div
                 className="pill-badge"
                 animate={{ y: [0, -5, 0] }}
                 transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
               >
-                <Sparkles className="w-4 h-4 text-primary" />
-                <span>{t('مهندس برمجيات', 'Software Engineer')}</span>
-              </motion.div>
-              <motion.div
-                className="pill-badge"
-                animate={{ y: [0, -5, 0] }}
-                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-              >
-                <Briefcase className="w-4 h-4 text-secondary" />
-                <span>{t('Full-Stack', 'Full-Stack')}</span>
+                <ShoppingCart className="w-4 h-4 text-primary" />
+                <span>{t('منصة التجارة الإلكترونية', 'E-commerce Platform')}</span>
               </motion.div>
             </motion.div>
 
             {/* Main Heading */}
             <motion.h1
               variants={itemVariants}
-              className={`font-bold leading-[1.15] text-[clamp(1.9rem,1.9vw+1rem,2.9rem)] ${
-                isRTL ? 'text-right' : ''
-              }`}
+              className="font-bold leading-[1.15] text-[clamp(1.9rem,1.9vw+1rem,2.9rem)]"
             >
-              {t(personalData.heroHeadline, personalData.heroHeadlineEn)}
+              {t('من الفكرة إلى متجرك الإلكتروني... اشترِ مرة واحدة وبِع بلا حدود.', 'From idea to your online store... Buy once, sell without limits.')}
             </motion.h1>
 
-            {/* Typing line */}
+            {/* Feature List */}
             <motion.div
               variants={itemVariants}
-              dir={isRTL ? 'rtl' : 'ltr'}
-              className={`flex items-center gap-2 text-primary text-[clamp(1rem,0.8vw+0.8rem,1.25rem)] font-semibold justify-center ${
-                isRTL ? 'flex-row-reverse lg:justify-end' : 'lg:justify-start'
-              }`}
-              aria-live="polite"
+              className="space-y-2.5 sm:space-y-3"
             >
-              <span className="min-h-[1.5em]">{typedText}</span>
-              {!reduceMotion && (
-                <span className="w-1.5 h-6 bg-primary animate-pulse rounded-sm" />
-              )}
-            </motion.div>
-
-            {/* Description */}
-            <motion.p
-              variants={itemVariants}
-              className={`text-base sm:text-lg text-muted-foreground max-w-xl leading-relaxed ${
-                isRTL ? 'text-right' : 'hidden sm:block'
-              }`}
-            >
-              {t(personalData.heroDescription, personalData.heroDescriptionEn)}
-            </motion.p>
-
-            {/* CTA Buttons */}
-            <motion.div
-              variants={itemVariants}
-              className={`flex flex-wrap gap-3 md:gap-4 justify-center ${
-                isRTL ? 'flex-row-reverse lg:justify-end' : 'lg:justify-start'
-              }`}
-            >
-              <motion.a
-                href="#portfolio"
-                className="btn-primary btn-shine inline-flex items-center gap-2 text-[clamp(0.95rem,0.6vw+0.75rem,1.05rem)] px-7 py-3"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Eye className="w-5 h-5" />
-                {t('عرض الأعمال', 'View Projects')}
-              </motion.a>
-            <motion.a
-              href={personalData.cvLink}
-              target="_blank"
-              rel="noreferrer"
-              className="btn-secondary inline-flex items-center gap-2 text-[clamp(0.95rem,0.6vw+0.75rem,1.05rem)] px-7 py-3"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-                <Download className="w-5 h-5" />
-                {t('تحميل السيرة', 'Download CV')}
-              </motion.a>
-            </motion.div>
-
-            {/* Stats */}
-            <motion.div
-              variants={itemVariants}
-              className={`flex flex-wrap gap-4 md:gap-6 pt-3 md:pt-4 justify-center ${
-                isRTL ? 'flex-row-reverse lg:justify-end' : 'lg:justify-start'
-              }`}
-            >
-              <div className="stats-card">
-                <div className="text-center">
-                  <Counter value={personalData.stats.yearsExperience} suffix="+" />
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {t('سنوات خبرة', 'Years Exp.')}
-                  </p>
-                </div>
-              </div>
-              <div className="stats-card">
-                <div className="text-center">
-                  <Counter value={personalData.stats.projectsCompleted} suffix="+" />
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {t('مشروع', 'Projects')}
-                  </p>
-                </div>
-              </div>
-              <div className="stats-card">
-                <div className="text-center">
-                  <Counter value={personalData.stats.happyClients} suffix="+" />
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {t('عميل سعيد', 'Happy Clients')}
-                  </p>
-                </div>
-              </div>
+              {features.map((feature, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: isRTL ? 20 : -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5 + index * 0.1, duration: 0.5 }}
+                  className={`flex items-center gap-2.5 sm:gap-3 feature-item ${
+                    isRTL
+                      ? 'justify-center lg:justify-end'
+                      : 'justify-center lg:justify-start'
+                  }`}
+                >
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center bg-primary/10 border border-primary/20 shrink-0">
+                    <feature.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+                  </div>
+                  <span className="text-muted-foreground text-xs sm:text-sm md:text-base">
+                    {t(feature.labelAr, feature.labelEn)}
+                  </span>
+                </motion.div>
+              ))}
             </motion.div>
           </div>
 
-          {/* Profile Image */}
+          {/* Dashboard Preview Composition */}
           <motion.div
             variants={itemVariants}
-            className={`relative flex items-center justify-center lg:justify-self-end ${isRTL ? 'lg:order-1' : 'lg:order-2'}`}
+            className={`relative flex flex-col items-center justify-center lg:justify-self-end mt-8 lg:mt-0 ${isRTL ? 'lg:order-1' : 'lg:order-2'}`}
           >
             <div
-              className={`relative w-[200px] sm:w-[250px] md:w-[280px] lg:w-[330px] xl:w-[360px] 2xl:w-[390px] ${
+              className={`relative w-[260px] sm:w-[300px] md:w-[340px] lg:w-[380px] xl:w-[420px] ${
                 isRTL
-                  ? '-translate-y-4 sm:-translate-y-6 lg:-translate-y-8 lg:-translate-x-12 xl:-translate-x-16'
-                  : '-translate-y-6 sm:-translate-y-8 lg:-translate-y-[3.4rem] xl:-translate-y-[4.2rem] lg:translate-x-6 xl:translate-x-10'
+                  ? '-translate-y-2 sm:-translate-y-4 lg:-translate-y-6'
+                  : '-translate-y-4 sm:-translate-y-6 lg:-translate-y-8'
               }`}
             >
-              <div className="relative aspect-square">
-                {/* Animated Background Blob */}
-                <motion.div
-                  className="absolute inset-0 rounded-full"
-                  style={{
-                    background: 'linear-gradient(135deg, hsl(var(--glow-cyan) / 0.2), hsl(var(--glow-purple) / 0.2))',
-                    filter: 'blur(50px)',
-                  }}
-                  animate={{
-                    scale: [1, 1.08, 1],
-                    rotate: [0, 140, 360],
-                  }}
-                  transition={{
-                    duration: 22,
-                    repeat: Infinity,
-                    ease: 'linear',
-                  }}
-                />
+              {/* Animated Background Blob */}
+              <motion.div
+                className="absolute inset-0 rounded-3xl"
+                style={{
+                  background: 'linear-gradient(135deg, hsl(var(--glow-cyan) / 0.15), hsl(var(--glow-purple) / 0.15))',
+                  filter: 'blur(60px)',
+                }}
+                animate={{
+                  scale: [1, 1.08, 1],
+                  rotate: [0, 140, 360],
+                }}
+                transition={{
+                  duration: 22,
+                  repeat: Infinity,
+                  ease: 'linear',
+                }}
+              />
 
-                {/* Secondary glow */}
-                <motion.div
-                  className="absolute inset-[10%] rounded-full"
-                  style={{
-                    background: 'radial-gradient(circle at 40% 30%, hsl(var(--glow-cyan) / 0.18), transparent 60%)',
-                    filter: 'blur(26px)',
-                  }}
-                  animate={{
-                    scale: [1.03, 0.97, 1.03],
-                    opacity: [0.25, 0.55, 0.25],
-                  }}
-                  transition={{
-                    duration: 14,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  }}
-                />
+              {/* Main Dashboard Card */}
+              <motion.div
+                className="relative z-10 glass-card rounded-2xl p-4 border border-white/10"
+                animate={{ y: [0, -6, 0] }}
+                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                {/* Dashboard Header */}
+                <div className="flex items-center gap-2 mb-3 pb-3 border-b border-white/10">
+                  <div className="w-3 h-3 rounded-full bg-red-400/80" />
+                  <div className="w-3 h-3 rounded-full bg-yellow-400/80" />
+                  <div className="w-3 h-3 rounded-full bg-green-400/80" />
+                  <span className="ms-2 text-xs text-muted-foreground">{t('لوحة التحكم', 'Dashboard')}</span>
+                </div>
 
-                {/* Profile Container - Raised position */}
-                <motion.div
-                  className="relative z-10 w-full h-full flex items-center justify-center"
-                  animate={{ y: [0, -6, 0] }}
-                  transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-                >
-                  {/* Simplified glow frame */}
-                  <div className="absolute inset-[5%] rounded-full overflow-hidden border border-white/12 bg-gradient-to-br from-white/12 via-white/6 to-transparent backdrop-blur-sm shadow-[0_24px_60px_-30px_rgba(0,0,0,0.55)]">
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-glow-cyan/12 via-glow-purple/10 to-glow-pink/12 opacity-70" />
-                    <div className="absolute inset-[2px] rounded-full border border-white/10" />
+                {/* Dashboard Content */}
+                <div className="space-y-3">
+                  {/* Stats Row */}
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="glass-card rounded-xl p-3 text-center">
+                      <TrendingUp className="w-4 h-4 text-primary mx-auto mb-1" />
+                      <div className="text-lg font-bold gradient-text">12.5K</div>
+                      <div className="text-[10px] text-muted-foreground">{t('الزيارات', 'Visitors')}</div>
+                    </div>
+                    <div className="glass-card rounded-xl p-3 text-center">
+                      <ShoppingCart className="w-4 h-4 text-secondary mx-auto mb-1" />
+                      <div className="text-lg font-bold gradient-text">847</div>
+                      <div className="text-[10px] text-muted-foreground">{t('الطلبات', 'Orders')}</div>
+                    </div>
+                    <div className="glass-card rounded-xl p-3 text-center">
+                      <BarChart3 className="w-4 h-4 text-primary mx-auto mb-1" />
+                      <div className="text-lg font-bold gradient-text">98K</div>
+                      <div className="text-[10px] text-muted-foreground">{t('الإيرادات', 'Revenue')}</div>
+                    </div>
                   </div>
 
-                  {/* Portrait */}
-                  <div className="relative w-[70%] sm:w-[72%] md:w-[74%] lg:w-[76%] aspect-square rounded-full overflow-hidden bg-gradient-to-br from-slate-900/40 via-slate-900/15 to-slate-900/0 border border-white/12 shadow-[0_32px_85px_-40px_rgba(0,0,0,0.65)]">
-                    <motion.div
-                      className="absolute inset-[-8%] rounded-full"
-                      style={{
-                        boxShadow: '0 0 35px rgba(99,102,241,0.35), 0 0 65px rgba(236,72,153,0.25)',
-                        border: '1px solid rgba(255,255,255,0.08)',
-                      }}
-                      animate={{ scale: [1, 1.08, 1], opacity: [0.35, 0.8, 0.35] }}
-                      transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
-                    />
-                    <img
-                      ref={portraitRef}
-                      src={profileSrc}
-                      alt={t('الصورة الشخصية', 'Profile portrait')}
-                      className={`relative z-10 w-full h-full object-cover rounded-full transition-opacity duration-500 ${
-                        profileLoaded ? 'opacity-100' : 'opacity-0'
-                      }`}
-                      loading="eager"
-                      onLoad={() => setProfileLoaded(true)}
-                      onError={() => {
-                        if (profileSrc !== DEFAULT_PROFILE_IMAGE) {
-                          setProfileSrc(DEFAULT_PROFILE_IMAGE);
-                        }
-                      }}
-                    />
-                    <div className="absolute inset-0 rounded-full ring-2 ring-white/12" />
+                  {/* Chart Placeholder */}
+                  <div className="glass-card rounded-xl p-3 h-24 relative overflow-hidden">
+                    <div className="text-[10px] text-muted-foreground mb-2">{t('مخطط المبيعات', 'Sales Chart')}</div>
+                    <svg className="w-full h-16" viewBox="0 0 200 60" fill="none">
+                      <motion.path
+                        d="M0 50 L20 40 L40 45 L60 30 L80 35 L100 20 L120 25 L140 15 L160 18 L180 10 L200 5"
+                        stroke="url(#gradient)"
+                        strokeWidth="2"
+                        fill="none"
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 2, delay: 1, ease: 'easeInOut' }}
+                      />
+                      <defs>
+                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="hsl(187, 85%, 53%)" />
+                          <stop offset="100%" stopColor="hsl(262, 83%, 58%)" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
                   </div>
-                </motion.div>
-              </div>
+                </div>
+              </motion.div>
+
+              {/* Floating Cards */}
+              <motion.div
+                className={`absolute -bottom-4 glass-card rounded-xl p-3 border border-white/10 z-20 ${
+                  isRTL ? '-right-4' : '-left-4'
+                }`}
+                animate={{ y: [0, 8, 0], rotate: [0, -2, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center">
+                    <TrendingUp className="w-4 h-4 text-green-400" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold">+24%</div>
+                    <div className="text-[10px] text-muted-foreground">{t('نمو المبيعات', 'Sales Growth')}</div>
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div
+                className={`absolute -top-4 glass-card rounded-xl p-3 border border-white/10 z-20 ${
+                  isRTL ? '-left-4' : '-right-4'
+                }`}
+                animate={{ y: [0, -8, 0], rotate: [0, 2, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
+                    <Package className="w-4 h-4 text-primary" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold">1,234</div>
+                    <div className="text-[10px] text-muted-foreground">{t('المنتجات', 'Products')}</div>
+                  </div>
+                </div>
+              </motion.div>
             </div>
+
+            {/* CTA Buttons - Under Dashboard */}
+            <motion.div
+              variants={itemVariants}
+              className="flex flex-row gap-2.5 sm:gap-3 justify-center mt-6 sm:mt-8"
+            >
+              <motion.a
+                href="#demo"
+                className="btn-primary btn-shine inline-flex items-center justify-center gap-1.5 sm:gap-2 text-[clamp(0.8rem,0.5vw+0.7rem,0.95rem)] px-4 sm:px-5 py-2.5 sm:py-3"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                {t('عرض المتاجر', 'View Stores')}
+              </motion.a>
+              <motion.a
+                href="#demo"
+                className="btn-secondary inline-flex items-center justify-center gap-1.5 sm:gap-2 text-[clamp(0.8rem,0.5vw+0.7rem,0.95rem)] px-4 sm:px-5 py-2.5 sm:py-3"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <LayoutDashboard className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                {t('لوحة التحكم', 'Dashboard')}
+              </motion.a>
+            </motion.div>
           </motion.div>
         </motion.div>
       </motion.div>
 
-      {/* Scroll Indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2"
-      >
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-          className="flex flex-col items-center gap-2 text-muted-foreground"
-        >
-          <span className="text-sm">{t('اسحب للأسفل', 'Scroll Down')}</span>
-          <ArrowDown className="w-5 h-5" />
-        </motion.div>
-      </motion.div>
     </section>
   );
 };

@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { validateFile, sanitizeFileName } from '@/lib/fileValidation';
 import {
   Dialog,
   DialogContent,
@@ -142,8 +143,12 @@ const AdminAbout = () => {
   };
 
   const uploadFile = async (file: File, folder: 'profiles' | 'resumes') => {
-    const extension = file.name.split('.').pop() || 'bin';
-    const safeName = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}.${extension}`;
+    const category = folder === 'resumes' ? 'document' : 'image';
+    const validation = validateFile(file, category);
+    if (!validation.valid) {
+      throw new Error(validation.error);
+    }
+    const safeName = `${folder}/${Date.now()}-${sanitizeFileName(file.name)}`;
     const { error } = await supabase.storage.from('uploads').upload(safeName, file, {
       upsert: true,
       contentType: file.type || undefined,

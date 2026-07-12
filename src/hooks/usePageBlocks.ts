@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { isSupabaseConfigured } from '@/features/portfolio/portfolioApi';
 
@@ -20,6 +20,7 @@ export const usePageBlocks = (slug = 'home') => {
   const [blocks, setBlocks] = useState<PageBlock[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const abortRef = useRef(0);
 
   useEffect(() => {
     if (!isSupabaseConfigured) {
@@ -27,6 +28,8 @@ export const usePageBlocks = (slug = 'home') => {
       setLoading(false);
       return;
     }
+
+    const fetchId = ++abortRef.current;
 
     const fetchBlocks = async () => {
       try {
@@ -42,7 +45,7 @@ export const usePageBlocks = (slug = 'home') => {
 
         if (pageError) throw pageError;
         if (!page) {
-          setBlocks([]);
+          if (fetchId === abortRef.current) setBlocks([]);
           return;
         }
 
@@ -56,13 +59,13 @@ export const usePageBlocks = (slug = 'home') => {
           .order('sort_order', { ascending: true });
 
         if (blocksError) throw blocksError;
-        setBlocks(data || []);
+        if (fetchId === abortRef.current) setBlocks(data || []);
       } catch (err) {
-        console.error('Error loading page blocks:', err);
+        if (fetchId !== abortRef.current) return;
         setError(err instanceof Error ? err.message : 'Unknown error');
         setBlocks([]);
       } finally {
-        setLoading(false);
+        if (fetchId === abortRef.current) setLoading(false);
       }
     };
 

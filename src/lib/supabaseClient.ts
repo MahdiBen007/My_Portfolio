@@ -1,22 +1,10 @@
-import { createClient } from "@supabase/supabase-js";
+export { supabase, isSupabaseConfigured } from '@/integrations/supabase/client';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
-
-export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
-
-export const supabase = isSupabaseConfigured
-  ? createClient(supabaseUrl as string, supabaseAnonKey as string, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-      },
-    })
-  : null;
+import { supabase as supabaseClient } from '@/integrations/supabase/client';
 
 export const requireSupabase = () => {
-  if (!supabase) {
+  if (!supabaseClient) {
     throw new Error("Supabase is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.");
   }
-  return supabase;
+  return supabaseClient;
 };

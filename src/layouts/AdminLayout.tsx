@@ -17,6 +17,8 @@ const pageMetadata: Record<string, { title: string; subtitle?: string }> = {
   '/admin/about': { title: 'About & Timeline', subtitle: 'Manage about section and timeline' },
   '/admin/messages': { title: 'Messages', subtitle: 'View and manage contact messages' },
   '/admin/page-builder': { title: 'Page Builder', subtitle: 'Build and customize your pages' },
+  '/admin/pricing': { title: 'Pricing', subtitle: 'Manage your pricing plans' },
+  '/admin/testimonials': { title: 'Testimonials', subtitle: 'Manage customer testimonials' },
   '/admin/settings': { title: 'Settings', subtitle: 'Configure global settings' },
 };
 
@@ -115,8 +117,8 @@ const AdminLayoutShell = () => {
           portfolio: { accent: portfolioAccent, accentStrong: portfolioStrong },
           studio: { accent: studioAccent, accentStrong: studioStrong },
         });
-      } catch (error) {
-        console.error('Error fetching admin meta title:', error);
+      } catch {
+        // Silently handle settings fetch error - defaults will be used
       }
     };
 

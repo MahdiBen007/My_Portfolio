@@ -3,13 +3,14 @@ import { useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { usePortfolioData } from '@/features/portfolio/PortfolioDataContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { Target, Users, Rocket, Shield } from 'lucide-react';
 
 type AboutSectionProps = {
   title?: string;
 };
 
 export const AboutSection = ({ title }: AboutSectionProps) => {
-  const { t } = useLanguage();
+  const { t, isRTL } = useLanguage();
   const { data } = usePortfolioData();
   const { personalData, experience } = data;
   const ref = useRef(null);
@@ -23,21 +24,53 @@ export const AboutSection = ({ title }: AboutSectionProps) => {
     return null;
   }
 
+  const values = [
+    {
+      icon: Target,
+      titleAr: 'مهمتنا',
+      titleEn: 'Our Mission',
+      descAr: 'تمكين الشركات الجزائرية من البيع عبر الإنترنت بسهولة واحترافية',
+      descEn: 'Empowering Algerian businesses to sell online with ease and professionalism',
+    },
+    {
+      icon: Users,
+      titleAr: 'التركيز على العميل',
+      titleEn: 'Customer Focus',
+      descAr: 'نفهم احتياجات السوق الجزائري ونقدم حلولاً مخصصة لها',
+      descEn: 'We understand the Algerian market needs and deliver tailored solutions',
+    },
+    {
+      icon: Rocket,
+      titleAr: 'الابتكار المستمر',
+      titleEn: 'Continuous Innovation',
+      descAr: 'نطور منصتنا باستمرار لتواكب أحدث تقنيات التجارة الإلكترونية',
+      descEn: 'We continuously develop our platform to keep up with the latest e-commerce tech',
+    },
+    {
+      icon: Shield,
+      titleAr: 'الموثوقية والأمان',
+      titleEn: 'Reliability & Security',
+      descAr: 'نضمن أمان بياناتك وعملاءك بأعلى معايير الحماية',
+      descEn: 'We ensure the security of your data and customers with the highest standards',
+    },
+  ];
+
   return (
-    <section id="about" className="relative py-[clamp(64px,8vw,112px)]" ref={ref}>
-      <div className="container mx-auto px-6">
+    <section id="about" className="relative py-[clamp(48px,8vw,112px)]" ref={ref}>
+      <div className="container mx-auto px-5 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.9, ease: EASE_OUT }}
-          className="section-header text-center mb-16"
+          className="section-header text-center mb-10 sm:mb-16"
         >
-          <h2 className="section-title">{title ?? t('\u0646\u0628\u0630\u0629 \u0639\u0646\u064a', 'About Me')}</h2>
+          <h2 className="section-title">{title ?? t('عن StoreCraft', 'About StoreCraft')}</h2>
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-12">
+          {/* Company Story */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: isRTL ? 30 : -30 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.95, delay: 0.15, ease: EASE_OUT }}
             className="glass-card p-8 rounded-2xl"
@@ -50,13 +83,32 @@ export const AboutSection = ({ title }: AboutSectionProps) => {
             </p>
           </motion.div>
 
+          {/* Values & Timeline */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
+            initial={{ opacity: 0, x: isRTL ? -30 : 30 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.95, delay: 0.25, ease: EASE_OUT }}
             className="relative"
           >
-            <h3 className="text-xl font-bold mb-6">{t('\u0627\u0644\u062e\u0628\u0631\u0627\u062a', 'Experience')}</h3>
+            {/* Values Grid */}
+            <div className="grid grid-cols-2 gap-4 mb-8">
+              {values.map((value, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.7, ease: EASE_OUT, delay: 0.4 + idx * 0.1 }}
+                  className="glass-card rounded-xl p-4"
+                >
+                  <value.icon className="w-6 h-6 text-primary mb-2" />
+                  <h4 className="font-semibold text-sm mb-1">{t(value.titleAr, value.titleEn)}</h4>
+                  <p className="text-xs text-muted-foreground">{t(value.descAr, value.descEn)}</p>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Timeline */}
+            <h3 className="text-xl font-bold mb-6">{t('مسيرة المنصة', 'Platform Journey')}</h3>
             <div className="relative">
               <div className="timeline-line" />
               <div className="space-y-8">

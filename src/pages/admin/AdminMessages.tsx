@@ -44,6 +44,7 @@ interface Message {
   id: string;
   name: string;
   email: string;
+  phone: string | null;
   subject: string | null;
   message: string;
   is_read: boolean;
@@ -70,7 +71,7 @@ const AdminMessages = () => {
 
   const fetchMessages = async () => {
     try {
-      let query = supabase
+      const query = supabase
         .from('messages')
         .select('*')
         .eq('is_spam', false)
@@ -104,7 +105,7 @@ const AdminMessages = () => {
       const query = searchQuery.toLowerCase();
       return (
         msg.name.toLowerCase().includes(query) ||
-        msg.email.toLowerCase().includes(query) ||
+        msg.phone?.toLowerCase().includes(query) ||
         msg.subject?.toLowerCase().includes(query) ||
         msg.message.toLowerCase().includes(query)
       );
@@ -199,10 +200,11 @@ const AdminMessages = () => {
 
   const exportCSV = () => {
     const csv = [
-      ['Name', 'Email', 'Subject', 'Message', 'Date', 'Status'].join(','),
+      ['Name', 'Phone', 'Email', 'Subject', 'Message', 'Date', 'Status'].join(','),
       ...filteredMessages.map((msg) =>
         [
           `"${msg.name}"`,
+          `"${msg.phone || ''}"`,
           `"${msg.email}"`,
           `"${msg.subject || ''}"`,
           `"${msg.message.replace(/"/g, '""')}"`,
@@ -303,7 +305,7 @@ const AdminMessages = () => {
                         <p className={`font-medium ${!msg.is_read ? 'text-white' : 'text-slate-300'}`}>
                           {msg.name}
                         </p>
-                        <span className="text-slate-500 text-sm">{msg.email}</span>
+                        <span className="text-slate-500 text-sm">{msg.phone || msg.email}</span>
                         {!msg.is_read && (
                           <Badge className="bg-blue-500/20 text-blue-400 text-xs">New</Badge>
                         )}
@@ -347,7 +349,7 @@ const AdminMessages = () => {
                     <div>
                       <DialogTitle className="text-left">{selectedMessage.name}</DialogTitle>
                       <DialogDescription className="text-left">
-                        {selectedMessage.email}
+                        {selectedMessage.phone || selectedMessage.email}
                       </DialogDescription>
                     </div>
                   </div>

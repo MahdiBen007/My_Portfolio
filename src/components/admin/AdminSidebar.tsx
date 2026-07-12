@@ -9,6 +9,8 @@ import {
   MessageSquare,
   Settings,
   Layers,
+  DollarSign,
+  Quote,
   LogOut,
   ChevronLeft,
   ChevronRight,
@@ -43,6 +45,8 @@ const navItems = [
   { path: '/admin/about', icon: User, label: 'About & Timeline' },
   { path: '/admin/messages', icon: MessageSquare, label: 'Messages' },
   { path: '/admin/page-builder', icon: Layers, label: 'Page Builder' },
+  { path: '/admin/pricing', icon: DollarSign, label: 'Pricing' },
+  { path: '/admin/testimonials', icon: Quote, label: 'Testimonials' },
   { path: '/admin/settings', icon: Settings, label: 'Settings' },
 ];
 

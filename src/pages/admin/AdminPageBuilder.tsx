@@ -49,7 +49,7 @@ interface PageBlock {
   visible: boolean;
   sort_order: number;
   custom_content: string | null;
-  settings: any;
+  settings: Record<string, unknown> | null;
 }
 
 interface Page {

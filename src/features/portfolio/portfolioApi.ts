@@ -104,6 +104,7 @@ type ProjectRow = {
   featured: boolean | null;
   sort_order: number | null;
   visible: boolean | null;
+  package_type: string | null;
 };
 
 type AboutRow = {
@@ -171,11 +172,11 @@ export const fetchPortfolioData = async (): Promise<PartialPortfolioData | null>
   if (!isSupabaseConfigured) return null;
 
   const projectsQueryV2 =
-    "?select=id,title,title_ar,description,description_ar,goal,goal_ar,thumbnail_url,video_url,gallery_images,tech_stack,github_link,live_demo_link,category,status,featured,sort_order,visible&visible=eq.true&order=sort_order.asc";
+    "?select=id,title,title_ar,description,description_ar,goal,goal_ar,thumbnail_url,video_url,gallery_images,tech_stack,github_link,live_demo_link,category,status,featured,sort_order,visible,package_type&visible=eq.true&order=sort_order.asc";
   const projectsQueryV1 =
-    "?select=id,title,title_ar,description,description_ar,thumbnail_url,video_url,gallery_images,tech_stack,github_link,live_demo_link,category,status,featured,sort_order,visible&visible=eq.true&order=sort_order.asc";
+    "?select=id,title,title_ar,description,description_ar,thumbnail_url,video_url,gallery_images,tech_stack,github_link,live_demo_link,category,status,featured,sort_order,visible,package_type&visible=eq.true&order=sort_order.asc";
   const settingsQueryV2 =
-    "?select=primary_color,secondary_color,navbar_border_color,navbar_glow_color,navbar_glow_intensity,background_gradient,background_gradient_alt,border_radius,spacing_density,ui_font,site_font,animations_enabled,shadow_intensity,meta_title,meta_description,keywords,github_url,linkedin_url,behance_url,email,whatsapp,phone,location,location_en,footer_contact_info,copyright_text,locale&limit=1";
+    "?select=primary_color,secondary_color,navbar_border_color,navbar_glow_color,navbar_glow_intensity,background_gradient,background_gradient_alt,border_radius,spacing_density,ui_font,site_font,animations_enabled,shadow_intensity,meta_title,meta_description,keywords,github_url,linkedin_url,behance_url,email,whatsapp,phone,location,location_en,footer_contact_info,copyright_text,locale,featured_category&limit=1";
   const settingsQueryV1 =
     "?select=primary_color,secondary_color,background_gradient,background_gradient_alt,border_radius,spacing_density,ui_font,site_font,animations_enabled,shadow_intensity,meta_title,meta_description,keywords,github_url,linkedin_url,behance_url,email,whatsapp,phone,location,location_en,footer_contact_info,copyright_text,locale&limit=1";
 
@@ -299,6 +300,7 @@ export const fetchPortfolioData = async (): Promise<PartialPortfolioData | null>
         featured: project.featured ?? false,
         status: project.status ?? "completed",
         order: project.sort_order ?? 0,
+        packageType: project.package_type ?? "other",
       };
     });
 
@@ -390,6 +392,7 @@ export const fetchPortfolioData = async (): Promise<PartialPortfolioData | null>
       },
       locale,
       ui,
+      featuredCategory: settingsRow.featured_category ?? "all",
     };
   }
 

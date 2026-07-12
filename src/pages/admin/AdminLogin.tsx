@@ -66,9 +66,24 @@ const AdminWelcomeLoader = ({ compact = false }: AdminWelcomeLoaderProps) => {
   );
 };
 
+const MAX_ATTEMPTS = 5;
+const LOCKOUT_DURATION_MS = 30_000;
+
 const AdminLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [failedAttempts, setFailedAttempts] = useState(() => {
+    try {
+      const stored = sessionStorage.getItem('login_attempts');
+      const ts = sessionStorage.getItem('login_lockout_ts');
+      if (ts && Date.now() - Number(ts) < LOCKOUT_DURATION_MS) {
+        return stored ? Number(stored) : 0;
+      }
+      return stored ? Number(stored) : 0;
+    } catch {
+      return 0;
+    }
+  });
   const navigate = useNavigate();
   const { toast } = useToast();
   const { signIn, user, loading, isAdmin, signOut } = useAuth();
@@ -78,6 +93,31 @@ const AdminLogin = () => {
     resolver: zodResolver(loginSchema),
     defaultValues: { email: '', password: '' },
   });
+
+  const isLockedOut = failedAttempts >= MAX_ATTEMPTS;
+
+  const recordFailedAttempt = () => {
+    const next = failedAttempts + 1;
+    setFailedAttempts(next);
+    try {
+      sessionStorage.setItem('login_attempts', String(next));
+      if (next >= MAX_ATTEMPTS) {
+        sessionStorage.setItem('login_lockout_ts', String(Date.now()));
+      }
+    } catch {
+      // sessionStorage unavailable
+    }
+  };
+
+  const resetAttempts = () => {
+    setFailedAttempts(0);
+    try {
+      sessionStorage.removeItem('login_attempts');
+      sessionStorage.removeItem('login_lockout_ts');
+    } catch {
+      // sessionStorage unavailable
+    }
+  };
 
   useEffect(() => {
     const id = requestAnimationFrame(() => setPageReady(true));
@@ -121,18 +161,29 @@ const AdminLogin = () => {
   }
 
   const onLogin = async (data: LoginFormData) => {
+    if (isLockedOut) {
+      toast({
+        title: 'Account locked',
+        description: 'Too many failed attempts. Please wait 30 seconds.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setIsLoading(true);
-    const minDelay = new Promise((resolve) => setTimeout(resolve, 2000));
+    const minDelay = new Promise((resolve) => setTimeout(resolve, 1500));
     const { error } = await signIn(data.email, data.password);
     await minDelay;
 
     if (error) {
+      recordFailedAttempt();
       toast({
         title: 'Login Failed',
         description: error.message,
         variant: 'destructive',
       });
     } else {
+      resetAttempts();
       toast({
         title: 'Welcome back!',
         description: 'Successfully logged in.',
@@ -232,9 +283,20 @@ const AdminLogin = () => {
                 <Button
                   type="submit"
                   className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-2.5 shadow-lg shadow-blue-500/25"
+                  disabled={isLockedOut}
                 >
-                  Sign In
+                  {isLockedOut ? 'Locked out - wait 30s' : 'Sign In'}
                 </Button>
+                {isLockedOut && (
+                  <p className="text-red-400 text-xs text-center">
+                    Too many failed attempts. Try again in 30 seconds.
+                  </p>
+                )}
+                {failedAttempts > 0 && failedAttempts < MAX_ATTEMPTS && !isLockedOut && (
+                  <p className="text-amber-400 text-xs text-center">
+                    {MAX_ATTEMPTS - failedAttempts} attempt{MAX_ATTEMPTS - failedAttempts !== 1 ? 's' : ''} remaining.
+                  </p>
+                )}
               </form>
             )}
           </CardContent>
