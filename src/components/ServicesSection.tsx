@@ -1,4 +1,4 @@
-import { motion, useInView, useScroll, useTransform } from 'framer-motion';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { useRef } from 'react';
 import {
   Globe,
@@ -111,6 +111,7 @@ const SERVICES = [
 
 const ServiceVisual = ({ service, index }: { service: typeof SERVICES[0]; index: number }) => {
   const VisualIcon = service.visualIcon;
+  const reduceMotion = useReducedMotion();
 
   const renderMockup = () => {
     switch (index) {
@@ -303,7 +304,7 @@ const ServiceVisual = ({ service, index }: { service: typeof SERVICES[0]; index:
         <motion.div
           className={`absolute top-4 right-4 w-10 h-10 rounded-xl bg-${service.accentColor}-500/20 border border-${service.accentColor}-500/30 flex items-center justify-center`}
           animate={{ y: [0, -8, 0] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+          transition={{ duration: 4, repeat: reduceMotion ? 0 : Infinity, ease: 'easeInOut' }}
         >
           <VisualIcon className={`w-5 h-5 text-${service.accentColor}-400`} />
         </motion.div>
@@ -319,7 +320,7 @@ export const ServicesSection = () => {
   const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
   return (
-    <section id="services" className="relative py-[clamp(48px,8vw,112px)]" ref={ref}>
+    <section id="services" className="relative py-[clamp(48px,8vw,112px)] overflow-hidden" ref={ref}>
       {/* Background Glows */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/4 -left-40 w-80 h-80 bg-primary/[0.03] rounded-full blur-[120px]" />
@@ -370,7 +371,7 @@ export const ServicesSection = () => {
                         background: 'linear-gradient(135deg, hsl(var(--glass)), hsl(var(--glass-border) / 0.5))',
                         boxShadow: `0 0 40px hsl(var(--glow-cyan) / 0.2)`,
                       }}
-                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      whileHover={{ scale: 1.1 }}
                       transition={{ duration: 0.3 }}
                     >
                       <Icon className="w-7 h-7 text-primary relative z-10" />

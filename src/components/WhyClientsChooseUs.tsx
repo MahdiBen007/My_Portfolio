@@ -103,6 +103,7 @@ export const WhyClientsChooseUs = () => {
   const { t, isRTL } = useLanguage();
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' });
+  const isSectionVisible = useInView(sectionRef, { once: false, margin: '-100px' });
   const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
@@ -138,13 +139,17 @@ export const WhyClientsChooseUs = () => {
   }, [fetchTestimonials]);
 
   useEffect(() => {
+    if (!isSectionVisible) {
+      if (advAutoPlayRef.current) clearInterval(advAutoPlayRef.current);
+      return;
+    }
     advAutoPlayRef.current = setInterval(() => {
       setActiveAdv((prev) => (prev + 1) % ADVANTAGES.length);
     }, 2000);
     return () => {
       if (advAutoPlayRef.current) clearInterval(advAutoPlayRef.current);
     };
-  }, []);
+  }, [isSectionVisible]);
 
   const slideVariants = {
     enter: (dir: number) => ({
@@ -177,15 +182,20 @@ export const WhyClientsChooseUs = () => {
 
   useEffect(() => {
     if (testimonials.length <= 1) return;
+    if (!isSectionVisible) {
+      if (autoPlayRef.current) clearInterval(autoPlayRef.current);
+      return;
+    }
     autoPlayRef.current = setInterval(() => paginate(1), 5000);
     return () => {
       if (autoPlayRef.current) clearInterval(autoPlayRef.current);
     };
-  }, [paginate, testimonials.length]);
+  }, [paginate, testimonials.length, isSectionVisible]);
 
   const handleInteraction = () => {
     if (autoPlayRef.current) clearInterval(autoPlayRef.current);
     setTimeout(() => {
+      if (!isSectionVisible) return;
       autoPlayRef.current = setInterval(() => paginate(1), 5000);
     }, 7000);
   };
@@ -480,6 +490,7 @@ export const WhyClientsChooseUs = () => {
                             src={testimonials[activeSlide].photo_url!}
                             alt={t(testimonials[activeSlide].customer_name_ar, testimonials[activeSlide].customer_name)}
                             className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-primary/20"
+                            loading="lazy"
                           />
                         ) : (
                           <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center text-base sm:text-lg font-bold text-primary border border-primary/10">
@@ -667,6 +678,7 @@ function TestimonialPanel({
                         src={testimonials[activeSlide].photo_url!}
                         alt={t(testimonials[activeSlide].customer_name_ar, testimonials[activeSlide].customer_name)}
                         className="w-12 h-12 rounded-full object-cover border-2 border-primary/20"
+                        loading="lazy"
                       />
                     ) : (
                       <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center text-lg font-bold text-primary border border-primary/10">

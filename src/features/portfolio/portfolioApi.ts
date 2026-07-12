@@ -176,7 +176,7 @@ export const fetchPortfolioData = async (): Promise<PartialPortfolioData | null>
   const projectsQueryV1 =
     "?select=id,title,title_ar,description,description_ar,thumbnail_url,video_url,gallery_images,tech_stack,github_link,live_demo_link,category,status,featured,sort_order,visible,package_type&visible=eq.true&order=sort_order.asc";
   const settingsQueryV2 =
-    "?select=primary_color,secondary_color,navbar_border_color,navbar_glow_color,navbar_glow_intensity,background_gradient,background_gradient_alt,border_radius,spacing_density,ui_font,site_font,animations_enabled,shadow_intensity,meta_title,meta_description,keywords,github_url,linkedin_url,behance_url,email,whatsapp,phone,location,location_en,footer_contact_info,copyright_text,locale,featured_category&limit=1";
+    "?select=primary_color,secondary_color,navbar_border_color,navbar_glow_color,navbar_glow_intensity,background_gradient,background_gradient_alt,border_radius,spacing_density,ui_font,site_font,animations_enabled,shadow_intensity,meta_title,meta_description,keywords,github_url,linkedin_url,behance_url,email,whatsapp,phone,location,location_en,footer_contact_info,copyright_text,locale,featured_category,loader_text_ar,loader_text_en,loader_subtitle_ar,loader_subtitle_en,loader_duration,typing_speed&limit=1";
   const settingsQueryV1 =
     "?select=primary_color,secondary_color,background_gradient,background_gradient_alt,border_radius,spacing_density,ui_font,site_font,animations_enabled,shadow_intensity,meta_title,meta_description,keywords,github_url,linkedin_url,behance_url,email,whatsapp,phone,location,location_en,footer_contact_info,copyright_text,locale&limit=1";
 
@@ -393,6 +393,14 @@ export const fetchPortfolioData = async (): Promise<PartialPortfolioData | null>
       locale,
       ui,
       featuredCategory: settingsRow.featured_category ?? "all",
+      loader: {
+        textAr: settingsRow.loader_text_ar ?? "أنا مطور ويب",
+        textEn: settingsRow.loader_text_en ?? "I am Web Developer",
+        subtitleAr: settingsRow.loader_subtitle_ar ?? "جارٍ تحميل البرتفوليو...",
+        subtitleEn: settingsRow.loader_subtitle_en ?? "Loading portfolio...",
+        duration: settingsRow.loader_duration ?? 1400,
+        typingSpeed: settingsRow.typing_speed ?? 80,
+      },
     };
   }
 

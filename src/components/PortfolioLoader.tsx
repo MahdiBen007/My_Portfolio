@@ -1,10 +1,23 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { usePortfolioData } from '@/features/portfolio/PortfolioDataContext';
 
 export const PortfolioLoader = () => {
   const { t } = useLanguage();
-  const fullText = useMemo(() => t('أنا مطور ويب', "I'm Web Developer"), [t]);
+  const { data } = usePortfolioData();
+
+  const loaderSettings = data?.settings?.loader;
+  const fullText = useMemo(
+    () => t(loaderSettings?.textAr ?? 'أنا مطور ويب', loaderSettings?.textEn ?? "I'm Web Developer"),
+    [t, loaderSettings]
+  );
+  const subtitle = useMemo(
+    () => t(loaderSettings?.subtitleAr ?? 'جارٍ تحميل البرتفوليو...', loaderSettings?.subtitleEn ?? 'Loading portfolio...'),
+    [t, loaderSettings]
+  );
+  const typingSpeed = loaderSettings?.typingSpeed ?? 80;
+
   const [typedText, setTypedText] = useState('');
   const [index, setIndex] = useState(0);
 
@@ -18,9 +31,9 @@ export const PortfolioLoader = () => {
     const timeout = setTimeout(() => {
       setTypedText(fullText.slice(0, index + 1));
       setIndex((prev) => prev + 1);
-    }, 80);
+    }, typingSpeed);
     return () => clearTimeout(timeout);
-  }, [index, fullText]);
+  }, [index, fullText, typingSpeed]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950">
@@ -39,7 +52,7 @@ export const PortfolioLoader = () => {
           <span className="h-5 w-[2px] bg-primary animate-pulse rounded-sm" />
         </div>
         <p className="text-xs text-slate-400">
-          {t('جارٍ تحميل البرتفوليو...', 'Loading portfolio...')}
+          {subtitle}
         </p>
       </div>
     </div>

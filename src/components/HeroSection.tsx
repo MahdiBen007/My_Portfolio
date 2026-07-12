@@ -12,6 +12,7 @@ export const HeroSection = () => {
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start'],
+    disabled: reduceMotion,
   });
 
   const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
@@ -77,8 +78,8 @@ export const HeroSection = () => {
             >
               <motion.div
                 className="pill-badge"
-                animate={{ y: [0, -5, 0] }}
-                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                animate={reduceMotion ? {} : { y: [0, -5, 0] }}
+                transition={{ duration: 3, repeat: reduceMotion ? 0 : Infinity, ease: 'easeInOut' }}
               >
                 <ShoppingCart className="w-4 h-4 text-primary" />
                 <span>{t('منصة التجارة الإلكترونية', 'E-commerce Platform')}</span>
@@ -140,13 +141,13 @@ export const HeroSection = () => {
                   background: 'linear-gradient(135deg, hsl(var(--glow-cyan) / 0.15), hsl(var(--glow-purple) / 0.15))',
                   filter: 'blur(60px)',
                 }}
-                animate={{
+                animate={reduceMotion ? {} : {
                   scale: [1, 1.08, 1],
                   rotate: [0, 140, 360],
                 }}
                 transition={{
                   duration: 22,
-                  repeat: Infinity,
+                  repeat: reduceMotion ? 0 : Infinity,
                   ease: 'linear',
                 }}
               />
@@ -154,8 +155,8 @@ export const HeroSection = () => {
               {/* Main Dashboard Card */}
               <motion.div
                 className="relative z-10 glass-card rounded-2xl p-4 border border-white/10"
-                animate={{ y: [0, -6, 0] }}
-                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+                animate={reduceMotion ? {} : { y: [0, -6, 0] }}
+                transition={{ duration: 6, repeat: reduceMotion ? 0 : Infinity, ease: 'easeInOut' }}
               >
                 {/* Dashboard Header */}
                 <div className="flex items-center gap-2 mb-3 pb-3 border-b border-white/10">
@@ -215,8 +216,8 @@ export const HeroSection = () => {
                 className={`absolute -bottom-4 glass-card rounded-xl p-3 border border-white/10 z-20 ${
                   isRTL ? '-right-4' : '-left-4'
                 }`}
-                animate={{ y: [0, 8, 0], rotate: [0, -2, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+                animate={reduceMotion ? {} : { y: [0, 8, 0], rotate: [0, -2, 0] }}
+                transition={{ duration: 5, repeat: reduceMotion ? 0 : Infinity, ease: 'easeInOut', delay: 0.5 }}
               >
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center">
@@ -233,8 +234,8 @@ export const HeroSection = () => {
                 className={`absolute -top-4 glass-card rounded-xl p-3 border border-white/10 z-20 ${
                   isRTL ? '-left-4' : '-right-4'
                 }`}
-                animate={{ y: [0, -8, 0], rotate: [0, 2, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+                animate={reduceMotion ? {} : { y: [0, -8, 0], rotate: [0, 2, 0] }}
+                transition={{ duration: 5, repeat: reduceMotion ? 0 : Infinity, ease: 'easeInOut', delay: 1 }}
               >
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">

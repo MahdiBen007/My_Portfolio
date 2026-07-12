@@ -127,7 +127,7 @@ export const TrustSection = () => {
                     background: 'linear-gradient(135deg, hsl(var(--glass)), hsl(var(--glass-border) / 0.5))',
                     boxShadow: '0 0 25px hsl(var(--glow-cyan) / 0.2)',
                   }}
-                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  whileHover={{ scale: 1.1 }}
                   transition={{ duration: 0.3 }}
                 >
                   <Icon className="w-6 h-6 text-primary relative z-10" />

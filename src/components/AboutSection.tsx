@@ -56,7 +56,7 @@ export const AboutSection = ({ title }: AboutSectionProps) => {
   ];
 
   return (
-    <section id="about" className="relative py-[clamp(48px,8vw,112px)]" ref={ref}>
+    <section id="about" className="relative py-[clamp(48px,8vw,112px)] overflow-hidden" ref={ref}>
       <div className="container mx-auto px-5 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}

@@ -142,7 +142,7 @@ export const PricingSection = () => {
 
   const startAutoPlay = useCallback(() => {
     if (autoPlayRef.current) clearInterval(autoPlayRef.current);
-    autoPlayRef.current = setInterval(goNext, 2000);
+    autoPlayRef.current = setInterval(goNext, 4000);
   }, [goNext]);
 
   const stopAutoPlay = useCallback(() => {

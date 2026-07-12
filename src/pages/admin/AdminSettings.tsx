@@ -59,6 +59,12 @@ interface Settings {
   footer_links: unknown;
   footer_contact_info: string | null;
   locale: 'ar' | 'en' | null;
+  loader_text_ar: string | null;
+  loader_text_en: string | null;
+  loader_subtitle_ar: string | null;
+  loader_subtitle_en: string | null;
+  loader_duration: number | null;
+  typing_speed: number | null;
 }
 
 const gradientPresets = [
@@ -140,6 +146,12 @@ const AdminSettings = () => {
         footer_contact_info: data.footer_contact_info ?? '',
         admin_meta_title: data.admin_meta_title ?? 'Admin Dashboard',
         locale: safeLocale,
+        loader_text_ar: data.loader_text_ar ?? 'أنا مطور ويب',
+        loader_text_en: data.loader_text_en ?? 'I am Web Developer',
+        loader_subtitle_ar: data.loader_subtitle_ar ?? 'جارٍ تحميل البرتفوليو...',
+        loader_subtitle_en: data.loader_subtitle_en ?? 'Loading portfolio...',
+        loader_duration: data.loader_duration ?? 1400,
+        typing_speed: data.typing_speed ?? 80,
       });
     } catch (error) {
       console.error('Error fetching settings:', error);
@@ -203,6 +215,12 @@ const AdminSettings = () => {
         copyright_text: settings.copyright_text,
         footer_contact_info: settings.footer_contact_info,
         locale: settings.locale ?? 'ar',
+        loader_text_ar: settings.loader_text_ar,
+        loader_text_en: settings.loader_text_en,
+        loader_subtitle_ar: settings.loader_subtitle_ar,
+        loader_subtitle_en: settings.loader_subtitle_en,
+        loader_duration: settings.loader_duration,
+        typing_speed: settings.typing_speed,
       };
 
       let usedFallback = false;
@@ -450,6 +468,10 @@ const AdminSettings = () => {
             <TabsTrigger value="footer" className="data-[state=active]:bg-blue-600 shrink-0 whitespace-nowrap min-w-[120px] sm:min-w-[140px]">
               <FileText className="w-4 h-4 mr-2" />
               Footer
+            </TabsTrigger>
+            <TabsTrigger value="loader" className="data-[state=active]:bg-blue-600 shrink-0 whitespace-nowrap min-w-[120px] sm:min-w-[140px]">
+              <Loader2 className="w-4 h-4 mr-2" />
+              Loader
             </TabsTrigger>
           </TabsList>
 
@@ -1125,6 +1147,95 @@ const AdminSettings = () => {
                     className="bg-slate-800 border-slate-600"
                     placeholder="Your address, phone number, etc."
                   />
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="loader">
+            <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
+              <CardHeader>
+                <CardTitle className="text-white">Loader Settings</CardTitle>
+                <CardDescription className="text-slate-400">
+                  تخصيص شاشة التحميل
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="loader_text_ar">النص الرئيسي (عربي)</Label>
+                    <Input
+                      id="loader_text_ar"
+                      value={settings.loader_text_ar || ''}
+                      onChange={(e) => setSettings({ ...settings, loader_text_ar: e.target.value })}
+                      className="bg-slate-800 border-slate-600"
+                      placeholder="أنا مطور ويب"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="loader_text_en">Main Text (English)</Label>
+                    <Input
+                      id="loader_text_en"
+                      value={settings.loader_text_en || ''}
+                      onChange={(e) => setSettings({ ...settings, loader_text_en: e.target.value })}
+                      className="bg-slate-800 border-slate-600"
+                      placeholder="I am Web Developer"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="loader_subtitle_ar">النص الفرعي (عربي)</Label>
+                    <Input
+                      id="loader_subtitle_ar"
+                      value={settings.loader_subtitle_ar || ''}
+                      onChange={(e) => setSettings({ ...settings, loader_subtitle_ar: e.target.value })}
+                      className="bg-slate-800 border-slate-600"
+                      placeholder="جارٍ تحميل البرتفوليو..."
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="loader_subtitle_en">Subtitle (English)</Label>
+                    <Input
+                      id="loader_subtitle_en"
+                      value={settings.loader_subtitle_en || ''}
+                      onChange={(e) => setSettings({ ...settings, loader_subtitle_en: e.target.value })}
+                      className="bg-slate-800 border-slate-600"
+                      placeholder="Loading portfolio..."
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="loader_duration">مدة التحميل (مللي ثانية)</Label>
+                    <Input
+                      id="loader_duration"
+                      type="number"
+                      min={500}
+                      max={5000}
+                      step={100}
+                      value={settings.loader_duration ?? 1400}
+                      onChange={(e) => setSettings({ ...settings, loader_duration: Number(e.target.value) })}
+                      className="bg-slate-800 border-slate-600"
+                    />
+                    <p className="text-xs text-slate-400">الحد الأدنى 500، الحد الأقصى 5000</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="typing_speed">سرعة الكتابة (مللي ثانية)</Label>
+                    <Input
+                      id="typing_speed"
+                      type="number"
+                      min={20}
+                      max={300}
+                      step={10}
+                      value={settings.typing_speed ?? 80}
+                      onChange={(e) => setSettings({ ...settings, typing_speed: Number(e.target.value) })}
+                      className="bg-slate-800 border-slate-600"
+                    />
+                    <p className="text-xs text-slate-400">كل حرف يظهر بعد (مللي ثانية)</p>
+                  </div>
                 </div>
               </CardContent>
             </Card>

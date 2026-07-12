@@ -144,6 +144,14 @@ export type PortfolioData = {
       navbarGlowIntensity: number;
     };
     featuredCategory: string;
+    loader: {
+      textAr: string;
+      textEn: string;
+      subtitleAr: string;
+      subtitleEn: string;
+      duration: number;
+      typingSpeed: number;
+    };
   };
 };
 
@@ -639,5 +647,13 @@ export const defaultPortfolioData: PortfolioData = {
       navbarGlowIntensity: 100,
     },
     featuredCategory: "all",
+    loader: {
+      textAr: "أنا مطور ويب",
+      textEn: "I am Web Developer",
+      subtitleAr: "جارٍ تحميل البرتفوليو...",
+      subtitleEn: "Loading portfolio...",
+      duration: 1400,
+      typingSpeed: 80,
+    },
   },
 };

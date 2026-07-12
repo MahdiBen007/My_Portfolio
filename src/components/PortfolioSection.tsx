@@ -247,7 +247,7 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
   }
 
   return (
-    <section id="portfolio" className="relative py-[clamp(48px,8vw,112px)]" ref={ref}>
+    <section id="portfolio" className="relative py-[clamp(48px,8vw,112px)] overflow-x-hidden" ref={ref}>
       <div className="container mx-auto px-5 sm:px-6">
         {/* Section Header */}
         <motion.div
@@ -304,7 +304,7 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
             initial={{ opacity: 0, y: 15 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.24, ease: EASE_OUT }}
-            className="flex items-center justify-center gap-1.5 mb-10 sm:mb-14"
+            className="flex flex-wrap items-center justify-center gap-1.5 mb-10 sm:mb-14"
           >
             <span className="text-[11px] text-muted-foreground/60 me-1 hidden sm:inline">{t('الباقة:', 'Package:')}</span>
             {[
@@ -371,9 +371,9 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
               <motion.div
                 key={project.id}
                 variants={cardVariants}
-                className="project-card group relative flex flex-col w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] rounded-b-2xl overflow-hidden border border-white/[0.08] bg-[#0B1120]"
+                className="project-card group relative flex flex-col w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] rounded-b-2xl overflow-hidden border border-white/[0.08] bg-[#0B1120] min-w-0"
                 style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0 }}
-                whileHover={{ scale: 1.025, rotate: 0.5, y: -8 }}
+                whileHover={{ scale: 1.025, y: -8 }}
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
               >
                 {/* Thumbnail */}
@@ -382,8 +382,8 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
                     <img
                       src={project.images[0]}
                       alt={t(project.title, project.titleEn)}
-                      className="w-full block"
-                      style={{ objectFit: 'contain', maxHeight: 'none' }}
+                      className="w-full aspect-[16/9] object-cover block"
+                      loading="lazy"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.style.display = 'none';
@@ -442,7 +442,7 @@ export const PortfolioSection = ({ title, subtitle, featuredOnly = false }: Port
                 </div>
 
                 {/* Content */}
-                <div className="p-5 flex flex-col flex-1">
+                <div className="p-5 flex flex-col flex-1 min-w-0 overflow-hidden">
                   {/* Title */}
                   <h3 className="text-lg font-bold mb-2 text-center">
                     {t(project.title, project.titleEn)}

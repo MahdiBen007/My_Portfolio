@@ -242,6 +242,7 @@ export const DemoSection = () => {
                 alt={t(screenshots[activeSlide]?.title_ar, screenshots[activeSlide]?.title)}
                 className="w-full h-full object-contain"
                 draggable={false}
+                loading="lazy"
               />
             </motion.div>
           </AnimatePresence>

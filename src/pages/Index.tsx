@@ -25,10 +25,12 @@ const Index = () => {
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [minDelayPassed, setMinDelayPassed] = useState(false);
 
+  const loaderDuration = data?.settings?.loader?.duration ?? 1400;
+
   useEffect(() => {
-    const timeout = setTimeout(() => setMinDelayPassed(true), 1400);
+    const timeout = setTimeout(() => setMinDelayPassed(true), loaderDuration);
     return () => clearTimeout(timeout);
-  }, []);
+  }, [loaderDuration]);
 
   useEffect(() => {
     if (!loading && minDelayPassed) {

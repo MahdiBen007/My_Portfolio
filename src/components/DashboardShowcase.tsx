@@ -100,6 +100,8 @@ export const DashboardShowcase = () => {
   const { t, isRTL } = useLanguage();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
+  const autoPlayRef = useRef(null);
+  const isInViewAutoPlay = useInView(autoPlayRef, { margin: '-100px' });
   const [activeScreen, setActiveScreen] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [activeFeature, setActiveFeature] = useState(0);
@@ -154,17 +156,21 @@ export const DashboardShowcase = () => {
   };
 
   useEffect(() => {
-    resetFeatureAuto();
+    if (isInViewAutoPlay) {
+      resetFeatureAuto();
+    } else {
+      if (featureAutoRef.current) clearInterval(featureAutoRef.current);
+    }
     return () => { if (featureAutoRef.current) clearInterval(featureAutoRef.current); };
-  }, []);
+  }, [isInViewAutoPlay]);
 
   useEffect(() => {
-    if (!isAutoPlaying) return;
+    if (!isAutoPlaying || !isInViewAutoPlay) return;
     const interval = setInterval(() => {
       setActiveScreen((prev) => (prev + 1) % SCREENS.length);
     }, 5000);
     return () => clearInterval(interval);
-  }, [isAutoPlaying]);
+  }, [isAutoPlaying, isInViewAutoPlay]);
 
   const handleScreenChange = (index: number) => {
     setActiveScreen(index);
@@ -178,7 +184,7 @@ export const DashboardShowcase = () => {
   const screen = SCREENS[activeScreen];
 
   return (
-    <section id="dashboard" className="relative py-[clamp(48px,8vw,112px)] overflow-hidden" ref={ref}>
+    <section id="dashboard" className="relative py-[clamp(48px,8vw,112px)] overflow-hidden" ref={(node) => { (ref as React.MutableRefObject<HTMLElement | null>).current = node; (autoPlayRef as React.MutableRefObject<HTMLElement | null>).current = node; }}>
       {/* Background accents */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/4 -left-32 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />

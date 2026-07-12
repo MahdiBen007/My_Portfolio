@@ -54,7 +54,11 @@ const createParticles = (count: number): ParticleDot[] =>
 
 export const AnimatedBackground = () => {
   const prefersReducedMotion = useReducedMotion();
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== 'undefined'
+      ? window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`).matches
+      : true
+  );
   const lowMotion = prefersReducedMotion || isMobile;
 
   const symbols = useMemo(
