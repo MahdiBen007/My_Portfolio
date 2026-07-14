@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState, useRef, useCallback } from 'react';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { SettingsSync } from '@/components/SettingsSync';
 import { AnimatedBackground } from '@/components/AnimatedBackground';
@@ -23,6 +23,35 @@ const ContactSection = lazy(() => import('@/components/ContactSection').then(m =
 const SectionFallback = () => (
   <div className="min-h-[200px]" />
 );
+
+const DeferredSection = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [shouldRender, setShouldRender] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldRender(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '2000px' }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} className={className}>
+      {shouldRender ? children : <SectionFallback />}
+    </div>
+  );
+};
 
 const Index = () => {
   const { data, loading } = usePortfolioData();
@@ -63,30 +92,46 @@ const Index = () => {
                 ) : (
                   <>
                     <HeroSection />
-                    <Suspense fallback={<SectionFallback />}>
-                      <PricingSection />
-                    </Suspense>
-                    <Suspense fallback={<SectionFallback />}>
-                      <DashboardShowcase />
-                    </Suspense>
-                    <Suspense fallback={<SectionFallback />}>
-                      <DemoSection />
-                    </Suspense>
-                    <Suspense fallback={<SectionFallback />}>
-                      <PortfolioSection />
-                    </Suspense>
-                    <Suspense fallback={<SectionFallback />}>
-                      <ServicesSection />
-                    </Suspense>
-                    <Suspense fallback={<SectionFallback />}>
-                      <WhyClientsChooseUs />
-                    </Suspense>
-                    <Suspense fallback={<SectionFallback />}>
-                      <AboutSection />
-                    </Suspense>
-                    <Suspense fallback={<SectionFallback />}>
-                      <ContactSection />
-                    </Suspense>
+                    <DeferredSection>
+                      <Suspense fallback={<SectionFallback />}>
+                        <PricingSection />
+                      </Suspense>
+                    </DeferredSection>
+                    <DeferredSection>
+                      <Suspense fallback={<SectionFallback />}>
+                        <DashboardShowcase />
+                      </Suspense>
+                    </DeferredSection>
+                    <DeferredSection>
+                      <Suspense fallback={<SectionFallback />}>
+                        <DemoSection />
+                      </Suspense>
+                    </DeferredSection>
+                    <DeferredSection>
+                      <Suspense fallback={<SectionFallback />}>
+                        <PortfolioSection />
+                      </Suspense>
+                    </DeferredSection>
+                    <DeferredSection>
+                      <Suspense fallback={<SectionFallback />}>
+                        <ServicesSection />
+                      </Suspense>
+                    </DeferredSection>
+                    <DeferredSection>
+                      <Suspense fallback={<SectionFallback />}>
+                        <WhyClientsChooseUs />
+                      </Suspense>
+                    </DeferredSection>
+                    <DeferredSection>
+                      <Suspense fallback={<SectionFallback />}>
+                        <AboutSection />
+                      </Suspense>
+                    </DeferredSection>
+                    <DeferredSection>
+                      <Suspense fallback={<SectionFallback />}>
+                        <ContactSection />
+                      </Suspense>
+                    </DeferredSection>
                   </>
                 )}
               </main>

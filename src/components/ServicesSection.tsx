@@ -17,6 +17,9 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
+const isMobileDevice = () =>
+  typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
+
 const SERVICES = [
   {
     icon: Globe,
@@ -112,6 +115,7 @@ const SERVICES = [
 const ServiceVisual = ({ service, index }: { service: typeof SERVICES[0]; index: number }) => {
   const VisualIcon = service.visualIcon;
   const reduceMotion = useReducedMotion();
+  const isMobile = isMobileDevice();
 
   const renderMockup = () => {
     switch (index) {
@@ -303,8 +307,8 @@ const ServiceVisual = ({ service, index }: { service: typeof SERVICES[0]; index:
         {/* Floating Icon */}
         <motion.div
           className={`absolute top-4 right-4 w-10 h-10 rounded-xl bg-${service.accentColor}-500/20 border border-${service.accentColor}-500/30 flex items-center justify-center`}
-          animate={{ y: [0, -8, 0] }}
-          transition={{ duration: 4, repeat: reduceMotion ? 0 : Infinity, ease: 'easeInOut' }}
+          animate={reduceMotion || isMobile ? {} : { y: [0, -8, 0] }}
+          transition={{ duration: 4, repeat: reduceMotion || isMobile ? 0 : Infinity, ease: 'easeInOut' }}
         >
           <VisualIcon className={`w-5 h-5 text-${service.accentColor}-400`} />
         </motion.div>

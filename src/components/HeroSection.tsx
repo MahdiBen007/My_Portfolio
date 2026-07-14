@@ -1,5 +1,8 @@
-import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
+import { motion, useScroll, useTransform, useReducedMotion, useMotionValue } from 'framer-motion';
 import { useRef } from 'react';
+
+const isMobileDevice = () =>
+  typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
 import { Eye, LayoutDashboard, ShoppingCart, TrendingUp, Package, BarChart3 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -9,15 +12,16 @@ export const HeroSection = () => {
   const { t, isRTL } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotion();
+  const isMobile = isMobileDevice();
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start'],
-    disabled: reduceMotion,
+    disabled: reduceMotion || isMobile,
   });
 
-  const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.8]);
+  const y = useTransform(scrollYProgress, [0, 1], [0, isMobile ? 0 : 200]);
+  const opacity = useMotionValue(1);
+  const scale = useMotionValue(1);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -78,8 +82,8 @@ export const HeroSection = () => {
             >
               <motion.div
                 className="pill-badge"
-                animate={reduceMotion ? {} : { y: [0, -5, 0] }}
-                transition={{ duration: 3, repeat: reduceMotion ? 0 : Infinity, ease: 'easeInOut' }}
+                animate={reduceMotion || isMobile ? {} : { y: [0, -5, 0] }}
+                transition={{ duration: 3, repeat: reduceMotion || isMobile ? 0 : Infinity, ease: 'easeInOut' }}
               >
                 <ShoppingCart className="w-4 h-4 text-primary" />
                 <span>{t('منصة التجارة الإلكترونية', 'E-commerce Platform')}</span>
@@ -135,28 +139,25 @@ export const HeroSection = () => {
               }`}
             >
               {/* Animated Background Blob */}
-              <motion.div
-                className="absolute inset-0 rounded-3xl"
+              <div
+                className="absolute inset-0 rounded-3xl hidden md:block"
                 style={{
                   background: 'linear-gradient(135deg, hsl(var(--glow-cyan) / 0.15), hsl(var(--glow-purple) / 0.15))',
                   filter: 'blur(60px)',
                 }}
-                animate={reduceMotion ? {} : {
-                  scale: [1, 1.08, 1],
-                  rotate: [0, 140, 360],
-                }}
-                transition={{
-                  duration: 22,
-                  repeat: reduceMotion ? 0 : Infinity,
-                  ease: 'linear',
+              />
+              <div
+                className="absolute inset-0 rounded-3xl md:hidden"
+                style={{
+                  background: 'linear-gradient(135deg, hsl(var(--glow-cyan) / 0.15), hsl(var(--glow-purple) / 0.15))',
                 }}
               />
 
               {/* Main Dashboard Card */}
               <motion.div
                 className="relative z-10 glass-card rounded-2xl p-4 border border-white/10"
-                animate={reduceMotion ? {} : { y: [0, -6, 0] }}
-                transition={{ duration: 6, repeat: reduceMotion ? 0 : Infinity, ease: 'easeInOut' }}
+                animate={reduceMotion || isMobile ? {} : { y: [0, -6, 0] }}
+                transition={{ duration: 6, repeat: reduceMotion || isMobile ? 0 : Infinity, ease: 'easeInOut' }}
               >
                 {/* Dashboard Header */}
                 <div className="flex items-center gap-2 mb-3 pb-3 border-b border-white/10">
@@ -216,8 +217,8 @@ export const HeroSection = () => {
                 className={`absolute -bottom-4 glass-card rounded-xl p-3 border border-white/10 z-20 ${
                   isRTL ? '-right-4' : '-left-4'
                 }`}
-                animate={reduceMotion ? {} : { y: [0, 8, 0], rotate: [0, -2, 0] }}
-                transition={{ duration: 5, repeat: reduceMotion ? 0 : Infinity, ease: 'easeInOut', delay: 0.5 }}
+                animate={reduceMotion || isMobile ? {} : { y: [0, 8, 0], rotate: [0, -2, 0] }}
+                transition={{ duration: 5, repeat: reduceMotion || isMobile ? 0 : Infinity, ease: 'easeInOut', delay: 0.5 }}
               >
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center">
@@ -234,8 +235,8 @@ export const HeroSection = () => {
                 className={`absolute -top-4 glass-card rounded-xl p-3 border border-white/10 z-20 ${
                   isRTL ? '-left-4' : '-right-4'
                 }`}
-                animate={reduceMotion ? {} : { y: [0, -8, 0], rotate: [0, 2, 0] }}
-                transition={{ duration: 5, repeat: reduceMotion ? 0 : Infinity, ease: 'easeInOut', delay: 1 }}
+                animate={reduceMotion || isMobile ? {} : { y: [0, -8, 0], rotate: [0, 2, 0] }}
+                transition={{ duration: 5, repeat: reduceMotion || isMobile ? 0 : Infinity, ease: 'easeInOut', delay: 1 }}
               >
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">

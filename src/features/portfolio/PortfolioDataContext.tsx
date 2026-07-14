@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { defaultPortfolioData, type PortfolioData } from "./data/portfolio-data";
 import {
@@ -49,10 +49,36 @@ const mergeWithDefaults = (remote: PartialPortfolioData | null) => ({
   },
 });
 
+const isPlainObject = (v: unknown): v is Record<string, unknown> =>
+  typeof v === 'object' && v !== null && !Array.isArray(v);
+
+const shallowEqual = (a: unknown, b: unknown): boolean => {
+  if (a === b) return true;
+  if (!isPlainObject(a) || !isPlainObject(b)) return false;
+  const keysA = Object.keys(a);
+  const keysB = Object.keys(b);
+  if (keysA.length !== keysB.length) return false;
+  for (const key of keysA) {
+    if (a[key] !== b[key]) return false;
+  }
+  return true;
+};
+
 export const PortfolioDataProvider = ({ children }: { children: React.ReactNode }) => {
   const [data, setData] = useState<PortfolioData>(defaultPortfolioData);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const dataRef = useRef(data);
+  dataRef.current = data;
+
+  const setStableData = useCallback((updater: PortfolioData | ((prev: PortfolioData) => PortfolioData)) => {
+    setData(prev => {
+      const next = typeof updater === 'function' ? (updater as (p: PortfolioData) => PortfolioData)(prev) : updater;
+      if (shallowEqual(prev, next)) return prev;
+      dataRef.current = next;
+      return next;
+    });
+  }, []);
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -60,27 +86,27 @@ export const PortfolioDataProvider = ({ children }: { children: React.ReactNode 
     try {
       const remoteData = await fetchPortfolioData();
       if (remoteData) {
-        setData(mergeWithDefaults(remoteData));
+        setStableData(mergeWithDefaults(remoteData));
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [setStableData]);
 
   const save = useCallback(async (nextData: PortfolioData) => {
     setLoading(true);
     setError(null);
     try {
-      setData(nextData);
+      setStableData(nextData);
       await upsertPortfolioData(nextData);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [setStableData]);
 
   useEffect(() => {
     if (!isSupabaseConfigured) {
@@ -107,9 +133,9 @@ export const PortfolioDataProvider = ({ children }: { children: React.ReactNode 
       supabaseEnabled: isSupabaseConfigured,
       refresh,
       save,
-      setData,
+      setData: setStableData,
     }),
-    [data, loading, error, refresh, save],
+    [data, loading, error, refresh, save, setStableData],
   );
 
   return <PortfolioDataContext.Provider value={value}>{children}</PortfolioDataContext.Provider>;

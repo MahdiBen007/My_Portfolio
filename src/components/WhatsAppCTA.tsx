@@ -11,16 +11,38 @@ function normalizeWhatsApp(raw: string): string {
   return `https://wa.me/${digits}?text=${encodeURIComponent('Hi! I\'m interested in your services.')}`;
 }
 
+const isMobileDevice = () =>
+  typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
+
 export const WhatsAppCTA = () => {
   const controls = useAnimation();
   const [clickRipple, setClickRipple] = useState(false);
+  const [isInView, setIsInView] = useState(false);
   const attentionRef = useRef<ReturnType<typeof setInterval>>();
+  const containerRef = useRef<HTMLDivElement>(null);
   const { data } = usePortfolioData();
+  const isMobile = isMobileDevice();
 
   const href = normalizeWhatsApp(data?.personalData?.whatsapp ?? '');
 
   useEffect(() => {
-    if (!href) return;
+    const el = containerRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsInView(entry.isIntersecting),
+      { threshold: 0.1 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!href || !isInView) {
+      clearInterval(attentionRef.current);
+      return;
+    }
     attentionRef.current = setInterval(() => {
       controls.start({
         y: [0, -8, 0],
@@ -32,9 +54,9 @@ export const WhatsAppCTA = () => {
         ],
         transition: { duration: 0.6, ease: 'easeInOut' },
       });
-    }, 5000);
+    }, isMobile ? 8000 : 5000);
     return () => clearInterval(attentionRef.current);
-  }, [controls, href]);
+  }, [controls, href, isInView, isMobile]);
 
   const handleClick = () => {
     setClickRipple(true);
@@ -49,7 +71,7 @@ export const WhatsAppCTA = () => {
   if (!href) return null;
 
   return (
-    <div className="whatsapp-fab fixed bottom-7 left-1/2 -translate-x-1/2 z-50 max-md:bottom-5">
+    <div ref={containerRef} className="whatsapp-fab fixed bottom-7 left-1/2 -translate-x-1/2 z-50 max-md:bottom-5">
       <motion.a
         href={href}
         target="_blank"
@@ -61,9 +83,13 @@ export const WhatsAppCTA = () => {
         className="relative flex items-center justify-center cursor-pointer"
         style={{ width: 64, height: 64 }}
       >
-        <span className="absolute inset-0 rounded-full animate-[wa-pulse_2s_ease-out_infinite] pointer-events-none" />
-        <span className="absolute inset-0 rounded-full animate-[wa-pulse_2s_ease-out_0.8s_infinite] pointer-events-none" />
-        <span className="absolute inset-0 rounded-full animate-[wa-float_3s_ease-in-out_infinite] pointer-events-none" />
+        {!isMobile && (
+          <>
+            <span className="absolute inset-0 rounded-full animate-[wa-pulse_2s_ease-out_infinite] pointer-events-none" />
+            <span className="absolute inset-0 rounded-full animate-[wa-pulse_2s_ease-out_0.8s_infinite] pointer-events-none" />
+          </>
+        )}
+        <span className={`absolute inset-0 rounded-full pointer-events-none ${isMobile ? '' : 'animate-[wa-float_3s_ease-in-out_infinite]'}`} />
         {clickRipple && (
           <span className="absolute inset-[-8px] rounded-full animate-[wa-ripple_0.7s_ease-out_forwards] pointer-events-none" />
         )}

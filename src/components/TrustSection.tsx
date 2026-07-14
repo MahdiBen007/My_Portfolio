@@ -3,10 +3,11 @@ import { useRef, useState, useEffect } from 'react';
 import { Zap, Smartphone, Palette, Package, HeadphonesIcon, LayoutDashboard } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const Counter = ({ value, suffix = '' }: { value: number; suffix?: string }) => {
+const Counter = ({ value, suffix = '', isInView }: { value: number; suffix?: string; isInView: boolean }) => {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
+    if (!isInView) return;
     const duration = 2000;
     const steps = 60;
     const increment = value / steps;
@@ -21,7 +22,7 @@ const Counter = ({ value, suffix = '' }: { value: number; suffix?: string }) => 
       }
     }, duration / steps);
     return () => clearInterval(timer);
-  }, [value]);
+  }, [value, isInView]);
 
   return (
     <span className="text-3xl md:text-4xl font-bold gradient-text">
@@ -139,7 +140,7 @@ export const TrustSection = () => {
                   />
                 </motion.div>
                 <div className="mb-2">
-                  <Counter value={stat.value} suffix={stat.suffix} />
+                  <Counter value={stat.value} suffix={stat.suffix} isInView={isInView} />
                 </div>
                 <p className="text-xs sm:text-sm text-muted-foreground leading-tight">
                   {t(stat.labelAr, stat.labelEn)}

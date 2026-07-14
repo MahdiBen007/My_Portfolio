@@ -131,6 +131,19 @@
     position: relative;
   }
 
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      135deg,
+      hsl(var(--night-start, 222 47% 4%)),
+      hsl(var(--night-mid, 232 47% 8%)),
+      hsl(var(--night-end, 262 47% 12%))
+    );
+  }
+
   .site-font {
     font-family: var(--site-font, var(--ui-font, "Tajawal")), "Plus Jakarta Sans", sans-serif;
   }
@@ -1007,6 +1020,10 @@
     animation: none !important;
   }
 
+  .navbar-capsule-scrolled {
+    animation: none !important;
+  }
+
   .btn-laser:hover {
     filter: none !important;
   }
@@ -1050,41 +1067,40 @@
     animation: none !important;
   }
 
-  * {
-    transition-duration: 0.15s !important;
-    animation-duration: 0.15s !important;
-  }
-
+  /* GPU-accelerate all transforms */
   [style*="translate("] {
-    transform: none !important;
+    will-change: transform;
+    transform: translateZ(0);
   }
 
-  [style*="opacity: 0"],
-  [style*="opacity:0"] {
-    opacity: 1 !important;
+  /* Make all transitions instant for responsiveness */
+  * {
+    transition-duration: 0.2s !important;
+    animation-duration: 0.2s !important;
   }
 
+  /* Kill infinite animations - biggest perf win */
+  [style*="repeat: Infinity"],
+  [style*="repeat:Infinity"] {
+    animation: none !important;
+  }
+
+  /* Disable expensive hover effects */
   .project-card:hover {
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2) !important;
     transform: none !important;
+    box-shadow: none !important;
   }
 
   .store-card:hover {
-    box-shadow: none !important;
     transform: none !important;
+    box-shadow: none !important;
   }
 
-  /* Reduce paint complexity on mobile */
+  /* Contain paint for heavy elements */
   .glass-card,
   .project-card,
-  .store-card {
-    contain: layout style paint;
-    will-change: auto;
-  }
-
-  /* Disable expensive box-shadow animations */
-  [class*="shadow-"] {
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
+  .nav-link {
+    contain: layout style;
   }
 
   /* Mobile Navbar */
