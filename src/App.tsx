@@ -22,6 +22,7 @@ const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
 const AdminPageBuilder = lazy(() => import("./pages/admin/AdminPageBuilder"));
 const AdminPricing = lazy(() => import("./pages/admin/AdminPricing"));
 const AdminTestimonials = lazy(() => import("./pages/admin/AdminTestimonials"));
+const AdminLicenses = lazy(() => import("./pages/admin/AdminLicenses"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -114,6 +115,7 @@ const App = () => (
                       <Route path="page-builder" element={<AdminPageBuilder />} />
                       <Route path="pricing" element={<AdminPricing />} />
                       <Route path="testimonials" element={<AdminTestimonials />} />
+                      <Route path="licenses" element={<AdminLicenses />} />
                     </Route>
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />

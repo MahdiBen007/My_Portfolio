@@ -19,6 +19,7 @@ const pageMetadata: Record<string, { title: string; subtitle?: string }> = {
   '/admin/page-builder': { title: 'Page Builder', subtitle: 'Build and customize your pages' },
   '/admin/pricing': { title: 'Pricing', subtitle: 'Manage your pricing plans' },
   '/admin/testimonials': { title: 'Testimonials', subtitle: 'Manage customer testimonials' },
+  '/admin/licenses': { title: 'License Management', subtitle: 'InventoryPro lifetime licenses' },
   '/admin/settings': { title: 'Settings', subtitle: 'Configure global settings' },
 };
 

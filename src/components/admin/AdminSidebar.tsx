@@ -11,6 +11,7 @@ import {
   Layers,
   DollarSign,
   Quote,
+  KeyRound,
   LogOut,
   ChevronLeft,
   ChevronRight,
@@ -47,6 +48,7 @@ const navItems = [
   { path: '/admin/page-builder', icon: Layers, label: 'Page Builder' },
   { path: '/admin/pricing', icon: DollarSign, label: 'Pricing' },
   { path: '/admin/testimonials', icon: Quote, label: 'Testimonials' },
+  { path: '/admin/licenses', icon: KeyRound, label: 'License Management' },
   { path: '/admin/settings', icon: Settings, label: 'Settings' },
 ];
 
