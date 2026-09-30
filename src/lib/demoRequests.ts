@@ -20,15 +20,40 @@ export interface DemoLead {
 
 const LOCAL_STORAGE_KEY = 'portfolio_demo_leads_data_v2';
 
-// Clean initial demo leads - no dummy data
+// Clean initial demo leads
 const INITIAL_DEMO_LEADS: DemoLead[] = [];
 
-
 export async function fetchDemoLeads(): Promise<DemoLead[]> {
-  // 1. Try to fetch live leads directly from Landing Page API (with fast timeout)
+  // 1. Try to fetch from Supabase cloud database
+  try {
+    const { data: supaData, error } = await db
+      .from('demo_leads')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (!error && Array.isArray(supaData) && supaData.length > 0) {
+      const leads: DemoLead[] = supaData.map((l: any) => ({
+        id: String(l.id),
+        full_name: l.full_name,
+        phone: l.phone,
+        business_type: l.business_type,
+        downloads_count: l.downloads_count || 1,
+        last_download_at: l.last_download_at || l.created_at || new Date().toISOString(),
+        created_at: l.created_at || new Date().toISOString(),
+        status: l.status === 'converted' ? 'converted' : 'not_interested',
+        notes: l.notes || null,
+        ip: l.ip || null,
+      }));
+
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(leads));
+      return leads;
+    }
+  } catch {}
+
+  // 2. Try to fetch live leads directly from Landing Page local API
   try {
     const res = await fetch('http://localhost:3000/api/leads', {
-      signal: AbortSignal.timeout(1500),
+      signal: AbortSignal.timeout(2000),
     });
     if (res.ok) {
       const data = await res.json();
@@ -62,7 +87,7 @@ export async function fetchDemoLeads(): Promise<DemoLead[]> {
     }
   } catch {}
 
-  // 2. Instant cache-first return from localStorage
+  // 3. Fallback to localStorage
   const cached = localStorage.getItem(LOCAL_STORAGE_KEY);
   if (cached) {
     try {
@@ -76,8 +101,7 @@ export async function fetchDemoLeads(): Promise<DemoLead[]> {
     } catch {}
   }
 
-  // 3. Initial demo seed data
-  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(INITIAL_DEMO_LEADS));
+  // 4. Default empty state
   return INITIAL_DEMO_LEADS;
 }
 
