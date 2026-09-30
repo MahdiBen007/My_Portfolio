@@ -41,7 +41,7 @@ interface AdminSidebarProps {
 
 const navItems = [
   { path: '/admin', icon: LayoutDashboard, label: 'Overview', end: true },
-  { path: '/admin/leads', icon: Download, label: 'Demo Leads (طلبات التجربة)' },
+  { path: '/admin/leads', icon: Download, label: 'Demo Leads' },
   { path: '/admin/licenses', icon: KeyRound, label: 'License Management' },
   { path: '/admin/messages', icon: MessageSquare, label: 'Messages' },
   { path: '/admin/services', icon: Briefcase, label: 'Services' },
