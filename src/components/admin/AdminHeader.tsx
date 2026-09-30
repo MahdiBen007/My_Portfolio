@@ -26,6 +26,7 @@ const AdminHeader = ({ title, subtitle }: AdminHeaderProps) => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [latestMessages, setLatestMessages] = useState<MessagePreview[]>([]);
   const [loadingMessages, setLoadingMessages] = useState(true);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const { theme, toggleTheme } = useAdminTheme();
   const sidebar = useAdminSidebar();
   const isPortfolio = theme === 'portfolio';
@@ -142,10 +143,11 @@ const AdminHeader = ({ title, subtitle }: AdminHeaderProps) => {
         </Button>
 
         {/* Notifications */}
-        <div className="relative group">
+        <div className="relative">
           <Button
             variant="ghost"
             size="icon"
+            onClick={() => setNotificationsOpen(!notificationsOpen)}
             className="relative text-slate-400 hover:text-white hover:bg-slate-800"
             aria-label="Notifications"
           >
@@ -157,45 +159,56 @@ const AdminHeader = ({ title, subtitle }: AdminHeaderProps) => {
             )}
           </Button>
 
-          <div className="pointer-events-none absolute right-0 mt-2 w-80 opacity-0 transition-opacity duration-150 group-hover:pointer-events-auto group-hover:opacity-100">
-            <div className="rounded-2xl border border-slate-700/60 bg-slate-900/95 backdrop-blur-xl shadow-2xl shadow-black/40 overflow-hidden">
-              <div className="flex items-center justify-between px-4 py-3 border-b border-slate-700/60">
-                <p className="text-sm font-semibold text-white">New Messages</p>
-                <span className="text-xs text-slate-400">{unreadCount} unread</span>
-              </div>
+          {notificationsOpen && (
+            <>
+              {/* Backdrop for mobile & desktop to dismiss on click outside */}
+              <div
+                className="fixed inset-0 z-40"
+                onClick={() => setNotificationsOpen(false)}
+              />
 
-              <div className="max-h-80 overflow-auto">
-                {loadingMessages ? (
-                  <div className="px-4 py-6 text-sm text-slate-400">Loading...</div>
-                ) : latestMessages.length === 0 ? (
-                  <div className="px-4 py-6 text-sm text-slate-400">No messages yet.</div>
-                ) : (
-                  latestMessages.map((message) => (
-                    <div
-                      key={message.id}
-                      className="px-4 py-3 border-b border-slate-800/60 last:border-b-0 hover:bg-slate-800/50 transition-colors"
+              <div className="fixed inset-x-3 top-16 sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 sm:w-80 z-50 animate-in fade-in-0 zoom-in-95 duration-150">
+                <div className="rounded-2xl border border-slate-700/60 bg-slate-900/95 backdrop-blur-xl shadow-2xl shadow-black/60 overflow-hidden">
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-slate-700/60 bg-slate-800/40">
+                    <p className="text-sm font-semibold text-white">New Messages</p>
+                    <span className="text-xs text-slate-400">{unreadCount} unread</span>
+                  </div>
+
+                  <div className="max-h-[60vh] sm:max-h-80 overflow-y-auto overscroll-contain">
+                    {loadingMessages ? (
+                      <div className="px-4 py-6 text-sm text-slate-400">Loading...</div>
+                    ) : latestMessages.length === 0 ? (
+                      <div className="px-4 py-6 text-sm text-slate-400">No messages yet.</div>
+                    ) : (
+                      latestMessages.map((message) => (
+                        <div
+                          key={message.id}
+                          className="px-4 py-3 border-b border-slate-800/60 last:border-b-0 hover:bg-slate-800/50 transition-colors"
+                        >
+                          <div className="flex items-center justify-between">
+                            <p className="text-sm font-semibold text-white truncate">{message.name}</p>
+                            <span className="text-[11px] text-slate-500">{formatTime(message.received_at)}</span>
+                          </div>
+                          <p className="text-xs text-slate-400 truncate">{message.email}</p>
+                          <p className="text-xs text-slate-300 mt-1 line-clamp-2">{message.message}</p>
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  <div className="px-4 py-3 border-t border-slate-700/60 bg-slate-800/20">
+                    <a
+                      href="/admin/messages"
+                      onClick={() => setNotificationsOpen(false)}
+                      className="text-xs text-blue-300 hover:text-blue-200 transition-colors"
                     >
-                      <div className="flex items-center justify-between">
-                        <p className="text-sm font-semibold text-white truncate">{message.name}</p>
-                        <span className="text-[11px] text-slate-500">{formatTime(message.received_at)}</span>
-                      </div>
-                      <p className="text-xs text-slate-400 truncate">{message.email}</p>
-                      <p className="text-xs text-slate-300 mt-1 line-clamp-2">{message.message}</p>
-                    </div>
-                  ))
-                )}
+                      View all messages
+                    </a>
+                  </div>
+                </div>
               </div>
-
-              <div className="px-4 py-3 border-t border-slate-700/60">
-                <a
-                  href="/admin/messages"
-                  className="text-xs text-blue-300 hover:text-blue-200 transition-colors"
-                >
-                  View all messages
-                </a>
-              </div>
-            </div>
-          </div>
+            </>
+          )}
         </div>
       </div>
     </header>

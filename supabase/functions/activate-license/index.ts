@@ -46,7 +46,7 @@ serve(async (req) => {
   if (req.method !== "POST") return json({ ok: false, code: "METHOD" }, 405);
 
   try {
-    const { license_key, device_fingerprint, device_name, os } = await req.json();
+    const { license_key, device_fingerprint, candidate_fingerprints, hardware_components, device_name, os } = await req.json();
 
     if (
       typeof license_key !== "string" || license_key.trim().length < 8 ||
@@ -85,7 +85,7 @@ serve(async (req) => {
     // 3. Device binding
     const { data: binding, error: bindErr } = await supabase
       .from("license_devices")
-      .select("id, device_fingerprint, status, activated_at")
+      .select("id, device_fingerprint, device_name, os, status, activated_at")
       .eq("license_id", license.id)
       .maybeSingle();
     if (bindErr) throw bindErr;
@@ -108,7 +108,7 @@ serve(async (req) => {
         // Possible race: another request bound it first. Re-read and fall through.
         const { data: reread } = await supabase
           .from("license_devices")
-          .select("device_fingerprint, status, activated_at")
+          .select("id, device_fingerprint, device_name, os, status, activated_at")
           .eq("license_id", license.id)
           .maybeSingle();
         if (!reread) throw insErr;
@@ -120,12 +120,53 @@ serve(async (req) => {
       }
     } else if (binding.status !== "active") {
       return json({ ok: false, code: "DEVICE_DISABLED", message: "This device binding is disabled. Please contact the administrator." });
-    } else if (binding.device_fingerprint === fp) {
-      // Same device → re-activation allowed (reinstall / restored activation).
-      activatedAt = binding.activated_at;
     } else {
-      // Different device → reject.
-      return json({ ok: false, code: "DEVICE_MISMATCH", message: "This license is already activated on another device. Please contact the administrator." });
+      let isMatch = false;
+      if (binding.device_fingerprint === fp) {
+        isMatch = true;
+      } else if (Array.isArray(candidate_fingerprints) && candidate_fingerprints.includes(binding.device_fingerprint)) {
+        isMatch = true;
+      } else if (binding.device_name && hardware_components) {
+        // Compute SHA-256 for legacy formats using the previous binding device_name (e.g. after OS format)
+        const oldName = String(binding.device_name).trim();
+        const u = String(hardware_components.uuid || "").trim();
+        const c = String(hardware_components.cpu || "").trim();
+        const b = String(hardware_components.baseboard || "").trim();
+
+        const sha256Hex = async (str: string) => {
+          const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+          return Array.from(new Uint8Array(buf)).map((x) => x.toString(16).padStart(2, "0")).join("");
+        };
+
+        const legacyCandidates = await Promise.all([
+          sha256Hex(`INVPRO-FP-v1|${u}|${b}|${c}|${oldName}`),
+          sha256Hex(`INVPRO-FP-v1|${u}|Default string|${c}|${oldName}`),
+          sha256Hex(`INVPRO-FP-v1|${u}||${c}|${oldName}`),
+          sha256Hex(`INVPRO-FP-v1||||${oldName}`),
+        ]);
+
+        if (legacyCandidates.includes(binding.device_fingerprint)) {
+          isMatch = true;
+        }
+      }
+
+      if (!isMatch) {
+        return json({ ok: false, code: "DEVICE_MISMATCH", message: "This license is already activated on another device. Please contact the administrator." });
+      }
+
+      activatedAt = binding.activated_at;
+
+      // If device fingerprint or metadata updated (e.g., upgraded to format-proof v2 or machine reformatted):
+      if (binding.device_fingerprint !== fp) {
+        await supabase
+          .from("license_devices")
+          .update({
+            device_fingerprint: fp,
+            device_name: typeof device_name === "string" ? device_name.slice(0, 200) : binding.device_name,
+            os: typeof os === "string" ? os.slice(0, 200) : binding.os,
+          })
+          .eq("id", binding.id);
+      }
     }
 
     // 4. Sign the activation payload (Ed25519).

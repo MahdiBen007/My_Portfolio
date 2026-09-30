@@ -45,6 +45,47 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     let isMounted = true;
 
+    // Check offline/local demo admin authentication
+    if (localStorage.getItem('local_mock_auth') === 'true') {
+      const mockUser = {
+        id: '00000000-0000-0000-0000-000000000000',
+        app_metadata: { provider: 'email', providers: ['email'] },
+        user_metadata: { full_name: 'Admin' },
+        aud: 'authenticated',
+        confirmation_sent_at: '',
+        recovery_sent_at: '',
+        email_change_sent_at: '',
+        new_email: '',
+        invited_at: '',
+        action_link: '',
+        email: 'admin@local.test',
+        phone: '',
+        created_at: new Date().toISOString(),
+        confirmed_at: new Date().toISOString(),
+        email_confirmed_at: new Date().toISOString(),
+        phone_confirmed_at: '',
+        last_sign_in_at: new Date().toISOString(),
+        role: 'authenticated',
+        updated_at: new Date().toISOString(),
+        identities: [],
+        factors: [],
+      } as unknown as User;
+
+      const mockSession = {
+        access_token: 'mock-token',
+        refresh_token: 'mock-refresh',
+        expires_in: 3600,
+        token_type: 'bearer',
+        user: mockUser,
+      } as unknown as Session;
+
+      setUser(mockUser);
+      setSession(mockSession);
+      setRole('admin');
+      setLoading(false);
+      return;
+    }
+
     const setAuthState = async (nextSession: Session | null) => {
       if (!isMounted) return;
       setSession(nextSession);
@@ -80,6 +121,47 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const signIn = async (email: string, password: string) => {
+    // Offline seed admin check
+    if (email === 'admin@local.test' && password === '123456') {
+      const mockUser = {
+        id: '00000000-0000-0000-0000-000000000000',
+        app_metadata: { provider: 'email', providers: ['email'] },
+        user_metadata: { full_name: 'Admin' },
+        aud: 'authenticated',
+        confirmation_sent_at: '',
+        recovery_sent_at: '',
+        email_change_sent_at: '',
+        new_email: '',
+        invited_at: '',
+        action_link: '',
+        email: 'admin@local.test',
+        phone: '',
+        created_at: new Date().toISOString(),
+        confirmed_at: new Date().toISOString(),
+        email_confirmed_at: new Date().toISOString(),
+        phone_confirmed_at: '',
+        last_sign_in_at: new Date().toISOString(),
+        role: 'authenticated',
+        updated_at: new Date().toISOString(),
+        identities: [],
+        factors: [],
+      } as unknown as User;
+
+      const mockSession = {
+        access_token: 'mock-token',
+        refresh_token: 'mock-refresh',
+        expires_in: 3600,
+        token_type: 'bearer',
+        user: mockUser,
+      } as unknown as Session;
+
+      localStorage.setItem('local_mock_auth', 'true');
+      setUser(mockUser);
+      setSession(mockSession);
+      setRole('admin');
+      return { error: null };
+    }
+
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -104,6 +186,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signOut = async () => {
+    localStorage.removeItem('local_mock_auth');
     await supabase.auth.signOut();
     setUser(null);
     setSession(null);

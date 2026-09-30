@@ -528,12 +528,12 @@ const AdminProjects = () => {
     <div>
       <AdminHeader title="Projects" subtitle="Manage your projects and dashboard screenshots" />
 
-      <div className="p-6">
+      <div className="p-3 sm:p-4 md:p-6">
         {/* Tabs */}
-        <div className="flex items-center gap-1 mb-6 bg-slate-800/50 rounded-xl p-1 w-fit">
+        <div className="grid grid-cols-2 sm:flex items-center gap-1 mb-6 bg-slate-800/50 rounded-xl p-1 w-full sm:w-fit">
           <button
             onClick={() => setActiveTab('projects')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
+            className={`flex items-center justify-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${
               activeTab === 'projects' ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
             }`}
           >
@@ -543,12 +543,12 @@ const AdminProjects = () => {
           </button>
           <button
             onClick={() => setActiveTab('screenshots')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
+            className={`flex items-center justify-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${
               activeTab === 'screenshots' ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
             }`}
           >
             <Monitor className="w-4 h-4" />
-            Dashboard Screenshots
+            Screenshots
             <span className="text-xs opacity-70">({screenshots.length})</span>
           </button>
         </div>
@@ -556,35 +556,38 @@ const AdminProjects = () => {
         {/* ═══ Projects Tab ═══ */}
         {activeTab === 'projects' && (
           <>
-            <div className="flex flex-wrap items-center gap-3 mb-6 p-3 rounded-lg bg-slate-800/40 border border-slate-700/50">
-              <Star className="w-4 h-4 text-yellow-400" />
-              <span className="text-sm text-slate-300">Default category shown:</span>
-              <Select value={featuredCategory} onValueChange={saveFeaturedCategory} disabled={savingFeatured}>
-                <SelectTrigger className="w-40 bg-slate-800 border-slate-600 text-sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-slate-800 border-slate-700">
-                  <SelectItem value="all">All</SelectItem>
-                  {categories.map((cat) => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}
-                </SelectContent>
-              </Select>
-              {savingFeatured && <Loader2 className="w-4 h-4 text-blue-400 animate-spin" />}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-6 p-3 rounded-lg bg-slate-800/40 border border-slate-700/50">
+              <div className="flex items-center gap-2">
+                <Star className="w-4 h-4 text-yellow-400 shrink-0" />
+                <span className="text-xs sm:text-sm text-slate-300">Default category shown:</span>
+              </div>
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <Select value={featuredCategory} onValueChange={saveFeaturedCategory} disabled={savingFeatured}>
+                  <SelectTrigger className="w-full sm:w-40 bg-slate-800 border-slate-600 text-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-slate-800 border-slate-700">
+                    <SelectItem value="all">All</SelectItem>
+                    {categories.map((cat) => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+                {savingFeatured && <Loader2 className="w-4 h-4 text-blue-400 animate-spin shrink-0" />}
+              </div>
             </div>
 
-            <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
-              <div className="flex items-center gap-4">
-                <p className="text-slate-400">{filteredProjects.length} project{filteredProjects.length !== 1 ? 's' : ''}</p>
-                <div className="flex items-center gap-2">
-                  <Filter className="w-4 h-4 text-slate-500" />
+            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 sm:gap-4 mb-6">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                <p className="text-xs sm:text-sm text-slate-400">{filteredProjects.length} project{filteredProjects.length !== 1 ? 's' : ''}</p>
+                <div className="grid grid-cols-2 sm:flex items-center gap-2">
                   <Select value={filterCategory} onValueChange={setFilterCategory}>
-                    <SelectTrigger className="w-32 bg-slate-800 border-slate-600 text-sm"><SelectValue placeholder="Category" /></SelectTrigger>
+                    <SelectTrigger className="w-full sm:w-32 bg-slate-800 border-slate-600 text-xs sm:text-sm"><SelectValue placeholder="Category" /></SelectTrigger>
                     <SelectContent className="bg-slate-800 border-slate-700">
                       <SelectItem value="all">All Categories</SelectItem>
                       {categories.map((cat) => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}
                     </SelectContent>
                   </Select>
                   <Select value={filterStatus} onValueChange={setFilterStatus}>
-                    <SelectTrigger className="w-32 bg-slate-800 border-slate-600 text-sm"><SelectValue placeholder="Status" /></SelectTrigger>
+                    <SelectTrigger className="w-full sm:w-32 bg-slate-800 border-slate-600 text-xs sm:text-sm"><SelectValue placeholder="Status" /></SelectTrigger>
                     <SelectContent className="bg-slate-800 border-slate-700">
                       <SelectItem value="all">All Status</SelectItem>
                       <SelectItem value="completed">Completed</SelectItem>
@@ -594,7 +597,7 @@ const AdminProjects = () => {
                   </Select>
                 </div>
               </div>
-              <Button onClick={openCreateProject} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+              <Button onClick={openCreateProject} className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
                 <Plus className="w-4 h-4 mr-2" />Add Project
               </Button>
             </div>
@@ -671,9 +674,9 @@ const AdminProjects = () => {
         {/* ═══ Screenshots Tab ═══ */}
         {activeTab === 'screenshots' && (
           <>
-            <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
-              <p className="text-slate-400">{screenshots.length} screenshot{screenshots.length !== 1 ? 's' : ''}</p>
-              <Button onClick={openCreateScreenshot} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 sm:gap-4 mb-6">
+              <p className="text-xs sm:text-sm text-slate-400">{screenshots.length} screenshot{screenshots.length !== 1 ? 's' : ''}</p>
+              <Button onClick={openCreateScreenshot} className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
                 <Plus className="w-4 h-4 mr-2" />Add Screenshot
               </Button>
             </div>
@@ -736,8 +739,8 @@ const AdminProjects = () => {
             <DialogTitle>{editingProject ? 'Edit Project' : 'Create Project'}</DialogTitle>
             <DialogDescription className="text-slate-400">{editingProject ? 'Update project details' : 'Add a new project to your portfolio'}</DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-4 py-2 sm:py-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2">
                 <Label htmlFor="p-title">Title (English) *</Label>
                 <Input id="p-title" value={projectForm.title} onChange={(e) => setProjectForm({ ...projectForm, title: e.target.value })} className="bg-slate-800 border-slate-600" placeholder="E-Commerce Platform" />
@@ -747,37 +750,37 @@ const AdminProjects = () => {
                 <Input id="p-title_ar" value={projectForm.title_ar} onChange={(e) => setProjectForm({ ...projectForm, title_ar: e.target.value })} className="bg-slate-800 border-slate-600" dir="rtl" />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2">
                 <Label htmlFor="p-desc">Description (English) *</Label>
-                <Textarea id="p-desc" value={projectForm.description} onChange={(e) => setProjectForm({ ...projectForm, description: e.target.value })} className="bg-slate-800 border-slate-600 min-h-[100px]" />
+                <Textarea id="p-desc" value={projectForm.description} onChange={(e) => setProjectForm({ ...projectForm, description: e.target.value })} className="bg-slate-800 border-slate-600 min-h-[80px] sm:min-h-[100px]" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="p-desc_ar">Description (Arabic)</Label>
-                <Textarea id="p-desc_ar" value={projectForm.description_ar} onChange={(e) => setProjectForm({ ...projectForm, description_ar: e.target.value })} className="bg-slate-800 border-slate-600 min-h-[100px]" dir="rtl" />
+                <Textarea id="p-desc_ar" value={projectForm.description_ar} onChange={(e) => setProjectForm({ ...projectForm, description_ar: e.target.value })} className="bg-slate-800 border-slate-600 min-h-[80px] sm:min-h-[100px]" dir="rtl" />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2">
                 <Label htmlFor="p-goal">Goal (English)</Label>
-                <Textarea id="p-goal" value={projectForm.goal} onChange={(e) => setProjectForm({ ...projectForm, goal: e.target.value })} className="bg-slate-800 border-slate-600 min-h-[90px]" placeholder="What was the main objective?" />
+                <Textarea id="p-goal" value={projectForm.goal} onChange={(e) => setProjectForm({ ...projectForm, goal: e.target.value })} className="bg-slate-800 border-slate-600 min-h-[70px] sm:min-h-[90px]" placeholder="What was the main objective?" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="p-goal_ar">Goal (Arabic)</Label>
-                <Textarea id="p-goal_ar" value={projectForm.goal_ar} onChange={(e) => setProjectForm({ ...projectForm, goal_ar: e.target.value })} className="bg-slate-800 border-slate-600 min-h-[90px]" dir="rtl" />
+                <Textarea id="p-goal_ar" value={projectForm.goal_ar} onChange={(e) => setProjectForm({ ...projectForm, goal_ar: e.target.value })} className="bg-slate-800 border-slate-600 min-h-[70px] sm:min-h-[90px]" dir="rtl" />
               </div>
             </div>
             <div className="space-y-2">
               <Label>Thumbnail URL</Label>
-              <div className="flex items-center gap-2">
-                <Input value={projectForm.thumbnail_url} onChange={(e) => setProjectForm({ ...projectForm, thumbnail_url: e.target.value })} className="bg-slate-800 border-slate-600" placeholder="https://example.com/image.jpg" />
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                <Input value={projectForm.thumbnail_url} onChange={(e) => setProjectForm({ ...projectForm, thumbnail_url: e.target.value })} className="bg-slate-800 border-slate-600 flex-1" placeholder="https://example.com/image.jpg" />
                 <input ref={thumbnailInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => {
                   const file = e.target.files?.[0]; if (!file) return;
                   if (!validateUpload(file, 'image')) return;
                   setUploadingThumbnail(true);
                   uploadToStorage(file, 'projects').then((url) => { setProjectForm((prev) => ({ ...prev, thumbnail_url: url })); toast({ title: 'Success', description: 'Thumbnail uploaded' }); }).catch(() => toast({ title: 'Error', description: 'Failed to upload', variant: 'destructive' })).finally(() => setUploadingThumbnail(false));
                 }} />
-                <Button type="button" variant="outline" onClick={() => thumbnailInputRef.current?.click()} disabled={uploadingThumbnail} className="border-slate-600 bg-slate-800 text-slate-200 hover:bg-slate-700">
+                <Button type="button" variant="outline" onClick={() => thumbnailInputRef.current?.click()} disabled={uploadingThumbnail} className="border-slate-600 bg-slate-800 text-slate-200 hover:bg-slate-700 shrink-0">
                   {uploadingThumbnail ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Upload className="h-4 w-4 mr-2" />}
                   {uploadingThumbnail ? 'Uploading' : 'Upload'}
                 </Button>
@@ -786,15 +789,15 @@ const AdminProjects = () => {
             </div>
             <div className="space-y-2">
               <Label>Video URL</Label>
-              <div className="flex items-center gap-2">
-                <Input value={projectForm.video_url} onChange={(e) => setProjectForm({ ...projectForm, video_url: e.target.value })} className="bg-slate-800 border-slate-600" placeholder="https://example.com/demo.mp4" />
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                <Input value={projectForm.video_url} onChange={(e) => setProjectForm({ ...projectForm, video_url: e.target.value })} className="bg-slate-800 border-slate-600 flex-1" placeholder="https://example.com/demo.mp4" />
                 <input ref={videoInputRef} type="file" accept="video/*" className="hidden" onChange={(e) => {
                   const file = e.target.files?.[0]; if (!file) return;
                   if (!validateUpload(file, 'video')) return;
                   setUploadingVideo(true);
                   uploadToStorage(file, 'projects').then((url) => { setProjectForm((prev) => ({ ...prev, video_url: url })); toast({ title: 'Success', description: 'Video uploaded' }); }).catch(() => toast({ title: 'Error', description: 'Failed to upload', variant: 'destructive' })).finally(() => setUploadingVideo(false));
                 }} />
-                <Button type="button" variant="outline" onClick={() => videoInputRef.current?.click()} disabled={uploadingVideo} className="border-slate-600 bg-slate-800 text-slate-200 hover:bg-slate-700">
+                <Button type="button" variant="outline" onClick={() => videoInputRef.current?.click()} disabled={uploadingVideo} className="border-slate-600 bg-slate-800 text-slate-200 hover:bg-slate-700 shrink-0">
                   {uploadingVideo ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Upload className="h-4 w-4 mr-2" />}
                   {uploadingVideo ? 'Uploading' : 'Upload'}
                 </Button>
@@ -805,19 +808,19 @@ const AdminProjects = () => {
               <div className="space-y-2">
                 {projectForm.gallery_images.map((url, index) => (
                   <div key={`gallery-${index}`} className="flex items-center gap-2">
-                    <Input value={url} onChange={(e) => { const next = [...projectForm.gallery_images]; next[index] = e.target.value; setProjectForm({ ...projectForm, gallery_images: next }); }} className="bg-slate-800 border-slate-600" placeholder="https://example.com/image.jpg" />
+                    <Input value={url} onChange={(e) => { const next = [...projectForm.gallery_images]; next[index] = e.target.value; setProjectForm({ ...projectForm, gallery_images: next }); }} className="bg-slate-800 border-slate-600 min-w-0 flex-1" placeholder="https://example.com/image.jpg" />
                     <input id={`gallery-file-${index}`} type="file" accept="image/*" className="hidden" onChange={(e) => {
                       const file = e.target.files?.[0]; if (!file) return;
                       if (!validateUpload(file, 'image')) return;
                       setUploadingGalleryIndex(index);
                       uploadToStorage(file, 'projects').then((url) => { const next = [...projectForm.gallery_images]; next[index] = url; setProjectForm({ ...projectForm, gallery_images: next }); toast({ title: 'Success', description: 'Gallery image uploaded' }); }).catch(() => toast({ title: 'Error', description: 'Failed to upload', variant: 'destructive' })).finally(() => setUploadingGalleryIndex(null));
                     }} />
-                    <Button type="button" variant="outline" size="icon" onClick={() => { const input = document.getElementById(`gallery-file-${index}`) as HTMLInputElement | null; input?.click(); }} disabled={uploadingGalleryIndex === index} className="border-slate-600 bg-slate-800 text-slate-200 hover:bg-slate-700" title="Upload image">
+                    <Button type="button" variant="outline" size="icon" onClick={() => { const input = document.getElementById(`gallery-file-${index}`) as HTMLInputElement | null; input?.click(); }} disabled={uploadingGalleryIndex === index} className="border-slate-600 bg-slate-800 text-slate-200 hover:bg-slate-700 shrink-0" title="Upload image">
                       {uploadingGalleryIndex === index ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
                     </Button>
-                    <Button type="button" variant="outline" size="icon" onClick={() => setProjectForm({ ...projectForm, gallery_images: [...projectForm.gallery_images, ''] })} className="border-slate-600 bg-slate-800 text-slate-200 hover:bg-slate-700"><Plus className="h-4 w-4" /></Button>
+                    <Button type="button" variant="outline" size="icon" onClick={() => setProjectForm({ ...projectForm, gallery_images: [...projectForm.gallery_images, ''] })} className="border-slate-600 bg-slate-800 text-slate-200 hover:bg-slate-700 shrink-0"><Plus className="h-4 w-4" /></Button>
                     {projectForm.gallery_images.length > 1 && (
-                      <Button type="button" variant="ghost" size="icon" onClick={() => { const next = projectForm.gallery_images.filter((_, i) => i !== index); setProjectForm({ ...projectForm, gallery_images: next.length ? next : [''] }); }} className="text-slate-400 hover:text-red-300"><Trash2 className="h-4 w-4" /></Button>
+                      <Button type="button" variant="ghost" size="icon" onClick={() => { const next = projectForm.gallery_images.filter((_, i) => i !== index); setProjectForm({ ...projectForm, gallery_images: next.length ? next : [''] }); }} className="text-slate-400 hover:text-red-300 shrink-0"><Trash2 className="h-4 w-4" /></Button>
                     )}
                   </div>
                 ))}
@@ -827,11 +830,11 @@ const AdminProjects = () => {
               <Label>Tech Stack (comma separated)</Label>
               <Input value={projectForm.tech_stack} onChange={(e) => setProjectForm({ ...projectForm, tech_stack: e.target.value })} className="bg-slate-800 border-slate-600" placeholder="React, TypeScript, Tailwind CSS" />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2"><Label>GitHub Link</Label><Input value={projectForm.github_link} onChange={(e) => setProjectForm({ ...projectForm, github_link: e.target.value })} className="bg-slate-800 border-slate-600" placeholder="https://github.com/..." /></div>
               <div className="space-y-2"><Label>Live Demo Link</Label><Input value={projectForm.live_demo_link} onChange={(e) => setProjectForm({ ...projectForm, live_demo_link: e.target.value })} className="bg-slate-800 border-slate-600" placeholder="https://example.com" /></div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
               <div className="space-y-2">
                 <Label>Category</Label>
                 <Select value={projectForm.category} onValueChange={(value) => setProjectForm({ ...projectForm, category: value })}>
@@ -863,7 +866,92 @@ const AdminProjects = () => {
                 </Select>
               </div>
             </div>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between pt-2">
+              <Label className="flex items-center gap-2 cursor-pointer text-xs sm:text-sm"><Switch checked={projectForm.featured} onCheckedChange={(checked) => setProjectForm({ ...projectForm, featured: checked })} />Featured Project</Label>
+              <Label className="flex items-center gap-2 cursor-pointer text-xs sm:text-sm"><Switch checked={projectForm.visible} onCheckedChange={(checked) => setProjectForm({ ...projectForm, visible: checked })} />Visible</Label>
+            </div>
+          </div>
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            <Button variant="outline" onClick={() => setIsProjectDialogOpen(false)} className="w-full sm:w-auto">Cancel</Button>
+            <Button onClick={handleSaveProject} disabled={savingProject} className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600">
+              {savingProject ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Saving...</> : 'Save'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Project Confirmation */}
+      <AlertDialog open={isDeleteProjectDialogOpen} onOpenChange={setIsDeleteProjectDialogOpen}>
+        <AlertDialogContent className="bg-slate-900 border-slate-700">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">Delete Project?</AlertDialogTitle>
+            <AlertDialogDescription className="text-slate-400">This action cannot be undone. The project and all its sections will be permanently deleted.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-slate-800 text-white border-slate-600 hover:bg-slate-700">Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteProject} className="bg-red-600 text-white hover:bg-red-700">Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* ═══ Screenshot Dialog ═══ */}
+      <Dialog open={isScreenshotDialogOpen} onOpenChange={setIsScreenshotDialogOpen}>
+        <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{editingScreenshot ? 'Edit Screenshot' : 'Add Screenshot'}</DialogTitle>
+            <DialogDescription className="text-slate-400">{editingScreenshot ? 'Update screenshot details' : 'Add a new dashboard screenshot to the gallery'}</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2 sm:py-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="s-title">Title (English) *</Label>
+                <Input id="s-title" value={screenshotForm.title} onChange={(e) => setScreenshotForm({ ...screenshotForm, title: e.target.value })} className="bg-slate-800 border-slate-600" placeholder="Dashboard Overview" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="s-title_ar">Title (Arabic)</Label>
+                <Input id="s-title_ar" value={screenshotForm.title_ar} onChange={(e) => setScreenshotForm({ ...screenshotForm, title_ar: e.target.value })} className="bg-slate-800 border-slate-600" dir="rtl" />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="s-desc">Description (English)</Label>
+                <Textarea id="s-desc" value={screenshotForm.description} onChange={(e) => setScreenshotForm({ ...screenshotForm, description: e.target.value })} className="bg-slate-800 border-slate-600 min-h-[80px]" placeholder="Brief description of this dashboard view" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="s-desc_ar">Description (Arabic)</Label>
+                <Textarea id="s-desc_ar" value={screenshotForm.description_ar} onChange={(e) => setScreenshotForm({ ...screenshotForm, description_ar: e.target.value })} className="bg-slate-800 border-slate-600 min-h-[80px]" dir="rtl" />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Screenshot Image *</Label>
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                <Input value={screenshotForm.image_url} onChange={(e) => setScreenshotForm({ ...screenshotForm, image_url: e.target.value })} className="bg-slate-800 border-slate-600 flex-1" placeholder="https://example.com/screenshot.png" />
+                <input ref={screenshotInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => handleScreenshotFileUpload(e.target.files?.[0] ?? null)} />
+                <Button type="button" variant="outline" onClick={() => screenshotInputRef.current?.click()} disabled={uploadingScreenshot} className="border-slate-600 bg-slate-800 text-slate-200 hover:bg-slate-700 shrink-0">
+                  {uploadingScreenshot ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Upload className="h-4 w-4 mr-2" />}
+                  {uploadingScreenshot ? 'Uploading' : 'Upload'}
+                </Button>
+              </div>
+              <p className="text-xs text-slate-400">Recommended: 1360x850px, WebP or PNG, max 4MB.</p>
+              {screenshotForm.image_url && (
+                <div className="mt-2 rounded-lg overflow-hidden border border-slate-700/50">
+                  <img src={screenshotForm.image_url} alt="Preview" className="w-full h-40 object-cover" />
+                </div>
+              )}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="s-video_url">Video URL (optional)</Label>
+                <Input id="s-video_url" value={screenshotForm.video_url} onChange={(e) => setScreenshotForm({ ...screenshotForm, video_url: e.target.value })} className="bg-slate-800 border-slate-600" placeholder="https://youtube.com/watch?v=..." />
+                <p className="text-xs text-slate-400">YouTube, Vimeo, or direct video link</p>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="s-demo_url">Demo URL (optional)</Label>
+                <Input id="s-demo_url" value={screenshotForm.demo_url} onChange={(e) => setScreenshotForm({ ...screenshotForm, demo_url: e.target.value })} className="bg-slate-800 border-slate-600" placeholder="https://your-store.com" />
+                <p className="text-xs text-slate-400">Link to try the live dashboard</p>
+              </div>
+            </div>
+            <div className="flex items-center justify-end">
               <Label className="flex items-center gap-2 cursor-pointer"><Switch checked={projectForm.featured} onCheckedChange={(checked) => setProjectForm({ ...projectForm, featured: checked })} />Featured Project</Label>
               <Label className="flex items-center gap-2 cursor-pointer"><Switch checked={projectForm.visible} onCheckedChange={(checked) => setProjectForm({ ...projectForm, visible: checked })} />Visible</Label>
             </div>
@@ -954,9 +1042,9 @@ const AdminProjects = () => {
               </Label>
             </div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsScreenshotDialogOpen(false)}>Cancel</Button>
-            <Button onClick={handleSaveScreenshot} disabled={savingScreenshot} className="bg-gradient-to-r from-blue-600 to-purple-600">
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            <Button variant="outline" onClick={() => setIsScreenshotDialogOpen(false)} className="w-full sm:w-auto">Cancel</Button>
+            <Button onClick={handleSaveScreenshot} disabled={savingScreenshot} className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600">
               {savingScreenshot ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Saving...</> : 'Save'}
             </Button>
           </DialogFooter>

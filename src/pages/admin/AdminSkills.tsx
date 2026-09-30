@@ -242,10 +242,10 @@ const AdminSkills = () => {
     <div>
       <AdminHeader title="Skills" subtitle="Manage your skills" />
 
-      <div className="p-6">
+      <div className="p-3 sm:p-4 md:p-6">
         <div className="flex flex-col gap-4 mb-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-col gap-3">
-            <p className="text-slate-400 text-sm sm:text-base">
+            <p className="text-slate-400 text-xs sm:text-base">
               {filteredSkills.length} skill{filteredSkills.length !== 1 ? 's' : ''}
             </p>
             <div className="flex w-full max-w-full overflow-x-auto gap-2 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -255,7 +255,7 @@ const AdminSkills = () => {
                   variant="ghost"
                   size="sm"
                   onClick={() => setFilterCategory(cat)}
-                  className={`capitalize shrink-0 ${filterCategory === cat
+                  className={`capitalize shrink-0 text-xs sm:text-sm ${filterCategory === cat
                       ? 'bg-blue-600 text-white'
                       : 'text-slate-400 hover:text-white'
                     }`}
@@ -281,7 +281,7 @@ const AdminSkills = () => {
         ) : (
           <>
             <Card className="bg-slate-900/40 backdrop-blur-xl border-slate-700/50 mb-6">
-              <CardContent className="p-6">
+              <CardContent className="p-4 sm:p-6">
                 <div className="flex flex-col gap-2 mb-6">
                   <h3 className="text-lg font-semibold text-white">Portfolio Preview</h3>
                   <p className="text-sm text-slate-400">
@@ -561,14 +561,14 @@ const AdminSkills = () => {
             </div>
           </div>
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)} className="w-full sm:w-auto">
               Cancel
             </Button>
             <Button
               onClick={handleSave}
               disabled={saving}
-              className="bg-gradient-to-r from-blue-600 to-purple-600"
+              className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600"
             >
               {saving ? (
                 <>

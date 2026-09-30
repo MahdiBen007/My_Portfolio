@@ -229,21 +229,21 @@ const AdminMessages = () => {
     <div>
       <AdminHeader title="Messages" subtitle={`${unreadCount} unread message${unreadCount !== 1 ? 's' : ''}`} />
 
-      <div className="p-6">
+      <div className="p-3 sm:p-4 md:p-6">
         {/* Toolbar */}
-        <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
-          <div className="flex items-center gap-4">
-            <div className="relative">
+        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 sm:gap-4 mb-6">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4 flex-1">
+            <div className="relative flex-1 sm:flex-initial">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
               <Input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search messages..."
-                className="pl-10 w-64 bg-slate-800 border-slate-600"
+                className="pl-10 w-full sm:w-64 bg-slate-800 border-slate-600"
               />
             </div>
             <Select value={filter} onValueChange={(v: typeof filter) => setFilter(v)}>
-              <SelectTrigger className="w-32 bg-slate-800 border-slate-600">
+              <SelectTrigger className="w-full sm:w-32 bg-slate-800 border-slate-600">
                 <Filter className="w-4 h-4 mr-2" />
                 <SelectValue />
               </SelectTrigger>
@@ -255,7 +255,7 @@ const AdminMessages = () => {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={exportCSV} variant="outline" className="border-slate-600">
+          <Button onClick={exportCSV} variant="outline" className="border-slate-600 w-full sm:w-auto">
             <Download className="w-4 h-4 mr-2" />
             Export CSV
           </Button>
@@ -280,49 +280,52 @@ const AdminMessages = () => {
                 <div
                   key={msg.id}
                   onClick={() => openMessageDetail(msg)}
-                  className={`p-4 cursor-pointer hover:bg-slate-800/50 transition-colors ${
+                  className={`p-3.5 sm:p-4 cursor-pointer hover:bg-slate-800/50 transition-colors ${
                     !msg.is_read ? 'bg-blue-500/5' : ''
                   }`}
                 >
-                  <div className="flex items-start gap-4">
-                    <button
-                      onClick={(e) => toggleStar(msg.id, msg.is_starred, e)}
-                      className={`mt-1 ${
-                        msg.is_starred ? 'text-yellow-400' : 'text-slate-500 hover:text-yellow-400'
-                      }`}
-                    >
-                      <Star className="w-4 h-4" fill={msg.is_starred ? 'currentColor' : 'none'} />
-                    </button>
+                  <div className="flex flex-col sm:flex-row sm:items-start gap-2.5 sm:gap-4">
+                    <div className="flex items-start gap-3 flex-1 min-w-0">
+                      <button
+                        onClick={(e) => toggleStar(msg.id, msg.is_starred, e)}
+                        className={`mt-1 shrink-0 ${
+                          msg.is_starred ? 'text-yellow-400' : 'text-slate-500 hover:text-yellow-400'
+                        }`}
+                        aria-label="Star message"
+                      >
+                        <Star className="w-4 h-4" fill={msg.is_starred ? 'currentColor' : 'none'} />
+                      </button>
 
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
-                      <span className="text-white font-medium text-sm">
-                        {msg.name.charAt(0).toUpperCase()}
-                      </span>
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <p className={`font-medium ${!msg.is_read ? 'text-white' : 'text-slate-300'}`}>
-                          {msg.name}
-                        </p>
-                        <span className="text-slate-500 text-sm">{msg.phone || msg.email}</span>
-                        {!msg.is_read && (
-                          <Badge className="bg-blue-500/20 text-blue-400 text-xs">New</Badge>
-                        )}
-                        {msg.is_replied && (
-                          <Badge className="bg-green-500/20 text-green-400 text-xs">
-                            <Reply className="w-3 h-3 mr-1" />
-                            Replied
-                          </Badge>
-                        )}
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shrink-0">
+                        <span className="text-white font-medium text-xs sm:text-sm">
+                          {msg.name.charAt(0).toUpperCase()}
+                        </span>
                       </div>
-                      <p className={`text-sm ${!msg.is_read ? 'text-slate-300' : 'text-slate-400'}`}>
-                        {msg.subject || 'No subject'}
-                      </p>
-                      <p className="text-sm text-slate-500 truncate mt-1">{msg.message}</p>
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                          <p className={`font-medium text-sm sm:text-base truncate ${!msg.is_read ? 'text-white' : 'text-slate-300'}`}>
+                            {msg.name}
+                          </p>
+                          <span className="text-slate-500 text-xs sm:text-sm truncate max-w-[180px] sm:max-w-none">{msg.phone || msg.email}</span>
+                          {!msg.is_read && (
+                            <Badge className="bg-blue-500/20 text-blue-400 text-[10px] px-1.5 py-0.5">New</Badge>
+                          )}
+                          {msg.is_replied && (
+                            <Badge className="bg-green-500/20 text-green-400 text-[10px] px-1.5 py-0.5">
+                              <Reply className="w-3 h-3 mr-1" />
+                              Replied
+                            </Badge>
+                          )}
+                        </div>
+                        <p className={`text-xs sm:text-sm truncate mt-0.5 ${!msg.is_read ? 'text-slate-200' : 'text-slate-400'}`}>
+                          {msg.subject || 'No subject'}
+                        </p>
+                        <p className="text-xs sm:text-sm text-slate-500 line-clamp-2 mt-0.5">{msg.message}</p>
+                      </div>
                     </div>
 
-                    <div className="text-xs text-slate-500 whitespace-nowrap">
+                    <div className="text-[11px] sm:text-xs text-slate-500 shrink-0 self-end sm:self-auto pl-7 sm:pl-0">
                       {format(new Date(msg.received_at), 'MMM d, h:mm a')}
                     </div>
                   </div>

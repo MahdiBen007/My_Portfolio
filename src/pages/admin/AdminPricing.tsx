@@ -298,14 +298,14 @@ const AdminPricing = () => {
     <div>
       <AdminHeader title="Pricing Plans" subtitle="Manage your pricing plans" />
 
-      <div className="p-6">
-        <div className="flex justify-between items-center mb-6">
-          <p className="text-slate-400">
+      <div className="p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <p className="text-sm sm:text-base text-slate-400">
             {plans.length} plan{plans.length !== 1 ? 's' : ''} total
           </p>
           <Button
             onClick={openCreateDialog}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+            className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
           >
             <Plus className="w-4 h-4 mr-2" />
             Add Plan
@@ -320,7 +320,7 @@ const AdminPricing = () => {
           <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
             <CardContent className="py-12 text-center">
               <p className="text-slate-400 mb-4">No pricing plans yet</p>
-              <Button onClick={openCreateDialog} variant="outline">
+              <Button onClick={openCreateDialog} variant="outline" className="w-full sm:w-auto">
                 <Plus className="w-4 h-4 mr-2" />
                 Create your first plan
               </Button>
@@ -335,48 +335,50 @@ const AdminPricing = () => {
                   key={plan.id}
                   className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50 hover:border-slate-600/50 transition-all"
                 >
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-4">
-                      <button className="text-slate-500 hover:text-slate-300 cursor-grab">
-                        <GripVertical className="w-5 h-5" />
-                      </button>
+                  <CardContent className="p-3.5 sm:p-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+                      <div className="flex items-start sm:items-center gap-3 flex-1 min-w-0">
+                        <button className="text-slate-500 hover:text-slate-300 cursor-grab shrink-0 mt-1 sm:mt-0">
+                          <GripVertical className="w-5 h-5" />
+                        </button>
 
-                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                        plan.featured
-                          ? 'bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30'
-                          : 'bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-500/30'
-                      }`}>
-                        <Icon className={`w-5 h-5 ${plan.featured ? 'text-yellow-400' : 'text-blue-400'}`} />
+                        <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl shrink-0 flex items-center justify-center ${
+                          plan.featured
+                            ? 'bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30'
+                            : 'bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-500/30'
+                        }`}>
+                          <Icon className={`w-5 h-5 ${plan.featured ? 'text-yellow-400' : 'text-blue-400'}`} />
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                            <h3 className="font-medium text-white text-sm sm:text-base">{plan.name_en}</h3>
+                            <span className="text-xs sm:text-sm text-slate-400">({plan.name_ar})</span>
+                            {plan.featured && (
+                              <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30 text-[10px] sm:text-xs">
+                                Featured
+                              </Badge>
+                            )}
+                            {!plan.visible && (
+                              <Badge variant="secondary" className="bg-slate-700 text-slate-400 text-[10px] sm:text-xs">
+                                Hidden
+                              </Badge>
+                            )}
+                          </div>
+                          <p className="text-xs sm:text-sm text-slate-400 line-clamp-1 mt-0.5">{plan.desc_en}</p>
+                          <div className="flex items-center gap-2 sm:gap-3 mt-1">
+                            <span className="text-sm sm:text-lg font-bold text-white">{plan.price_en} {plan.currency_en}</span>
+                            <span className="text-xs text-slate-500">• {plan.features_en?.length || 0} features</span>
+                          </div>
+                        </div>
                       </div>
 
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-medium text-white">{plan.name_en}</h3>
-                          <span className="text-sm text-slate-500">{plan.name_ar}</span>
-                          {plan.featured && (
-                            <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
-                              Featured
-                            </Badge>
-                          )}
-                          {!plan.visible && (
-                            <Badge variant="secondary" className="bg-slate-700 text-slate-400">
-                              Hidden
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-sm text-slate-400 truncate">{plan.desc_en}</p>
-                        <div className="flex items-center gap-3 mt-1">
-                          <span className="text-lg font-bold text-white">{plan.price_en} {plan.currency_en}</span>
-                          <span className="text-sm text-slate-500">{plan.features_en?.length || 0} features</span>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center justify-end gap-1 pt-2 sm:pt-0 border-t border-slate-800/80 sm:border-t-0 shrink-0">
                         <Button
                           variant="ghost"
                           size="icon"
                           onClick={() => toggleFeatured(plan.id, plan.featured)}
-                          className="text-slate-400 hover:text-yellow-400"
+                          className="h-8 w-8 text-slate-400 hover:text-yellow-400"
                           title="Toggle featured"
                         >
                           <Star className={`w-4 h-4 ${plan.featured ? 'fill-yellow-400' : ''}`} />
@@ -385,7 +387,8 @@ const AdminPricing = () => {
                           variant="ghost"
                           size="icon"
                           onClick={() => toggleVisibility(plan.id, plan.visible)}
-                          className="text-slate-400 hover:text-white"
+                          className="h-8 w-8 text-slate-400 hover:text-white"
+                          title="Toggle visibility"
                         >
                           {plan.visible ? (
                             <Eye className="w-4 h-4" />
@@ -397,7 +400,8 @@ const AdminPricing = () => {
                           variant="ghost"
                           size="icon"
                           onClick={() => openEditDialog(plan)}
-                          className="text-slate-400 hover:text-white"
+                          className="h-8 w-8 text-slate-400 hover:text-white"
+                          title="Edit"
                         >
                           <Pencil className="w-4 h-4" />
                         </Button>
@@ -408,7 +412,8 @@ const AdminPricing = () => {
                             setDeletingId(plan.id);
                             setIsDeleteDialogOpen(true);
                           }}
-                          className="text-slate-400 hover:text-red-400"
+                          className="h-8 w-8 text-slate-400 hover:text-red-400"
+                          title="Delete"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
@@ -424,7 +429,7 @@ const AdminPricing = () => {
 
       {/* Create/Edit Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="bg-slate-900 border-slate-700 text-white w-[calc(100vw-1.5rem)] sm:w-full max-w-3xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 rounded-2xl sm:rounded-lg">
           <DialogHeader>
             <DialogTitle>{editingPlan ? 'Edit Plan' : 'Create Plan'}</DialogTitle>
             <DialogDescription className="text-slate-400">
@@ -432,8 +437,8 @@ const AdminPricing = () => {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-4">
-            <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-4 py-2 sm:py-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2">
                 <Label htmlFor="name_en">Plan Name (English) *</Label>
                 <Input
@@ -457,7 +462,7 @@ const AdminPricing = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2">
                 <Label htmlFor="price_en">Price (English) *</Label>
                 <Input
@@ -481,7 +486,7 @@ const AdminPricing = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2">
                 <Label htmlFor="currency_en">Currency (English)</Label>
                 <Input
@@ -505,7 +510,7 @@ const AdminPricing = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2">
                 <Label htmlFor="desc_en">Description (English) *</Label>
                 <Textarea
@@ -537,7 +542,7 @@ const AdminPricing = () => {
                     key={opt.value}
                     type="button"
                     onClick={() => setFormData({ ...formData, icon: opt.value })}
-                    className={`px-3 py-1.5 rounded-lg text-sm transition-all flex items-center gap-2 ${
+                    className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-all flex items-center gap-2 ${
                       formData.icon === opt.value
                         ? 'bg-blue-600 text-white'
                         : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
@@ -550,7 +555,7 @@ const AdminPricing = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2">
                 <Label htmlFor="badge_en">Badge (English)</Label>
                 <Input
@@ -580,7 +585,7 @@ const AdminPricing = () => {
                 id="features_en"
                 value={formData.features_en}
                 onChange={(e) => setFormData({ ...formData, features_en: e.target.value })}
-                className="bg-slate-800 border-slate-600 min-h-[150px]"
+                className="bg-slate-800 border-slate-600 min-h-[120px] sm:min-h-[150px]"
                 placeholder={"Complete Admin Dashboard\nUnlimited Products\nResponsive Design"}
               />
             </div>
@@ -591,13 +596,13 @@ const AdminPricing = () => {
                 id="features_ar"
                 value={formData.features_ar}
                 onChange={(e) => setFormData({ ...formData, features_ar: e.target.value })}
-                className="bg-slate-800 border-slate-600 min-h-[150px]"
+                className="bg-slate-800 border-slate-600 min-h-[120px] sm:min-h-[150px]"
                 dir="rtl"
                 placeholder={"لوحة تحكم إدارية كاملة\nمنتجات غير محدودة\nتصميم متجاوب"}
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2">
                 <Label htmlFor="cta_en">CTA Button (English)</Label>
                 <Input
@@ -632,8 +637,8 @@ const AdminPricing = () => {
               />
             </div>
 
-            <div className="flex items-center justify-between">
-              <Label htmlFor="featured">Featured plan</Label>
+            <div className="flex items-center justify-between py-1">
+              <Label htmlFor="featured" className="text-sm">Featured plan</Label>
               <Switch
                 id="featured"
                 checked={formData.featured}
@@ -641,8 +646,8 @@ const AdminPricing = () => {
               />
             </div>
 
-            <div className="flex items-center justify-between">
-              <Label htmlFor="visible">Visible on website</Label>
+            <div className="flex items-center justify-between py-1">
+              <Label htmlFor="visible" className="text-sm">Visible on website</Label>
               <Switch
                 id="visible"
                 checked={formData.visible}
@@ -651,14 +656,14 @@ const AdminPricing = () => {
             </div>
           </div>
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+          <DialogFooter className="flex-col-reverse sm:flex-row gap-2">
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)} className="w-full sm:w-auto">
               Cancel
             </Button>
             <Button
               onClick={handleSave}
               disabled={saving}
-              className="bg-gradient-to-r from-blue-600 to-purple-600"
+              className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600"
             >
               {saving ? (
                 <>
@@ -675,20 +680,20 @@ const AdminPricing = () => {
 
       {/* Delete Confirmation */}
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <AlertDialogContent className="bg-slate-900 border-slate-700">
+        <AlertDialogContent className="bg-slate-900 border-slate-700 w-[calc(100vw-1.5rem)] sm:w-full max-w-lg rounded-2xl sm:rounded-lg">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-white">Delete Plan?</AlertDialogTitle>
             <AlertDialogDescription className="text-slate-400">
               This action cannot be undone. The pricing plan will be permanently deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="bg-slate-800 text-white border-slate-600 hover:bg-slate-700">
+          <AlertDialogFooter className="flex-col-reverse sm:flex-row gap-2">
+            <AlertDialogCancel className="w-full sm:w-auto bg-slate-800 text-white border-slate-600 hover:bg-slate-700">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
-              className="bg-red-600 text-white hover:bg-red-700"
+              className="w-full sm:w-auto bg-red-600 text-white hover:bg-red-700"
             >
               Delete
             </AlertDialogAction>

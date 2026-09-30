@@ -29,7 +29,7 @@ serve(async (req) => {
   if (req.method !== "POST") return json({ valid: false, code: "METHOD" }, 405);
 
   try {
-    const { license_key, device_fingerprint } = await req.json();
+    const { license_key, device_fingerprint, candidate_fingerprints } = await req.json();
     if (typeof license_key !== "string" || typeof device_fingerprint !== "string") {
       return json({ valid: false, code: "BAD_INPUT" }, 400);
     }
@@ -61,7 +61,13 @@ serve(async (req) => {
 
     if (!binding) return json({ valid: false, license_status: "active", device_status: "missing", code: "DEVICE_MISSING" });
     if (binding.status !== "active") return json({ valid: false, license_status: "active", device_status: "disabled", code: "DEVICE_DISABLED" });
-    if (binding.device_fingerprint !== fp) return json({ valid: false, license_status: "active", device_status: "active", code: "DEVICE_MISMATCH" });
+    
+    if (binding.device_fingerprint !== fp) {
+      const candidates = Array.isArray(candidate_fingerprints) ? candidate_fingerprints : [];
+      if (!candidates.includes(binding.device_fingerprint)) {
+        return json({ valid: false, license_status: "active", device_status: "active", code: "DEVICE_MISMATCH" });
+      }
+    }
 
     return json({ valid: true, license_status: "active", device_status: "active", code: "OK" });
   } catch (err) {

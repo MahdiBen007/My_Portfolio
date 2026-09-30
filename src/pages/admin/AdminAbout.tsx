@@ -329,14 +329,14 @@ const AdminAbout = () => {
     <div>
       <AdminHeader title="About & Timeline" subtitle="Manage about section and timeline" />
 
-      <div className="p-6">
-        <Tabs defaultValue="about" className="space-y-6">
-          <TabsList className="bg-slate-800/50">
-            <TabsTrigger value="about" className="data-[state=active]:bg-blue-600">
+      <div className="p-3 sm:p-4 md:p-6">
+        <Tabs defaultValue="about" className="space-y-4 sm:space-y-6">
+          <TabsList className="bg-slate-800/50 w-full sm:w-auto grid grid-cols-2 sm:flex">
+            <TabsTrigger value="about" className="data-[state=active]:bg-blue-600 text-xs sm:text-sm">
               <User className="w-4 h-4 mr-2" />
               About
             </TabsTrigger>
-            <TabsTrigger value="timeline" className="data-[state=active]:bg-blue-600">
+            <TabsTrigger value="timeline" className="data-[state=active]:bg-blue-600 text-xs sm:text-sm">
               <Clock className="w-4 h-4 mr-2" />
               Timeline
             </TabsTrigger>
@@ -344,21 +344,21 @@ const AdminAbout = () => {
 
           <TabsContent value="about">
             <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
-              <CardHeader>
-                <CardTitle className="text-white">About Section</CardTitle>
-                <CardDescription className="text-slate-400">
+              <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-3">
+                <CardTitle className="text-base sm:text-lg text-white">About Section</CardTitle>
+                <CardDescription className="text-xs sm:text-sm text-slate-400">
                   Update your bio and profile information
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+              <CardContent className="p-4 sm:p-6 pt-0 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="bio">Bio (English)</Label>
                     <Textarea
                       id="bio"
                       value={aboutForm.bio}
                       onChange={(e) => setAboutForm({ ...aboutForm, bio: e.target.value })}
-                      className="bg-slate-800 border-slate-600 min-h-[150px]"
+                      className="bg-slate-800 border-slate-600 min-h-[120px] sm:min-h-[150px]"
                       placeholder="Tell visitors about yourself..."
                     />
                   </div>
@@ -368,14 +368,14 @@ const AdminAbout = () => {
                       id="bio_ar"
                       value={aboutForm.bio_ar}
                       onChange={(e) => setAboutForm({ ...aboutForm, bio_ar: e.target.value })}
-                      className="bg-slate-800 border-slate-600 min-h-[150px]"
+                      className="bg-slate-800 border-slate-600 min-h-[120px] sm:min-h-[150px]"
                       dir="rtl"
                       placeholder="أخبر الزوار عن نفسك..."
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   <div className="space-y-2">
                     <Label htmlFor="profile_image_url">Profile Image URL</Label>
                     <div className="flex gap-2">
@@ -383,22 +383,22 @@ const AdminAbout = () => {
                         id="profile_image_url"
                         value={aboutForm.profile_image_url}
                         onChange={(e) => setAboutForm({ ...aboutForm, profile_image_url: e.target.value })}
-                        className="bg-slate-800 border-slate-600"
+                        className="bg-slate-800 border-slate-600 flex-1"
                         placeholder="https://example.com/profile.jpg"
                       />
                       {aboutForm.profile_image_url && (
                         <Button
                           type="button"
                           variant="outline"
-                          className="border-slate-600"
+                          className="border-slate-600 shrink-0"
                           onClick={() => window.open(aboutForm.profile_image_url, '_blank')}
                         >
                           <ExternalLink className="w-4 h-4" />
                         </Button>
                       )}
                     </div>
-                    <div className="flex items-center gap-3 text-sm text-slate-400">
-                      <label className="inline-flex items-center gap-2 cursor-pointer px-3 py-2 rounded-lg border border-slate-600 bg-slate-800/60 hover:bg-slate-800">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm text-slate-400">
+                      <label className="inline-flex items-center gap-2 cursor-pointer px-3 py-1.5 sm:py-2 rounded-lg border border-slate-600 bg-slate-800/60 hover:bg-slate-800 text-xs sm:text-sm">
                         <Upload className="w-4 h-4" />
                         {uploadingProfile ? 'Uploading...' : 'Upload Image'}
                         <input
@@ -419,22 +419,22 @@ const AdminAbout = () => {
                         id="resume_url"
                         value={aboutForm.resume_url}
                         onChange={(e) => setAboutForm({ ...aboutForm, resume_url: e.target.value })}
-                        className="bg-slate-800 border-slate-600"
+                        className="bg-slate-800 border-slate-600 flex-1"
                         placeholder="https://example.com/resume.pdf"
                       />
                       {aboutForm.resume_url && (
                         <Button
                           type="button"
                           variant="outline"
-                          className="border-slate-600"
+                          className="border-slate-600 shrink-0"
                           onClick={() => window.open(aboutForm.resume_url, '_blank')}
                         >
                           <ExternalLink className="w-4 h-4" />
                         </Button>
                       )}
                     </div>
-                    <div className="flex items-center gap-3 text-sm text-slate-400">
-                      <label className="inline-flex items-center gap-2 cursor-pointer px-3 py-2 rounded-lg border border-slate-600 bg-slate-800/60 hover:bg-slate-800">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm text-slate-400">
+                      <label className="inline-flex items-center gap-2 cursor-pointer px-3 py-1.5 sm:py-2 rounded-lg border border-slate-600 bg-slate-800/60 hover:bg-slate-800 text-xs sm:text-sm">
                         <Upload className="w-4 h-4" />
                         {uploadingResume ? 'Uploading...' : 'Upload PDF'}
                         <input
@@ -450,11 +450,11 @@ const AdminAbout = () => {
                   </div>
                 </div>
 
-                <div className="flex justify-end">
+                <div className="flex justify-end pt-2">
                   <Button
                     onClick={saveAbout}
                     disabled={savingAbout}
-                    className="bg-gradient-to-r from-blue-600 to-purple-600"
+                    className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600"
                   >
                     {savingAbout ? (
                       <>
@@ -471,13 +471,13 @@ const AdminAbout = () => {
           </TabsContent>
 
           <TabsContent value="timeline">
-            <div className="flex justify-between items-center mb-4">
-              <p className="text-slate-400">
+            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-4">
+              <p className="text-xs sm:text-sm text-slate-400">
                 {timeline.length} item{timeline.length !== 1 ? 's' : ''}
               </p>
               <Button
                 onClick={openTimelineCreateDialog}
-                className="bg-gradient-to-r from-blue-600 to-purple-600"
+                className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Add Timeline Item
@@ -487,8 +487,8 @@ const AdminAbout = () => {
             {timeline.length === 0 ? (
               <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
                 <CardContent className="py-12 text-center">
-                  <p className="text-slate-400 mb-4">No timeline items yet</p>
-                  <Button onClick={openTimelineCreateDialog} variant="outline">
+                  <p className="text-slate-400 mb-4 text-sm">No timeline items yet</p>
+                  <Button onClick={openTimelineCreateDialog} variant="outline" className="w-full sm:w-auto">
                     <Plus className="w-4 h-4 mr-2" />
                     Add your first timeline item
                   </Button>
@@ -501,36 +501,39 @@ const AdminAbout = () => {
                     key={item.id}
                     className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50 hover:border-slate-600/50 transition-all"
                   >
-                    <CardContent className="p-4">
-                      <div className="flex items-center gap-4">
-                        <button className="text-slate-500 hover:text-slate-300 cursor-grab">
-                          <GripVertical className="w-5 h-5" />
-                        </button>
+                    <CardContent className="p-3.5 sm:p-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+                        <div className="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0 flex-1">
+                          <button className="text-slate-500 hover:text-slate-300 cursor-grab mt-1 sm:mt-0 shrink-0" aria-label="Reorder">
+                            <GripVertical className="w-5 h-5" />
+                          </button>
 
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-500/30 flex items-center justify-center">
-                          <span className="text-blue-400 text-sm">{item.year}</span>
-                        </div>
+                          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-500/30 flex items-center justify-center shrink-0">
+                            <span className="text-blue-400 text-xs sm:text-sm font-semibold">{item.year}</span>
+                          </div>
 
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <h3 className="font-medium text-white">{item.title}</h3>
-                            {!item.visible && (
-                              <Badge variant="secondary" className="bg-slate-700 text-slate-400">
-                                Hidden
-                              </Badge>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                              <h3 className="font-medium text-sm sm:text-base text-white truncate">{item.title}</h3>
+                              {!item.visible && (
+                                <Badge variant="secondary" className="bg-slate-700 text-slate-400 text-[10px] sm:text-xs">
+                                  Hidden
+                                </Badge>
+                              )}
+                            </div>
+                            {item.description && (
+                              <p className="text-xs sm:text-sm text-slate-400 line-clamp-2 mt-0.5">{item.description}</p>
                             )}
                           </div>
-                          {item.description && (
-                            <p className="text-sm text-slate-400 truncate">{item.description}</p>
-                          )}
                         </div>
 
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center justify-end gap-1 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-700/50 shrink-0">
                           <Button
                             variant="ghost"
                             size="icon"
                             onClick={() => toggleTimelineVisibility(item.id, item.visible)}
-                            className="text-slate-400 hover:text-white"
+                            className="text-slate-400 hover:text-white h-8 w-8"
+                            aria-label="Toggle visibility"
                           >
                             {item.visible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
                           </Button>
@@ -538,7 +541,8 @@ const AdminAbout = () => {
                             variant="ghost"
                             size="icon"
                             onClick={() => openTimelineEditDialog(item)}
-                            className="text-slate-400 hover:text-white"
+                            className="text-slate-400 hover:text-white h-8 w-8"
+                            aria-label="Edit timeline item"
                           >
                             <Pencil className="w-4 h-4" />
                           </Button>
@@ -549,7 +553,8 @@ const AdminAbout = () => {
                               setDeletingId(item.id);
                               setIsDeleteDialogOpen(true);
                             }}
-                            className="text-slate-400 hover:text-red-400"
+                            className="text-slate-400 hover:text-red-400 h-8 w-8"
+                            aria-label="Delete timeline item"
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>
@@ -566,7 +571,7 @@ const AdminAbout = () => {
 
       {/* Timeline Dialog */}
       <Dialog open={isTimelineDialogOpen} onOpenChange={setIsTimelineDialogOpen}>
-        <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-2xl">
+        <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
               {editingTimeline ? 'Edit Timeline Item' : 'Create Timeline Item'}
@@ -576,8 +581,8 @@ const AdminAbout = () => {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-4">
-            <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-4 py-2 sm:py-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2">
                 <Label htmlFor="year">Year *</Label>
                 <Input
@@ -590,13 +595,13 @@ const AdminAbout = () => {
               </div>
               <div className="space-y-2">
                 <Label>Icon</Label>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5 sm:gap-2">
                   {iconOptions.map((icon) => (
                     <button
                       key={icon}
                       type="button"
                       onClick={() => setTimelineForm({ ...timelineForm, icon })}
-                      className={`px-3 py-1.5 rounded-lg text-sm transition-all ${
+                      className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-all ${
                         timelineForm.icon === icon
                           ? 'bg-blue-600 text-white'
                           : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
@@ -609,7 +614,7 @@ const AdminAbout = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2">
                 <Label htmlFor="timeline_title">Title (English) *</Label>
                 <Input
@@ -632,14 +637,14 @@ const AdminAbout = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2">
                 <Label htmlFor="timeline_description">Description (English)</Label>
                 <Textarea
                   id="timeline_description"
                   value={timelineForm.description}
                   onChange={(e) => setTimelineForm({ ...timelineForm, description: e.target.value })}
-                  className="bg-slate-800 border-slate-600"
+                  className="bg-slate-800 border-slate-600 min-h-[80px]"
                 />
               </div>
               <div className="space-y-2">
@@ -648,14 +653,14 @@ const AdminAbout = () => {
                   id="timeline_description_ar"
                   value={timelineForm.description_ar}
                   onChange={(e) => setTimelineForm({ ...timelineForm, description_ar: e.target.value })}
-                  className="bg-slate-800 border-slate-600"
+                  className="bg-slate-800 border-slate-600 min-h-[80px]"
                   dir="rtl"
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-between">
-              <Label htmlFor="timeline_visible">Visible on website</Label>
+            <div className="flex items-center justify-between pt-2">
+              <Label htmlFor="timeline_visible" className="text-xs sm:text-sm">Visible on website</Label>
               <Switch
                 id="timeline_visible"
                 checked={timelineForm.visible}
@@ -664,14 +669,14 @@ const AdminAbout = () => {
             </div>
           </div>
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsTimelineDialogOpen(false)}>
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            <Button variant="outline" onClick={() => setIsTimelineDialogOpen(false)} className="w-full sm:w-auto">
               Cancel
             </Button>
             <Button
               onClick={saveTimeline}
               disabled={savingTimeline}
-              className="bg-gradient-to-r from-blue-600 to-purple-600"
+              className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600"
             >
               {savingTimeline ? (
                 <>

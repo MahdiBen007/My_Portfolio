@@ -343,10 +343,10 @@ const AdminPageBuilder = () => {
     <div>
       <AdminHeader title="Page Builder" subtitle="Build and customize your pages" />
 
-      <div className="p-6">
+      <div className="p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6">
         {/* Page Selector & Actions */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4">
             <Select
               value={selectedPage?.id || ''}
               onValueChange={(value) => {
@@ -354,7 +354,7 @@ const AdminPageBuilder = () => {
                 setSelectedPage(page || null);
               }}
             >
-              <SelectTrigger className="w-48 bg-slate-800 border-slate-600">
+              <SelectTrigger className="w-full sm:w-48 bg-slate-800 border-slate-600">
                 <SelectValue placeholder="Select page" />
               </SelectTrigger>
               <SelectContent className="bg-slate-800 border-slate-700">
@@ -374,7 +374,7 @@ const AdminPageBuilder = () => {
                 variant="ghost"
                 size="icon"
                 onClick={() => setPreviewMode('desktop')}
-                className={previewMode === 'desktop' ? 'bg-blue-600 text-white' : 'text-slate-400'}
+                className={`h-8 w-8 ${previewMode === 'desktop' ? 'bg-blue-600 text-white' : 'text-slate-400'}`}
               >
                 <Monitor className="w-4 h-4" />
               </Button>
@@ -382,7 +382,7 @@ const AdminPageBuilder = () => {
                 variant="ghost"
                 size="icon"
                 onClick={() => setPreviewMode('tablet')}
-                className={previewMode === 'tablet' ? 'bg-blue-600 text-white' : 'text-slate-400'}
+                className={`h-8 w-8 ${previewMode === 'tablet' ? 'bg-blue-600 text-white' : 'text-slate-400'}`}
               >
                 <Tablet className="w-4 h-4" />
               </Button>
@@ -390,22 +390,20 @@ const AdminPageBuilder = () => {
                 variant="ghost"
                 size="icon"
                 onClick={() => setPreviewMode('mobile')}
-                className={previewMode === 'mobile' ? 'bg-blue-600 text-white' : 'text-slate-400'}
+                className={`h-8 w-8 ${previewMode === 'mobile' ? 'bg-blue-600 text-white' : 'text-slate-400'}`}
               >
                 <Smartphone className="w-4 h-4" />
               </Button>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Button onClick={openAddBlockDialog} variant="outline" className="border-slate-600">
-              <Plus className="w-4 h-4 mr-2" />
-              Add Block
-            </Button>
-          </div>
+          <Button onClick={openAddBlockDialog} variant="outline" className="w-full sm:w-auto border-slate-600">
+            <Plus className="w-4 h-4 mr-2" />
+            Add Block
+          </Button>
         </div>
 
-        <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-6">
+        <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-4 sm:gap-6">
           <div>
             {/* Blocks List */}
             {blocks.length === 0 ? (
@@ -413,7 +411,7 @@ const AdminPageBuilder = () => {
                 <CardContent className="py-16 text-center">
                   <LayoutGrid className="w-12 h-12 text-slate-600 mx-auto mb-4" />
                   <p className="text-slate-400 mb-4">No blocks yet. Start building your page!</p>
-                  <Button onClick={openAddBlockDialog} variant="outline">
+                  <Button onClick={openAddBlockDialog} variant="outline" className="w-full sm:w-auto">
                     <Plus className="w-4 h-4 mr-2" />
                     Add First Block
                   </Button>
@@ -428,87 +426,97 @@ const AdminPageBuilder = () => {
                   return (
                     <Collapsible key={block.id} open={isExpanded} onOpenChange={() => toggleExpand(block.id)}>
                       <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
-                        <CardContent className="p-4">
-                          <div className="flex items-center gap-4">
-                            <button className="text-slate-500 hover:text-slate-300 cursor-grab">
-                              <GripVertical className="w-5 h-5" />
-                            </button>
+                        <CardContent className="p-3.5 sm:p-4">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div className="flex items-center gap-3 min-w-0 flex-1">
+                              <button className="text-slate-500 hover:text-slate-300 cursor-grab shrink-0">
+                                <GripVertical className="w-5 h-5" />
+                              </button>
 
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-500/30 flex items-center justify-center">
-                              <BlockIcon className="w-5 h-5 text-blue-400" />
-                            </div>
+                              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-500/30 flex items-center justify-center shrink-0">
+                                <BlockIcon className="w-5 h-5 text-blue-400" />
+                              </div>
 
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2">
-                                <h3 className="font-medium text-white capitalize">
-                                  {block.block_type.replace('_', ' ')}
-                                </h3>
-                                {!block.visible && (
-                                  <Badge variant="secondary" className="bg-slate-700 text-slate-400">
-                                    Hidden
-                                  </Badge>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2">
+                                  <h3 className="font-medium text-white capitalize text-sm sm:text-base">
+                                    {block.block_type.replace('_', ' ')}
+                                  </h3>
+                                  {!block.visible && (
+                                    <Badge variant="secondary" className="bg-slate-700 text-slate-400 text-[10px] sm:text-xs">
+                                      Hidden
+                                    </Badge>
+                                  )}
+                                </div>
+                                {block.title && (
+                                  <p className="text-xs sm:text-sm text-slate-400 truncate mt-0.5">{block.title}</p>
                                 )}
                               </div>
-                              {block.title && (
-                                <p className="text-sm text-slate-400 truncate">{block.title}</p>
-                              )}
                             </div>
 
-                            <div className="flex items-center gap-1">
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => moveBlock(block.id, 'up')}
-                                disabled={index === 0}
-                                className="text-slate-400 hover:text-white disabled:opacity-30"
-                                title="Move up"
-                              >
-                                <ArrowUp className="w-4 h-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => moveBlock(block.id, 'down')}
-                                disabled={index === blocks.length - 1}
-                                className="text-slate-400 hover:text-white disabled:opacity-30"
-                                title="Move down"
-                              >
-                                <ArrowDown className="w-4 h-4" />
-                              </Button>
-                              <CollapsibleTrigger asChild>
-                                <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white">
-                                  {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                            <div className="flex items-center justify-between sm:justify-end gap-1 pt-2 sm:pt-0 border-t border-slate-800/80 sm:border-t-0 shrink-0">
+                              <div className="flex items-center gap-0.5">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => moveBlock(block.id, 'up')}
+                                  disabled={index === 0}
+                                  className="h-8 w-8 text-slate-400 hover:text-white disabled:opacity-30"
+                                  title="Move up"
+                                >
+                                  <ArrowUp className="w-3.5 h-3.5" />
                                 </Button>
-                              </CollapsibleTrigger>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => toggleBlockVisibility(block)}
-                                className="text-slate-400 hover:text-white"
-                              >
-                                {block.visible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => openEditBlockDialog(block)}
-                                className="text-slate-400 hover:text-white"
-                              >
-                                <Settings className="w-4 h-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => deleteBlock(block.id)}
-                                className="text-slate-400 hover:text-red-400"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => moveBlock(block.id, 'down')}
+                                  disabled={index === blocks.length - 1}
+                                  className="h-8 w-8 text-slate-400 hover:text-white disabled:opacity-30"
+                                  title="Move down"
+                                >
+                                  <ArrowDown className="w-3.5 h-3.5" />
+                                </Button>
+                              </div>
+
+                              <div className="flex items-center gap-0.5">
+                                <CollapsibleTrigger asChild>
+                                  <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-white">
+                                    {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                                  </Button>
+                                </CollapsibleTrigger>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => toggleBlockVisibility(block)}
+                                  className="h-8 w-8 text-slate-400 hover:text-white"
+                                  title="Toggle visibility"
+                                >
+                                  {block.visible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => openEditBlockDialog(block)}
+                                  className="h-8 w-8 text-slate-400 hover:text-white"
+                                  title="Configure"
+                                >
+                                  <Settings className="w-4 h-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => deleteBlock(block.id)}
+                                  className="h-8 w-8 text-slate-400 hover:text-red-400"
+                                  title="Delete"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </div>
                             </div>
                           </div>
 
                           <CollapsibleContent>
-                            <div className="mt-4 pt-4 border-t border-slate-700/50 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                            <div className="mt-4 pt-4 border-t border-slate-700/50 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 text-xs sm:text-sm">
                               <div>
                                 <p className="text-slate-500">Layout</p>
                                 <p className="text-slate-300 capitalize">{block.layout_variant}</p>
@@ -545,7 +553,7 @@ const AdminPageBuilder = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="rounded-3xl border border-slate-700/60 bg-gradient-to-b from-slate-950/80 to-slate-900/70 p-4">
+                <div className="rounded-2xl sm:rounded-3xl border border-slate-700/60 bg-gradient-to-b from-slate-950/80 to-slate-900/70 p-3 sm:p-4">
                   <div
                     className={`mx-auto w-full transition-all ${
                       previewMode === 'desktop'
@@ -564,17 +572,17 @@ const AdminPageBuilder = () => {
                         visibleBlocks.map((block, index) => (
                           <div
                             key={`${block.id}-preview`}
-                            className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm"
+                            className="flex items-center justify-between rounded-xl sm:rounded-2xl border border-white/10 bg-white/5 px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm"
                           >
-                            <div>
-                              <p className="text-xs uppercase tracking-wider text-slate-400">
+                            <div className="min-w-0 pr-2">
+                              <p className="text-[10px] sm:text-xs uppercase tracking-wider text-slate-400">
                                 {block.block_type.replace('_', ' ')}
                               </p>
-                              <p className="text-white">
+                              <p className="text-white truncate">
                                 {block.title || block.block_type.replace('_', ' ')}
                               </p>
                             </div>
-                            <Badge className="bg-blue-500/20 text-blue-300">#{index + 1}</Badge>
+                            <Badge className="bg-blue-500/20 text-blue-300 shrink-0 text-xs">#{index + 1}</Badge>
                           </div>
                         ))
                       )}
@@ -588,8 +596,8 @@ const AdminPageBuilder = () => {
               <CardContent className="p-4 space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-slate-400">Blocks</p>
-                    <p className="text-base font-semibold text-white">
+                    <p className="text-xs sm:text-sm text-slate-400">Blocks</p>
+                    <p className="text-sm sm:text-base font-semibold text-white">
                       {visibleBlockCount} visible / {blocks.length} total
                     </p>
                   </div>
@@ -599,11 +607,11 @@ const AdminPageBuilder = () => {
                 </div>
                 <Button
                   onClick={togglePublishPage}
-                  className={
+                  className={`w-full ${
                     selectedPage?.is_published
                       ? 'bg-slate-700 hover:bg-slate-600'
                       : 'bg-gradient-to-r from-blue-600 to-purple-600'
-                  }
+                  }`}
                 >
                   {selectedPage?.is_published ? 'Unpublish' : 'Publish'}
                 </Button>
@@ -615,7 +623,7 @@ const AdminPageBuilder = () => {
 
       {/* Add/Edit Block Dialog */}
       <Dialog open={isBlockDialogOpen} onOpenChange={setIsBlockDialogOpen}>
-        <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="bg-slate-900 border-slate-700 text-white w-[calc(100vw-1.5rem)] sm:w-full max-w-2xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 rounded-2xl sm:rounded-lg">
           <DialogHeader>
             <DialogTitle>{editingBlock ? 'Edit Block' : 'Add Block'}</DialogTitle>
             <DialogDescription className="text-slate-400">
@@ -623,27 +631,27 @@ const AdminPageBuilder = () => {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-6 py-4">
+          <div className="space-y-4 sm:space-y-6 py-2 sm:py-4">
             {/* Block Type Selection */}
             {!editingBlock && (
               <div className="space-y-2">
                 <Label>Block Type</Label>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {blockTypes.map((bt) => (
                     <button
                       key={bt.type}
                       onClick={() => setBlockForm({ ...blockForm, block_type: bt.type })}
-                      className={`p-3 rounded-xl border transition-all text-left ${
+                      className={`p-2.5 sm:p-3 rounded-xl border transition-all text-left ${
                         blockForm.block_type === bt.type
                           ? 'border-blue-500 bg-blue-500/10'
                           : 'border-slate-700 hover:border-slate-600'
                       }`}
                     >
-                      <bt.icon className={`w-5 h-5 mb-2 ${
+                      <bt.icon className={`w-4 h-4 sm:w-5 sm:h-5 mb-1.5 sm:mb-2 ${
                         blockForm.block_type === bt.type ? 'text-blue-400' : 'text-slate-400'
                       }`} />
-                      <p className="text-sm font-medium text-white">{bt.label}</p>
-                      <p className="text-xs text-slate-500">{bt.description}</p>
+                      <p className="text-xs sm:text-sm font-medium text-white">{bt.label}</p>
+                      <p className="text-[10px] sm:text-xs text-slate-500 truncate">{bt.description}</p>
                     </button>
                   ))}
                 </div>
@@ -651,7 +659,7 @@ const AdminPageBuilder = () => {
             )}
 
             {/* Title & Subtitle */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2">
                 <Label htmlFor="block_title">Section Title</Label>
                 <Input
@@ -675,7 +683,7 @@ const AdminPageBuilder = () => {
             </div>
 
             {/* Layout & Background */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2">
                 <Label>Layout Variant</Label>
                 <Select
@@ -729,9 +737,9 @@ const AdminPageBuilder = () => {
             </div>
 
             {/* Padding */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2">
-                <Label>Padding Top: {blockForm.padding_top}px</Label>
+                <Label className="text-xs sm:text-sm">Padding Top: {blockForm.padding_top}px</Label>
                 <Slider
                   value={[blockForm.padding_top]}
                   onValueChange={([value]) => setBlockForm({ ...blockForm, padding_top: value })}
@@ -741,7 +749,7 @@ const AdminPageBuilder = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label>Padding Bottom: {blockForm.padding_bottom}px</Label>
+                <Label className="text-xs sm:text-sm">Padding Bottom: {blockForm.padding_bottom}px</Label>
                 <Slider
                   value={[blockForm.padding_bottom]}
                   onValueChange={([value]) => setBlockForm({ ...blockForm, padding_bottom: value })}
@@ -753,8 +761,8 @@ const AdminPageBuilder = () => {
             </div>
 
             {/* Visibility */}
-            <div className="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl">
-              <Label htmlFor="block_visible">Visible on website</Label>
+            <div className="flex items-center justify-between p-3 sm:p-4 bg-slate-800/50 rounded-xl">
+              <Label htmlFor="block_visible" className="text-xs sm:text-sm">Visible on website</Label>
               <Switch
                 id="block_visible"
                 checked={blockForm.visible}
@@ -763,14 +771,14 @@ const AdminPageBuilder = () => {
             </div>
           </div>
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsBlockDialogOpen(false)}>
+          <DialogFooter className="flex-col-reverse sm:flex-row gap-2">
+            <Button variant="outline" onClick={() => setIsBlockDialogOpen(false)} className="w-full sm:w-auto">
               Cancel
             </Button>
             <Button
               onClick={saveBlock}
               disabled={saving}
-              className="bg-gradient-to-r from-blue-600 to-purple-600"
+              className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600"
             >
               {saving ? (
                 <>

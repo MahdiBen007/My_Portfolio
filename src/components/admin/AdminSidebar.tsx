@@ -12,6 +12,7 @@ import {
   DollarSign,
   Quote,
   KeyRound,
+  Download,
   LogOut,
   ChevronLeft,
   ChevronRight,
@@ -40,15 +41,16 @@ interface AdminSidebarProps {
 
 const navItems = [
   { path: '/admin', icon: LayoutDashboard, label: 'Overview', end: true },
+  { path: '/admin/leads', icon: Download, label: 'Demo Leads (طلبات التجربة)' },
+  { path: '/admin/licenses', icon: KeyRound, label: 'License Management' },
+  { path: '/admin/messages', icon: MessageSquare, label: 'Messages' },
   { path: '/admin/services', icon: Briefcase, label: 'Services' },
   { path: '/admin/skills', icon: Code2, label: 'Skills' },
   { path: '/admin/projects', icon: FolderKanban, label: 'Projects' },
   { path: '/admin/about', icon: User, label: 'About & Timeline' },
-  { path: '/admin/messages', icon: MessageSquare, label: 'Messages' },
   { path: '/admin/page-builder', icon: Layers, label: 'Page Builder' },
   { path: '/admin/pricing', icon: DollarSign, label: 'Pricing' },
   { path: '/admin/testimonials', icon: Quote, label: 'Testimonials' },
-  { path: '/admin/licenses', icon: KeyRound, label: 'License Management' },
   { path: '/admin/settings', icon: Settings, label: 'Settings' },
 ];
 
@@ -72,9 +74,9 @@ const AdminSidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }: AdminS
   return (
     <aside
       className={cn(
-        'admin-sidebar fixed left-0 top-0 h-screen backdrop-blur-xl border-r border-slate-700/50 z-50 transition-all duration-300 flex flex-col transform',
-        collapsed ? 'w-64 lg:w-16' : 'w-64',
-        mobileOpen ? 'translate-x-0' : '-translate-x-full',
+        'admin-sidebar fixed left-0 top-0 h-screen h-[100dvh] backdrop-blur-xl border-r border-slate-700/50 z-50 transition-all duration-300 flex flex-col transform',
+        collapsed ? 'w-72 max-w-[85vw] lg:w-16' : 'w-72 max-w-[85vw] lg:w-64',
+        mobileOpen ? 'translate-x-0 shadow-2xl shadow-black/80' : '-translate-x-full',
         'lg:translate-x-0'
       )}
     >
@@ -89,7 +91,7 @@ const AdminSidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }: AdminS
               loading="eager"
             />
           </div>
-          {!collapsed && <span className="font-bold text-white text-lg">Admin</span>}
+          {(!collapsed || mobileOpen) && <span className="font-bold text-white text-lg">Admin</span>}
         </div>
         <Button
           variant="ghost"
@@ -103,14 +105,15 @@ const AdminSidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }: AdminS
           variant="ghost"
           size="icon"
           onClick={onMobileClose}
-          className="admin-sidebar-control text-slate-400 hover:text-white hover:bg-slate-800 lg:hidden"
+          aria-label="Close navigation"
+          className="admin-sidebar-control text-slate-400 hover:text-white hover:bg-slate-800 h-9 w-9 rounded-lg lg:hidden"
         >
-          <X className="w-4 h-4" />
+          <X className="w-5 h-5" />
         </Button>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
+      <nav className="flex-1 p-3 space-y-1 overflow-y-auto overscroll-contain">
         {navItems.map((item) => {
           const isActive = item.end
             ? location.pathname === item.path
@@ -122,7 +125,7 @@ const AdminSidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }: AdminS
               end={item.end}
               onClick={onMobileClose}
               className={cn(
-                'admin-nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group',
+                'admin-nav-link flex items-center gap-3 px-3.5 py-3 lg:py-2.5 rounded-xl transition-all duration-200 group active:scale-[0.98]',
                 isActive
                   ? 'admin-nav-link-active text-white shadow-lg shadow-blue-500/10'
                   : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
@@ -134,7 +137,7 @@ const AdminSidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }: AdminS
                   isActive ? 'admin-nav-link-icon-active' : ''
                 )}
               />
-              {!collapsed && (
+              {(!collapsed || mobileOpen) && (
                 <span className="font-medium text-sm">{item.label}</span>
               )}
             </NavLink>

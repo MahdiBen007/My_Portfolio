@@ -90,6 +90,10 @@ const AdminLayoutShell = () => {
   );
 
   useEffect(() => {
+    setMobileOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
     let isMounted = true;
 
     const loadAdminTitle = async () => {
@@ -267,8 +271,8 @@ const AdminLayoutShell = () => {
 
           <main
             className={cn(
-              'transition-all duration-300 min-h-screen',
-              sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'
+              'transition-all duration-300 min-h-screen min-h-[100dvh] overflow-x-hidden w-full',
+              sidebarCollapsed ? 'lg:ml-16 lg:w-[calc(100%-4rem)]' : 'lg:ml-64 lg:w-[calc(100%-16rem)]'
             )}
           >
             <Outlet />

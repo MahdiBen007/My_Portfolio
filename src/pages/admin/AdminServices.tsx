@@ -228,14 +228,14 @@ const AdminServices = () => {
     <div>
       <AdminHeader title="Services" subtitle="Manage your services" />
 
-      <div className="p-6">
-        <div className="flex justify-between items-center mb-6">
-          <p className="text-slate-400">
+      <div className="p-3 sm:p-4 md:p-6">
+        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-6">
+          <p className="text-xs sm:text-sm text-slate-400">
             {services.length} service{services.length !== 1 ? 's' : ''} total
           </p>
           <Button
             onClick={openCreateDialog}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+            className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
           >
             <Plus className="w-4 h-4 mr-2" />
             Add Service
@@ -263,55 +263,58 @@ const AdminServices = () => {
                 key={service.id}
                 className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50 hover:border-slate-600/50 transition-all"
               >
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-4">
-                    <button className="text-slate-500 hover:text-slate-300 cursor-grab">
-                      <GripVertical className="w-5 h-5" />
-                    </button>
+                <CardContent className="p-3.5 sm:p-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+                    <div className="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0 flex-1">
+                      <button className="text-slate-500 hover:text-slate-300 cursor-grab mt-1 sm:mt-0 shrink-0" aria-label="Reorder">
+                        <GripVertical className="w-5 h-5" />
+                      </button>
 
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-500/30 flex items-center justify-center">
-                      <span className="text-blue-400 text-sm">{service.icon}</span>
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-medium text-white">{service.title}</h3>
-                        {!service.visible && (
-                          <Badge variant="secondary" className="bg-slate-700 text-slate-400">
-                            Hidden
-                          </Badge>
-                        )}
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-500/30 flex items-center justify-center shrink-0">
+                        <span className="text-blue-400 text-xs sm:text-sm font-medium">{service.icon}</span>
                       </div>
-                      <p className="text-sm text-slate-400 truncate">{service.description}</p>
-                      {service.tags?.length > 0 && (
-                        <div className="flex gap-1 mt-2">
-                          {service.tags.slice(0, 3).map((tag) => (
-                            <Badge
-                              key={tag}
-                              variant="outline"
-                              className="text-xs border-slate-600 text-slate-400"
-                            >
-                              {tag}
-                            </Badge>
-                          ))}
-                          {service.tags.length > 3 && (
-                            <Badge
-                              variant="outline"
-                              className="text-xs border-slate-600 text-slate-400"
-                            >
-                              +{service.tags.length - 3}
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                          <h3 className="font-medium text-sm sm:text-base text-white truncate">{service.title}</h3>
+                          {!service.visible && (
+                            <Badge variant="secondary" className="bg-slate-700 text-slate-400 text-[10px] sm:text-xs">
+                              Hidden
                             </Badge>
                           )}
                         </div>
-                      )}
+                        <p className="text-xs sm:text-sm text-slate-400 line-clamp-2 mt-0.5">{service.description}</p>
+                        {service.tags?.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mt-1.5 sm:mt-2">
+                            {service.tags.slice(0, 3).map((tag) => (
+                              <Badge
+                                key={tag}
+                                variant="outline"
+                                className="text-[10px] sm:text-xs border-slate-600 text-slate-400"
+                              >
+                                {tag}
+                              </Badge>
+                            ))}
+                            {service.tags.length > 3 && (
+                              <Badge
+                                variant="outline"
+                                className="text-[10px] sm:text-xs border-slate-600 text-slate-400"
+                              >
+                                +{service.tags.length - 3}
+                              </Badge>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-end gap-1 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-700/50 shrink-0">
                       <Button
                         variant="ghost"
                         size="icon"
                         onClick={() => toggleVisibility(service.id, service.visible)}
-                        className="text-slate-400 hover:text-white"
+                        className="text-slate-400 hover:text-white h-8 w-8"
+                        aria-label="Toggle visibility"
                       >
                         {service.visible ? (
                           <Eye className="w-4 h-4" />
@@ -323,7 +326,8 @@ const AdminServices = () => {
                         variant="ghost"
                         size="icon"
                         onClick={() => openEditDialog(service)}
-                        className="text-slate-400 hover:text-white"
+                        className="text-slate-400 hover:text-white h-8 w-8"
+                        aria-label="Edit service"
                       >
                         <Pencil className="w-4 h-4" />
                       </Button>
@@ -334,7 +338,8 @@ const AdminServices = () => {
                           setDeletingId(service.id);
                           setIsDeleteDialogOpen(true);
                         }}
-                        className="text-slate-400 hover:text-red-400"
+                        className="text-slate-400 hover:text-red-400 h-8 w-8"
+                        aria-label="Delete service"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -357,8 +362,8 @@ const AdminServices = () => {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-4">
-            <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-4 py-2 sm:py-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2">
                 <Label htmlFor="title">Title (English) *</Label>
                 <Input
@@ -382,14 +387,14 @@ const AdminServices = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2">
                 <Label htmlFor="description">Description (English) *</Label>
                 <Textarea
                   id="description"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="bg-slate-800 border-slate-600 min-h-[100px]"
+                  className="bg-slate-800 border-slate-600 min-h-[80px] sm:min-h-[100px]"
                   placeholder="Building modern, responsive websites..."
                 />
               </div>
@@ -399,7 +404,7 @@ const AdminServices = () => {
                   id="description_ar"
                   value={formData.description_ar}
                   onChange={(e) => setFormData({ ...formData, description_ar: e.target.value })}
-                  className="bg-slate-800 border-slate-600 min-h-[100px]"
+                  className="bg-slate-800 border-slate-600 min-h-[80px] sm:min-h-[100px]"
                   dir="rtl"
                   placeholder="بناء مواقع ويب حديثة..."
                 />
@@ -414,7 +419,7 @@ const AdminServices = () => {
                     key={icon}
                     type="button"
                     onClick={() => setFormData({ ...formData, icon })}
-                    className={`px-3 py-1.5 rounded-lg text-sm transition-all ${
+                    className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-all ${
                       formData.icon === icon
                         ? 'bg-blue-600 text-white'
                         : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
@@ -437,7 +442,7 @@ const AdminServices = () => {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2">
                 <Label htmlFor="cta_label">CTA Label</Label>
                 <Input
@@ -460,8 +465,8 @@ const AdminServices = () => {
               </div>
             </div>
 
-            <div className="flex items-center justify-between">
-              <Label htmlFor="visible">Visible on website</Label>
+            <div className="flex items-center justify-between pt-2">
+              <Label htmlFor="visible" className="text-xs sm:text-sm">Visible on website</Label>
               <Switch
                 id="visible"
                 checked={formData.visible}
@@ -470,14 +475,14 @@ const AdminServices = () => {
             </div>
           </div>
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)} className="w-full sm:w-auto">
               Cancel
             </Button>
             <Button
               onClick={handleSave}
               disabled={saving}
-              className="bg-gradient-to-r from-blue-600 to-purple-600"
+              className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600"
             >
               {saving ? (
                 <>

@@ -426,12 +426,13 @@ const AdminSettings = () => {
     <div>
       <AdminHeader title="Settings" subtitle="Configure global settings" />
 
-      <div className="p-6">
-        <div className="flex justify-end mb-6">
+      <div className="p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <p className="text-sm sm:text-base text-slate-400">Manage site settings, colors, SEO, and socials</p>
           <Button
             onClick={handleSave}
             disabled={saving}
-            className="bg-gradient-to-r from-blue-600 to-purple-600"
+            className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
           >
             {saving ? (
               <>
@@ -447,30 +448,30 @@ const AdminSettings = () => {
           </Button>
         </div>
 
-        <Tabs defaultValue="theme" className="space-y-6">
-          <TabsList className="bg-slate-800/50 flex w-full max-w-[360px] sm:max-w-3xl overflow-x-auto gap-2 p-1 rounded-2xl [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            <TabsTrigger value="theme" className="data-[state=active]:bg-blue-600 shrink-0 whitespace-nowrap min-w-[120px] sm:min-w-[140px]">
-              <Palette className="w-4 h-4 mr-2" />
+        <Tabs defaultValue="theme" className="space-y-4 sm:space-y-6">
+          <TabsList className="bg-slate-800/50 flex w-full overflow-x-auto gap-1.5 sm:gap-2 p-1 rounded-xl sm:rounded-2xl [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <TabsTrigger value="theme" className="data-[state=active]:bg-blue-600 shrink-0 whitespace-nowrap min-w-[90px] sm:min-w-[120px] text-xs sm:text-sm py-2 px-3">
+              <Palette className="w-4 h-4 mr-1.5 sm:mr-2" />
               Theme
             </TabsTrigger>
-            <TabsTrigger value="seo" className="data-[state=active]:bg-blue-600 shrink-0 whitespace-nowrap min-w-[120px] sm:min-w-[140px]">
-              <Globe className="w-4 h-4 mr-2" />
+            <TabsTrigger value="seo" className="data-[state=active]:bg-blue-600 shrink-0 whitespace-nowrap min-w-[90px] sm:min-w-[120px] text-xs sm:text-sm py-2 px-3">
+              <Globe className="w-4 h-4 mr-1.5 sm:mr-2" />
               SEO
             </TabsTrigger>
-            <TabsTrigger value="account" className="data-[state=active]:bg-blue-600 shrink-0 whitespace-nowrap min-w-[120px] sm:min-w-[140px]">
-              <User className="w-4 h-4 mr-2" />
+            <TabsTrigger value="account" className="data-[state=active]:bg-blue-600 shrink-0 whitespace-nowrap min-w-[90px] sm:min-w-[120px] text-xs sm:text-sm py-2 px-3">
+              <User className="w-4 h-4 mr-1.5 sm:mr-2" />
               Account
             </TabsTrigger>
-            <TabsTrigger value="social" className="data-[state=active]:bg-blue-600 shrink-0 whitespace-nowrap min-w-[120px] sm:min-w-[140px]">
-              <Link2 className="w-4 h-4 mr-2" />
+            <TabsTrigger value="social" className="data-[state=active]:bg-blue-600 shrink-0 whitespace-nowrap min-w-[90px] sm:min-w-[120px] text-xs sm:text-sm py-2 px-3">
+              <Link2 className="w-4 h-4 mr-1.5 sm:mr-2" />
               Social
             </TabsTrigger>
-            <TabsTrigger value="footer" className="data-[state=active]:bg-blue-600 shrink-0 whitespace-nowrap min-w-[120px] sm:min-w-[140px]">
-              <FileText className="w-4 h-4 mr-2" />
+            <TabsTrigger value="footer" className="data-[state=active]:bg-blue-600 shrink-0 whitespace-nowrap min-w-[90px] sm:min-w-[120px] text-xs sm:text-sm py-2 px-3">
+              <FileText className="w-4 h-4 mr-1.5 sm:mr-2" />
               Footer
             </TabsTrigger>
-            <TabsTrigger value="loader" className="data-[state=active]:bg-blue-600 shrink-0 whitespace-nowrap min-w-[120px] sm:min-w-[140px]">
-              <Loader2 className="w-4 h-4 mr-2" />
+            <TabsTrigger value="loader" className="data-[state=active]:bg-blue-600 shrink-0 whitespace-nowrap min-w-[90px] sm:min-w-[120px] text-xs sm:text-sm py-2 px-3">
+              <Loader2 className="w-4 h-4 mr-1.5 sm:mr-2" />
               Loader
             </TabsTrigger>
           </TabsList>
@@ -478,87 +479,87 @@ const AdminSettings = () => {
           {/* Theme Settings */}
           <TabsContent value="theme" className="space-y-4">
             <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
-              <CardHeader>
-                <CardTitle className="text-white">Theme & UI Controls</CardTitle>
-                <CardDescription className="text-slate-400">
+              <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-4">
+                <CardTitle className="text-white text-base sm:text-lg">Theme & UI Controls</CardTitle>
+                <CardDescription className="text-slate-400 text-xs sm:text-sm">
                   Customize the look and feel of your portfolio
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="p-4 sm:p-6 space-y-4 sm:space-y-6">
                 {/* Colors */}
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <div className="space-y-2">
-                    <Label>Primary Color</Label>
+                    <Label className="text-xs sm:text-sm">Primary Color</Label>
                     <div className="flex gap-2">
                       <input
                         type="color"
                         value={settings.primary_color}
                         onChange={(e) => setSettings({ ...settings, primary_color: e.target.value })}
-                        className="w-12 h-10 rounded cursor-pointer"
+                        className="w-12 h-10 rounded cursor-pointer shrink-0"
                       />
                       <Input
                         value={settings.primary_color}
                         onChange={(e) => setSettings({ ...settings, primary_color: e.target.value })}
-                        className="bg-slate-800 border-slate-600 flex-1"
+                        className="bg-slate-800 border-slate-600 flex-1 font-mono text-xs sm:text-sm"
                       />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label>Secondary Color</Label>
+                    <Label className="text-xs sm:text-sm">Secondary Color</Label>
                     <div className="flex gap-2">
                       <input
                         type="color"
                         value={settings.secondary_color}
                         onChange={(e) => setSettings({ ...settings, secondary_color: e.target.value })}
-                        className="w-12 h-10 rounded cursor-pointer"
+                        className="w-12 h-10 rounded cursor-pointer shrink-0"
                       />
                       <Input
                         value={settings.secondary_color}
                         onChange={(e) => setSettings({ ...settings, secondary_color: e.target.value })}
-                        className="bg-slate-800 border-slate-600 flex-1"
+                        className="bg-slate-800 border-slate-600 flex-1 font-mono text-xs sm:text-sm"
                       />
                     </div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <div className="space-y-2">
-                    <Label>Header Scroll Border Color</Label>
+                    <Label className="text-xs sm:text-sm">Header Scroll Border Color</Label>
                     <div className="flex gap-2">
                       <input
                         type="color"
                         value={settings.navbar_border_color || '#22d3ee'}
                         onChange={(e) => setSettings({ ...settings, navbar_border_color: e.target.value })}
-                        className="w-12 h-10 rounded cursor-pointer"
+                        className="w-12 h-10 rounded cursor-pointer shrink-0"
                       />
                       <Input
                         value={settings.navbar_border_color || ''}
                         onChange={(e) => setSettings({ ...settings, navbar_border_color: e.target.value })}
-                        className="bg-slate-800 border-slate-600 flex-1"
+                        className="bg-slate-800 border-slate-600 flex-1 font-mono text-xs sm:text-sm"
                         placeholder="#22d3ee"
                       />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label>Header Scroll Glow Color</Label>
+                    <Label className="text-xs sm:text-sm">Header Scroll Glow Color</Label>
                     <div className="flex gap-2">
                       <input
                         type="color"
                         value={settings.navbar_glow_color || '#22d3ee'}
                         onChange={(e) => setSettings({ ...settings, navbar_glow_color: e.target.value })}
-                        className="w-12 h-10 rounded cursor-pointer"
+                        className="w-12 h-10 rounded cursor-pointer shrink-0"
                       />
                       <Input
                         value={settings.navbar_glow_color || ''}
                         onChange={(e) => setSettings({ ...settings, navbar_glow_color: e.target.value })}
-                        className="bg-slate-800 border-slate-600 flex-1"
+                        className="bg-slate-800 border-slate-600 flex-1 font-mono text-xs sm:text-sm"
                         placeholder="#22d3ee"
                       />
                     </div>
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label>Header Glow Intensity: {settings.navbar_glow_intensity ?? 100}%</Label>
+                  <Label className="text-xs sm:text-sm">Header Glow Intensity: {settings.navbar_glow_intensity ?? 100}%</Label>
                   <Slider
                     value={[settings.navbar_glow_intensity ?? 100]}
                     onValueChange={([value]) => setSettings({ ...settings, navbar_glow_intensity: value })}
@@ -570,10 +571,10 @@ const AdminSettings = () => {
 
                 {/* Admin Theme Colors */}
                 <div className="space-y-3">
-                  <Label>Admin Theme Colors</Label>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="rounded-xl border border-slate-700/60 bg-slate-800/40 p-4 space-y-3">
-                      <p className="text-sm text-slate-300">Portfolio Theme</p>
+                  <Label className="text-xs sm:text-sm">Admin Theme Colors</Label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="rounded-xl border border-slate-700/60 bg-slate-800/40 p-3 sm:p-4 space-y-3">
+                      <p className="text-xs sm:text-sm font-medium text-slate-300">Portfolio Theme</p>
                       <div className="space-y-2">
                         <Label className="text-xs text-slate-400">Primary Accent</Label>
                         <div className="flex gap-2">
@@ -583,14 +584,14 @@ const AdminSettings = () => {
                             onChange={(e) =>
                               setSettings({ ...settings, admin_portfolio_primary_color: e.target.value })
                             }
-                            className="w-12 h-10 rounded cursor-pointer"
+                            className="w-12 h-10 rounded cursor-pointer shrink-0"
                           />
                           <Input
                             value={settings.admin_portfolio_primary_color || ''}
                             onChange={(e) =>
                               setSettings({ ...settings, admin_portfolio_primary_color: e.target.value })
                             }
-                            className="bg-slate-800 border-slate-600 flex-1"
+                            className="bg-slate-800 border-slate-600 flex-1 font-mono text-xs sm:text-sm"
                           />
                         </div>
                       </div>
@@ -603,21 +604,21 @@ const AdminSettings = () => {
                             onChange={(e) =>
                               setSettings({ ...settings, admin_portfolio_secondary_color: e.target.value })
                             }
-                            className="w-12 h-10 rounded cursor-pointer"
+                            className="w-12 h-10 rounded cursor-pointer shrink-0"
                           />
                           <Input
                             value={settings.admin_portfolio_secondary_color || ''}
                             onChange={(e) =>
                               setSettings({ ...settings, admin_portfolio_secondary_color: e.target.value })
                             }
-                            className="bg-slate-800 border-slate-600 flex-1"
+                            className="bg-slate-800 border-slate-600 flex-1 font-mono text-xs sm:text-sm"
                           />
                         </div>
                       </div>
                     </div>
 
-                    <div className="rounded-xl border border-slate-700/60 bg-slate-800/40 p-4 space-y-3">
-                      <p className="text-sm text-slate-300">Studio Theme</p>
+                    <div className="rounded-xl border border-slate-700/60 bg-slate-800/40 p-3 sm:p-4 space-y-3">
+                      <p className="text-xs sm:text-sm font-medium text-slate-300">Studio Theme</p>
                       <div className="space-y-2">
                         <Label className="text-xs text-slate-400">Primary Accent</Label>
                         <div className="flex gap-2">
@@ -627,14 +628,14 @@ const AdminSettings = () => {
                             onChange={(e) =>
                               setSettings({ ...settings, admin_studio_primary_color: e.target.value })
                             }
-                            className="w-12 h-10 rounded cursor-pointer"
+                            className="w-12 h-10 rounded cursor-pointer shrink-0"
                           />
                           <Input
                             value={settings.admin_studio_primary_color || ''}
                             onChange={(e) =>
                               setSettings({ ...settings, admin_studio_primary_color: e.target.value })
                             }
-                            className="bg-slate-800 border-slate-600 flex-1"
+                            className="bg-slate-800 border-slate-600 flex-1 font-mono text-xs sm:text-sm"
                           />
                         </div>
                       </div>
@@ -647,14 +648,14 @@ const AdminSettings = () => {
                             onChange={(e) =>
                               setSettings({ ...settings, admin_studio_secondary_color: e.target.value })
                             }
-                            className="w-12 h-10 rounded cursor-pointer"
+                            className="w-12 h-10 rounded cursor-pointer shrink-0"
                           />
                           <Input
                             value={settings.admin_studio_secondary_color || ''}
                             onChange={(e) =>
                               setSettings({ ...settings, admin_studio_secondary_color: e.target.value })
                             }
-                            className="bg-slate-800 border-slate-600 flex-1"
+                            className="bg-slate-800 border-slate-600 flex-1 font-mono text-xs sm:text-sm"
                           />
                         </div>
                       </div>
@@ -664,40 +665,40 @@ const AdminSettings = () => {
 
                 {/* Gradient Presets */}
                 <div className="space-y-2">
-                  <Label>Background Gradient</Label>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <Label className="text-xs sm:text-sm">Background Gradient</Label>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
                     {gradientPresets.map((preset) => (
                       <button
                         key={preset.value}
                         onClick={() => setSettings({ ...settings, background_gradient: preset.value })}
-                        className={`p-4 rounded-xl border transition-all ${
+                        className={`p-3 sm:p-4 rounded-xl border transition-all text-left ${
                           settings.background_gradient === preset.value
                             ? 'border-blue-500 ring-2 ring-blue-500/20'
                             : 'border-slate-700 hover:border-slate-600'
                         }`}
                       >
-                        <div className={`w-full h-12 rounded-lg bg-gradient-to-br ${preset.colors} mb-2`} />
-                        <p className="text-sm text-white">{preset.label}</p>
+                        <div className={`w-full h-9 sm:h-12 rounded-lg bg-gradient-to-br ${preset.colors} mb-2`} />
+                        <p className="text-xs sm:text-sm text-white truncate">{preset.label}</p>
                       </button>
                     ))}
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Theme Toggle (Alternate)</Label>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <Label className="text-xs sm:text-sm">Theme Toggle (Alternate)</Label>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
                     {gradientPresets.map((preset) => (
                       <button
                         key={`alt-${preset.value}`}
                         onClick={() => setSettings({ ...settings, background_gradient_alt: preset.value })}
-                        className={`p-4 rounded-xl border transition-all ${
+                        className={`p-3 sm:p-4 rounded-xl border transition-all text-left ${
                           settings.background_gradient_alt === preset.value
                             ? 'border-blue-500 ring-2 ring-blue-500/20'
                             : 'border-slate-700 hover:border-slate-600'
                         }`}
                       >
-                        <div className={`w-full h-12 rounded-lg bg-gradient-to-br ${preset.colors} mb-2`} />
-                        <p className="text-sm text-white">{preset.label}</p>
+                        <div className={`w-full h-9 sm:h-12 rounded-lg bg-gradient-to-br ${preset.colors} mb-2`} />
+                        <p className="text-xs sm:text-sm text-white truncate">{preset.label}</p>
                       </button>
                     ))}
                   </div>
@@ -707,9 +708,9 @@ const AdminSettings = () => {
                 </div>
 
                 {/* Sliders */}
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <div className="space-y-2">
-                    <Label>Border Radius: {settings.border_radius}px</Label>
+                    <Label className="text-xs sm:text-sm">Border Radius: {settings.border_radius}px</Label>
                     <Slider
                       value={[settings.border_radius]}
                       onValueChange={([value]) => setSettings({ ...settings, border_radius: value })}
@@ -719,7 +720,7 @@ const AdminSettings = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Shadow Intensity: {settings.shadow_intensity}%</Label>
+                    <Label className="text-xs sm:text-sm">Shadow Intensity: {settings.shadow_intensity}%</Label>
                     <Slider
                       value={[settings.shadow_intensity]}
                       onValueChange={([value]) => setSettings({ ...settings, shadow_intensity: value })}
@@ -731,9 +732,9 @@ const AdminSettings = () => {
                 </div>
 
                 {/* Fonts */}
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <div className="space-y-2">
-                    <Label>UI Font</Label>
+                    <Label className="text-xs sm:text-sm">UI Font</Label>
                     <Select
                       value={settings.ui_font}
                       onValueChange={(value) => setSettings({ ...settings, ui_font: value })}
@@ -749,7 +750,7 @@ const AdminSettings = () => {
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label>Site Font</Label>
+                    <Label className="text-xs sm:text-sm">Site Font</Label>
                     <Select
                       value={settings.site_font}
                       onValueChange={(value) => setSettings({ ...settings, site_font: value })}
@@ -766,9 +767,9 @@ const AdminSettings = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <div className="space-y-2">
-                    <Label>Default Language</Label>
+                    <Label className="text-xs sm:text-sm">Default Language</Label>
                     <Select
                       value={settings.locale ?? 'ar'}
                       onValueChange={(value) =>
@@ -787,9 +788,9 @@ const AdminSettings = () => {
                 </div>
 
                 {/* Spacing & Animations */}
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <div className="space-y-2">
-                    <Label>Spacing Density</Label>
+                    <Label className="text-xs sm:text-sm">Spacing Density</Label>
                     <Select
                       value={settings.spacing_density}
                       onValueChange={(value) => setSettings({ ...settings, spacing_density: value })}
@@ -804,8 +805,8 @@ const AdminSettings = () => {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl">
-                    <Label htmlFor="animations">Animations Enabled</Label>
+                  <div className="flex items-center justify-between p-3 sm:p-4 bg-slate-800/50 rounded-xl">
+                    <Label htmlFor="animations" className="text-xs sm:text-sm">Animations Enabled</Label>
                     <Switch
                       id="animations"
                       checked={settings.animations_enabled}
@@ -820,15 +821,15 @@ const AdminSettings = () => {
           {/* SEO Settings */}
           <TabsContent value="seo">
             <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
-              <CardHeader>
-                <CardTitle className="text-white">SEO Settings</CardTitle>
-                <CardDescription className="text-slate-400">
+              <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-4">
+                <CardTitle className="text-white text-base sm:text-lg">SEO Settings</CardTitle>
+                <CardDescription className="text-slate-400 text-xs sm:text-sm">
                   Optimize your portfolio for search engines
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="p-4 sm:p-6 space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="admin_meta_title">Dashboard Meta Title</Label>
+                  <Label htmlFor="admin_meta_title" className="text-xs sm:text-sm">Dashboard Meta Title</Label>
                   <Input
                     id="admin_meta_title"
                     value={settings.admin_meta_title || ''}
@@ -842,7 +843,7 @@ const AdminSettings = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="meta_title">Meta Title</Label>
+                  <Label htmlFor="meta_title" className="text-xs sm:text-sm">Meta Title</Label>
                   <Input
                     id="meta_title"
                     value={settings.meta_title}
@@ -854,12 +855,12 @@ const AdminSettings = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="meta_description">Meta Description</Label>
+                  <Label htmlFor="meta_description" className="text-xs sm:text-sm">Meta Description</Label>
                   <Textarea
                     id="meta_description"
                     value={settings.meta_description || ''}
                     onChange={(e) => setSettings({ ...settings, meta_description: e.target.value })}
-                    className="bg-slate-800 border-slate-600"
+                    className="bg-slate-800 border-slate-600 min-h-[80px]"
                     placeholder="Brief description of your portfolio..."
                   />
                   <p className="text-xs text-slate-500">
@@ -868,7 +869,7 @@ const AdminSettings = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="og_image">OG Image URL</Label>
+                  <Label htmlFor="og_image" className="text-xs sm:text-sm">OG Image URL</Label>
                   <Input
                     id="og_image"
                     value={settings.og_image_url || ''}
@@ -879,7 +880,7 @@ const AdminSettings = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="keywords">Keywords</Label>
+                  <Label htmlFor="keywords" className="text-xs sm:text-sm">Keywords</Label>
                   <Input
                     id="keywords"
                     value={settings.keywords || ''}
@@ -890,7 +891,7 @@ const AdminSettings = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="canonical">Canonical URL</Label>
+                  <Label htmlFor="canonical" className="text-xs sm:text-sm">Canonical URL</Label>
                   <Input
                     id="canonical"
                     value={settings.canonical_url || ''}
@@ -906,16 +907,16 @@ const AdminSettings = () => {
           {/* Account Settings */}
           <TabsContent value="account">
             <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
-              <CardHeader>
-                <CardTitle className="text-white">Account Security</CardTitle>
-                <CardDescription className="text-slate-400">
+              <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-4">
+                <CardTitle className="text-white text-base sm:text-lg">Account Security</CardTitle>
+                <CardDescription className="text-slate-400 text-xs sm:text-sm">
                   Update the admin login email or password. For security, confirm your current credentials.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-5">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <CardContent className="p-4 sm:p-6 space-y-4 sm:space-y-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="current_email">Current Email</Label>
+                    <Label htmlFor="current_email" className="text-xs sm:text-sm">Current Email</Label>
                     <Input
                       id="current_email"
                       value={accountForm.currentEmail}
@@ -927,7 +928,7 @@ const AdminSettings = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="current_password">Current Password</Label>
+                    <Label htmlFor="current_password" className="text-xs sm:text-sm">Current Password</Label>
                     <Input
                       id="current_password"
                       type="password"
@@ -941,9 +942,9 @@ const AdminSettings = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="new_email">New Email</Label>
+                    <Label htmlFor="new_email" className="text-xs sm:text-sm">New Email</Label>
                     <Input
                       id="new_email"
                       value={accountForm.newEmail}
@@ -955,7 +956,7 @@ const AdminSettings = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="new_password">New Password</Label>
+                    <Label htmlFor="new_password" className="text-xs sm:text-sm">New Password</Label>
                     <Input
                       id="new_password"
                       type="password"
@@ -969,9 +970,9 @@ const AdminSettings = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="confirm_password">Confirm New Password</Label>
+                    <Label htmlFor="confirm_password" className="text-xs sm:text-sm">Confirm New Password</Label>
                     <Input
                       id="confirm_password"
                       type="password"
@@ -985,14 +986,14 @@ const AdminSettings = () => {
                   </div>
                 </div>
 
-                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2">
                   <p className="text-xs text-slate-500">
                     If you update the email, Supabase may require email confirmation.
                   </p>
                   <Button
                     onClick={handleUpdateCredentials}
                     disabled={updatingAccount}
-                    className="bg-gradient-to-r from-blue-600 to-purple-600"
+                    className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600"
                   >
                     {updatingAccount ? (
                       <>
@@ -1014,16 +1015,16 @@ const AdminSettings = () => {
           {/* Social Links */}
           <TabsContent value="social">
             <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
-              <CardHeader>
-                <CardTitle className="text-white">Social Links</CardTitle>
-                <CardDescription className="text-slate-400">
+              <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-4">
+                <CardTitle className="text-white text-base sm:text-lg">Social Links</CardTitle>
+                <CardDescription className="text-slate-400 text-xs sm:text-sm">
                   Add your social media and contact links
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+              <CardContent className="p-4 sm:p-6 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="github">GitHub</Label>
+                    <Label htmlFor="github" className="text-xs sm:text-sm">GitHub</Label>
                     <Input
                       id="github"
                       value={settings.github_url || ''}
@@ -1033,7 +1034,7 @@ const AdminSettings = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="linkedin">LinkedIn</Label>
+                    <Label htmlFor="linkedin" className="text-xs sm:text-sm">LinkedIn</Label>
                     <Input
                       id="linkedin"
                       value={settings.linkedin_url || ''}
@@ -1044,9 +1045,9 @@ const AdminSettings = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="behance">Behance</Label>
+                    <Label htmlFor="behance" className="text-xs sm:text-sm">Behance</Label>
                     <Input
                       id="behance"
                       value={settings.behance_url || ''}
@@ -1056,7 +1057,7 @@ const AdminSettings = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email" className="text-xs sm:text-sm">Email</Label>
                     <Input
                       id="email"
                       value={settings.email || ''}
@@ -1067,9 +1068,9 @@ const AdminSettings = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="whatsapp">WhatsApp</Label>
+                    <Label htmlFor="whatsapp" className="text-xs sm:text-sm">WhatsApp</Label>
                     <Input
                       id="whatsapp"
                       value={settings.whatsapp || ''}
@@ -1080,7 +1081,7 @@ const AdminSettings = () => {
                     <p className="text-xs text-slate-400">رقم الهاتف فقط (بدون +). مثال: 0555000000</p>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="phone">Phone</Label>
+                    <Label htmlFor="phone" className="text-xs sm:text-sm">Phone</Label>
                     <Input
                       id="phone"
                       value={settings.phone || ''}
@@ -1091,19 +1092,20 @@ const AdminSettings = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="location">Location (Arabic)</Label>
+                    <Label htmlFor="location" className="text-xs sm:text-sm">Location (Arabic)</Label>
                     <Input
                       id="location"
                       value={settings.location || ''}
                       onChange={(e) => setSettings({ ...settings, location: e.target.value })}
                       className="bg-slate-800 border-slate-600"
                       placeholder="القاهرة، مصر"
+                      dir="rtl"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="location_en">Location (English)</Label>
+                    <Label htmlFor="location_en" className="text-xs sm:text-sm">Location (English)</Label>
                     <Input
                       id="location_en"
                       value={settings.location_en || ''}
@@ -1120,15 +1122,15 @@ const AdminSettings = () => {
           {/* Footer Settings */}
           <TabsContent value="footer">
             <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
-              <CardHeader>
-                <CardTitle className="text-white">Footer Settings</CardTitle>
-                <CardDescription className="text-slate-400">
+              <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-4">
+                <CardTitle className="text-white text-base sm:text-lg">Footer Settings</CardTitle>
+                <CardDescription className="text-slate-400 text-xs sm:text-sm">
                   Customize your footer content
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="p-4 sm:p-6 space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="copyright">Copyright Text</Label>
+                  <Label htmlFor="copyright" className="text-xs sm:text-sm">Copyright Text</Label>
                   <Input
                     id="copyright"
                     value={settings.copyright_text}
@@ -1139,12 +1141,12 @@ const AdminSettings = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="footer_contact">Contact Info</Label>
+                  <Label htmlFor="footer_contact" className="text-xs sm:text-sm">Contact Info</Label>
                   <Textarea
                     id="footer_contact"
                     value={settings.footer_contact_info || ''}
                     onChange={(e) => setSettings({ ...settings, footer_contact_info: e.target.value })}
-                    className="bg-slate-800 border-slate-600"
+                    className="bg-slate-800 border-slate-600 min-h-[80px]"
                     placeholder="Your address, phone number, etc."
                   />
                 </div>
@@ -1154,26 +1156,27 @@ const AdminSettings = () => {
 
           <TabsContent value="loader">
             <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50">
-              <CardHeader>
-                <CardTitle className="text-white">Loader Settings</CardTitle>
-                <CardDescription className="text-slate-400">
+              <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-4">
+                <CardTitle className="text-white text-base sm:text-lg">Loader Settings</CardTitle>
+                <CardDescription className="text-slate-400 text-xs sm:text-sm">
                   تخصيص شاشة التحميل
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+              <CardContent className="p-4 sm:p-6 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="loader_text_ar">النص الرئيسي (عربي)</Label>
+                    <Label htmlFor="loader_text_ar" className="text-xs sm:text-sm">النص الرئيسي (عربي)</Label>
                     <Input
                       id="loader_text_ar"
                       value={settings.loader_text_ar || ''}
                       onChange={(e) => setSettings({ ...settings, loader_text_ar: e.target.value })}
                       className="bg-slate-800 border-slate-600"
                       placeholder="أنا مطور ويب"
+                      dir="rtl"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="loader_text_en">Main Text (English)</Label>
+                    <Label htmlFor="loader_text_en" className="text-xs sm:text-sm">Main Text (English)</Label>
                     <Input
                       id="loader_text_en"
                       value={settings.loader_text_en || ''}
@@ -1184,19 +1187,20 @@ const AdminSettings = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="loader_subtitle_ar">النص الفرعي (عربي)</Label>
+                    <Label htmlFor="loader_subtitle_ar" className="text-xs sm:text-sm">النص الفرعي (عربي)</Label>
                     <Input
                       id="loader_subtitle_ar"
                       value={settings.loader_subtitle_ar || ''}
                       onChange={(e) => setSettings({ ...settings, loader_subtitle_ar: e.target.value })}
                       className="bg-slate-800 border-slate-600"
                       placeholder="جارٍ تحميل البرتفوليو..."
+                      dir="rtl"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="loader_subtitle_en">Subtitle (English)</Label>
+                    <Label htmlFor="loader_subtitle_en" className="text-xs sm:text-sm">Subtitle (English)</Label>
                     <Input
                       id="loader_subtitle_en"
                       value={settings.loader_subtitle_en || ''}
@@ -1207,9 +1211,9 @@ const AdminSettings = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="loader_duration">مدة التحميل (مللي ثانية)</Label>
+                    <Label htmlFor="loader_duration" className="text-xs sm:text-sm">مدة التحميل (مللي ثانية)</Label>
                     <Input
                       id="loader_duration"
                       type="number"
@@ -1223,7 +1227,7 @@ const AdminSettings = () => {
                     <p className="text-xs text-slate-400">الحد الأدنى 500، الحد الأقصى 5000</p>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="typing_speed">سرعة الكتابة (مللي ثانية)</Label>
+                    <Label htmlFor="typing_speed" className="text-xs sm:text-sm">سرعة الكتابة (مللي ثانية)</Label>
                     <Input
                       id="typing_speed"
                       type="number"
