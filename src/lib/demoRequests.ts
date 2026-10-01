@@ -3,7 +3,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 const db = supabase as unknown as SupabaseClient;
 
-export type LeadStatus = 'converted' | 'not_interested';
+export type LeadStatus = 'new' | 'contacted' | 'converted' | 'not_interested';
 
 export interface DemoLead {
   id: string;
@@ -18,10 +18,17 @@ export interface DemoLead {
   ip?: string | null;
 }
 
-const LOCAL_STORAGE_KEY = 'portfolio_demo_leads_data_v2';
+const LOCAL_STORAGE_KEY = 'portfolio_demo_leads_data_v3';
 
 // Clean initial demo leads
 const INITIAL_DEMO_LEADS: DemoLead[] = [];
+
+function sanitizeStatus(status?: string | null): LeadStatus {
+  if (status === 'converted' || status === 'contacted' || status === 'not_interested') {
+    return status;
+  }
+  return 'new';
+}
 
 export async function fetchDemoLeads(): Promise<DemoLead[]> {
   // 1. Try to fetch from Supabase cloud database
@@ -31,16 +38,16 @@ export async function fetchDemoLeads(): Promise<DemoLead[]> {
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (!error && Array.isArray(supaData) && supaData.length > 0) {
+    if (!error && Array.isArray(supaData)) {
       const leads: DemoLead[] = supaData.map((l: any) => ({
         id: String(l.id),
-        full_name: l.full_name,
-        phone: l.phone,
-        business_type: l.business_type,
-        downloads_count: l.downloads_count || 1,
+        full_name: l.full_name || '',
+        phone: l.phone || '',
+        business_type: l.business_type || '',
+        downloads_count: Number(l.downloads_count) || 1,
         last_download_at: l.last_download_at || l.created_at || new Date().toISOString(),
         created_at: l.created_at || new Date().toISOString(),
-        status: l.status === 'converted' ? 'converted' : 'not_interested',
+        status: sanitizeStatus(l.status),
         notes: l.notes || null,
         ip: l.ip || null,
       }));
@@ -48,41 +55,32 @@ export async function fetchDemoLeads(): Promise<DemoLead[]> {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(leads));
       return leads;
     }
-  } catch {}
+  } catch (err) {
+    console.warn('Could not query Supabase demo_leads:', err);
+  }
 
-  // 2. Try to fetch live leads directly from Landing Page local API
+  // 2. Try to fetch live leads from Landing Page local API if available
   try {
     const res = await fetch('http://localhost:3000/api/leads', {
-      signal: AbortSignal.timeout(2000),
+      signal: AbortSignal.timeout(1500),
     });
     if (res.ok) {
       const data = await res.json();
-      if (Array.isArray(data.leads) && data.leads.length > 0) {
+      if (Array.isArray(data.leads)) {
         const landingLeads: DemoLead[] = data.leads.map((l: any) => ({
           id: l.id || `landing-${l.phone}`,
-          full_name: l.full_name,
-          phone: l.phone,
-          business_type: l.business_type,
-          downloads_count: l.downloads_count || 1,
+          full_name: l.full_name || '',
+          phone: l.phone || '',
+          business_type: l.business_type || '',
+          downloads_count: Number(l.downloads_count) || 1,
           last_download_at: l.last_download_at || new Date().toISOString(),
           created_at: l.created_at || new Date().toISOString(),
-          status: l.status === 'converted' ? 'converted' : 'not_interested',
+          status: sanitizeStatus(l.status),
           notes: l.notes || null,
         }));
 
-        const cached = localStorage.getItem(LOCAL_STORAGE_KEY);
-        let baseLeads = INITIAL_DEMO_LEADS;
-        if (cached) {
-          try {
-            const parsed = JSON.parse(cached);
-            if (Array.isArray(parsed) && parsed.length > 0) baseLeads = parsed;
-          } catch {}
-        }
-
-        const phoneMap = new Set(landingLeads.map((l) => l.phone));
-        const merged = [...landingLeads, ...baseLeads.filter((l) => !phoneMap.has(l.phone))];
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(merged));
-        return merged;
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(landingLeads));
+        return landingLeads;
       }
     }
   } catch {}
@@ -92,16 +90,15 @@ export async function fetchDemoLeads(): Promise<DemoLead[]> {
   if (cached) {
     try {
       const parsed = JSON.parse(cached);
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      if (Array.isArray(parsed)) {
         return parsed.map((l: any) => ({
           ...l,
-          status: l.status === 'converted' ? 'converted' : 'not_interested',
+          status: sanitizeStatus(l.status),
         }));
       }
     } catch {}
   }
 
-  // 4. Default empty state
   return INITIAL_DEMO_LEADS;
 }
 
@@ -109,7 +106,9 @@ export async function updateLeadStatus(id: string, status: LeadStatus): Promise<
   // 1. Update in Supabase if online
   try {
     await db.from('demo_leads').update({ status }).eq('id', id);
-  } catch {}
+  } catch (err) {
+    console.warn('Supabase status update error:', err);
+  }
 
   // 2. Update in localStorage
   const cached = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -125,7 +124,9 @@ export async function updateLeadStatus(id: string, status: LeadStatus): Promise<
 export async function updateLeadNotes(id: string, notes: string): Promise<void> {
   try {
     await db.from('demo_leads').update({ notes }).eq('id', id);
-  } catch {}
+  } catch (err) {
+    console.warn('Supabase notes update error:', err);
+  }
 
   const cached = localStorage.getItem(LOCAL_STORAGE_KEY);
   if (cached) {
@@ -140,7 +141,9 @@ export async function updateLeadNotes(id: string, notes: string): Promise<void> 
 export async function deleteLead(id: string): Promise<void> {
   try {
     await db.from('demo_leads').delete().eq('id', id);
-  } catch {}
+  } catch (err) {
+    console.warn('Supabase delete error:', err);
+  }
 
   const cached = localStorage.getItem(LOCAL_STORAGE_KEY);
   if (cached) {
@@ -152,22 +155,49 @@ export async function deleteLead(id: string): Promise<void> {
   }
 }
 
-export async function addDemoLead(lead: Omit<DemoLead, 'id' | 'created_at' | 'status'>): Promise<DemoLead> {
-  const newLead: DemoLead = {
-    ...lead,
-    id: 'lead-' + Date.now(),
-    created_at: new Date().toISOString(),
-    status: 'not_interested',
+export async function addDemoLead(
+  lead: Omit<DemoLead, 'id' | 'created_at' | 'status'>
+): Promise<DemoLead> {
+  const insertPayload = {
+    full_name: lead.full_name,
+    phone: lead.phone,
+    business_type: lead.business_type,
+    downloads_count: lead.downloads_count || 1,
+    status: 'new',
+    notes: lead.notes || null,
+    ip: lead.ip || null,
   };
 
+  let assignedId = 'lead-' + Date.now();
+  let createdAt = new Date().toISOString();
+
   try {
-    await db.from('demo_leads').insert(newLead);
-  } catch {}
+    const { data, error } = await db
+      .from('demo_leads')
+      .insert(insertPayload)
+      .select('id, created_at')
+      .single();
+
+    if (!error && data) {
+      assignedId = String(data.id);
+      if (data.created_at) createdAt = data.created_at;
+    }
+  } catch (err) {
+    console.warn('Supabase insert lead error:', err);
+  }
+
+  const createdLead: DemoLead = {
+    ...insertPayload,
+    id: assignedId,
+    created_at: createdAt,
+    last_download_at: createdAt,
+    status: 'new',
+  };
 
   const cached = localStorage.getItem(LOCAL_STORAGE_KEY);
   const existing: DemoLead[] = cached ? JSON.parse(cached) : INITIAL_DEMO_LEADS;
-  const updated = [newLead, ...existing];
+  const updated = [createdLead, ...existing];
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
 
-  return newLead;
+  return createdLead;
 }

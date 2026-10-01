@@ -32,6 +32,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+import { useLanguage } from '@/contexts/LanguageContext';
+
 interface AdminSidebarProps {
   collapsed: boolean;
   onToggle: () => void;
@@ -39,24 +41,25 @@ interface AdminSidebarProps {
   onMobileClose: () => void;
 }
 
-const navItems = [
-  { path: '/admin', icon: LayoutDashboard, label: 'Overview', end: true },
-  { path: '/admin/leads', icon: Download, label: 'Demo Leads' },
-  { path: '/admin/licenses', icon: KeyRound, label: 'License Management' },
-  { path: '/admin/messages', icon: MessageSquare, label: 'Messages' },
-  { path: '/admin/services', icon: Briefcase, label: 'Services' },
-  { path: '/admin/skills', icon: Code2, label: 'Skills' },
-  { path: '/admin/projects', icon: FolderKanban, label: 'Projects' },
-  { path: '/admin/about', icon: User, label: 'About & Timeline' },
-  { path: '/admin/page-builder', icon: Layers, label: 'Page Builder' },
-  { path: '/admin/pricing', icon: DollarSign, label: 'Pricing' },
-  { path: '/admin/testimonials', icon: Quote, label: 'Testimonials' },
-  { path: '/admin/settings', icon: Settings, label: 'Settings' },
-];
-
 const AdminSidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }: AdminSidebarProps) => {
+  const { t, isRTL } = useLanguage();
   const location = useLocation();
   const { signOut, user, role } = useAuth();
+
+  const navItems = [
+    { path: '/admin', icon: LayoutDashboard, label: t('نظرة عامة', 'Overview'), end: true },
+    { path: '/admin/leads', icon: Download, label: t('طلبات التجربة (Leads)', 'Demo Leads') },
+    { path: '/admin/licenses', icon: KeyRound, label: t('إدارة الرخص', 'License Management') },
+    { path: '/admin/messages', icon: MessageSquare, label: t('الرسائل', 'Messages') },
+    { path: '/admin/services', icon: Briefcase, label: t('الخدمات', 'Services') },
+    { path: '/admin/skills', icon: Code2, label: t('المهارات', 'Skills') },
+    { path: '/admin/projects', icon: FolderKanban, label: t('المشاريع', 'Projects') },
+    { path: '/admin/about', icon: User, label: t('من أنا والمسار', 'About & Timeline') },
+    { path: '/admin/page-builder', icon: Layers, label: t('منشئ الصفحات', 'Page Builder') },
+    { path: '/admin/pricing', icon: DollarSign, label: t('الأسعار', 'Pricing') },
+    { path: '/admin/testimonials', icon: Quote, label: t('آراء العملاء', 'Testimonials') },
+    { path: '/admin/settings', icon: Settings, label: t('الإعدادات', 'Settings') },
+  ];
   const rawName = user?.user_metadata?.full_name;
   const displayName = rawName && rawName !== 'Admin' ? rawName : 'Mahdi Bensaleh';
   const displayRole = role ? role.charAt(0).toUpperCase() + role.slice(1) : 'User';
